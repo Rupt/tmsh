@@ -2,7 +2,7 @@
 
 .venv/.tombstone:
 	python3.13 -m venv .venv
-	.venv/bin/pip install --upgrade pip -r dev-requirements.txt
+	.venv/bin/pip install --upgrade pip -r requirements.txt
 	touch $@
 
 .PHONY: test
@@ -26,6 +26,4 @@ upgrade: .venv/.tombstone
 		'pyright >=1.1.399' \
 		'ruff >=0.11.6' \
 		'setuptools >=79.0.0'
-	.venv/bin/pip freeze > dev-requirements.txt
-# TODO: automate changing the absolute path to `tmsh` to relative `./tmsh`
-#	or remove it entirely?
+	.venv/bin/pip freeze | grep -v tmsh > requirements.txt
