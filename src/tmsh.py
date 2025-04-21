@@ -11741,7 +11741,7 @@ class onelab:
     """ONELAB server functions"""
 
     @staticmethod
-    def set(data, format="json"):  # noqa: A002
+    def set(data: str, format: str = "json") -> None:  # noqa: A002
         """gmsh.onelab.set(data, format="json")
 
         Set one or more parameters in the ONELAB database, encoded in `format'.
@@ -11760,7 +11760,7 @@ class onelab:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def get(name="", format="json"):  # noqa: A002
+    def get(name: str = "", format: str = "json") -> str:  # noqa: A002
         """gmsh.onelab.get(name="", format="json")
 
         Get all the parameters (or a single one if `name' is specified) from the
@@ -11786,7 +11786,7 @@ class onelab:
         return _ostring(api_data_)
 
     @staticmethod
-    def getNames(search=""):
+    def getNames(search: str = "") -> list[str]:
         """gmsh.onelab.getNames(search="")
 
         Get the names of the parameters in the ONELAB database matching the
@@ -11814,7 +11814,7 @@ class onelab:
         return _ovectorstring(api_names_, api_names_n_.value)
 
     @staticmethod
-    def setNumber(name, value):
+    def setNumber(name, value) -> None:
         """gmsh.onelab.setNumber(name, value)
 
         Set the value of the number parameter `name' in the ONELAB database. Create
@@ -11837,7 +11837,7 @@ class onelab:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setString(name, value):
+    def setString(name, value) -> None:
         """gmsh.onelab.setString(name, value)
 
         Set the value of the string parameter `name' in the ONELAB database. Create
@@ -11860,7 +11860,7 @@ class onelab:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getNumber(name: str):
+    def getNumber(name: str) -> NDArray[numpy.float64]:
         """gmsh.onelab.getNumber(name)
 
         Get the value of the number parameter `name' from the ONELAB database.
@@ -11888,7 +11888,7 @@ class onelab:
         return _ovectordouble(api_value_, api_value_n_.value)
 
     @staticmethod
-    def getString(name: str):
+    def getString(name: str) -> list[str]:
         """gmsh.onelab.getString(name)
 
         Get the value of the string parameter `name' from the ONELAB database.
@@ -11916,7 +11916,7 @@ class onelab:
         return _ovectorstring(api_value_, api_value_n_.value)
 
     @staticmethod
-    def getChanged(name: str):
+    def getChanged(name: str) -> str:
         """gmsh.onelab.getChanged(name)
 
         Check if any parameters in the ONELAB database used by the client `name'
@@ -11936,7 +11936,7 @@ class onelab:
         return api_result_
 
     @staticmethod
-    def setChanged(name, value):
+    def setChanged(name: str, value: int) -> None:
         """gmsh.onelab.setChanged(name, value)
 
         Set the changed flag to value `value' for all the parameters in the ONELAB
@@ -11956,7 +11956,7 @@ class onelab:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def clear(name=""):
+    def clear(name: str = "") -> None:
         """gmsh.onelab.clear(name="")
 
         Clear the ONELAB database, or remove a single parameter if `name' is given.
@@ -11972,7 +11972,7 @@ class onelab:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def run(name="", command=""):
+    def run(name: str = "", command: str = "") -> None:
         """gmsh.onelab.run(name="", command="")
 
         Run a ONELAB client. If `name' is provided, create a new ONELAB client with
