@@ -7,14 +7,15 @@ requires-python = ">=3.13"
 dependencies = ["gmsh ==4.13.1", "numpy >=2"]
 classifiers = [
     "Development Status :: 1 - Planning",
-    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3.13",
 ]
 license-files = ["LICENSE.txt"]
-urls = { Homepage = "https://github.com/rupt/tmsh" }
+
+[project.urls]
+Repository = "https://github.com/rupt/tmsh"
 
 [dependency-groups]
 dev = [

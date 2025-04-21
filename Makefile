@@ -29,3 +29,8 @@ upgrade: .venv/.tombstone
 		'setuptools >=79.0.0' \
 		'twine >=6.1.0'
 	.venv/bin/pip freeze | grep -v tmsh > requirements.txt
+
+.PHONY: publish
+publish: .venv/.tombstone
+	.venv/bin/python -m build --sdist --no-isolation
+	.venv/bin/python -m twine upload --repository testpypi dist/*
