@@ -655,8 +655,8 @@ class option:
     def getNumber(name: str) -> float:
         """Get the `value' of a numerical option.
 
-        `name' is of the form "Category.Option" or "Category[num].Option". 
-        Available categories and options are listed in the "Gmsh options" 
+        `name' is of the form "Category.Option" or "Category[num].Option".
+        Available categories and options are listed in the "Gmsh options"
         chapter of the Gmsh reference manual
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
         """
@@ -675,7 +675,7 @@ class option:
     def setString(name: str, value: str) -> None:
         """Set a string option to `value'.
 
-        `name' is of the form "Category.Option" or "Category[num].Option". 
+        `name' is of the form "Category.Option" or "Category[num].Option".
         Available categories and options are listed in the "Gmsh options"
         chapter of the Gmsh reference manual
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
