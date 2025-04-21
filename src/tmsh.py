@@ -1,13 +1,11 @@
-# This file is adapted from Gmsh under its license, which comprises the GNU
-# General Public License with custom exceptions, as specified below.
+# This file is adapted from the Gmsh license, which comprises the GNU General
+# Public License with custom exceptions, as specified below.
 #
 # This file has been changed from the Gmsh original as of 2025-04-21.
 #
+# The Gmsh license:
+#
 # Gmsh - Copyright (C) 1997-2024 C. Geuzaine, J.-F. Remacle
-#
-# We reproduce the original license from LICENSE.txt in the Gmsh repository:
-#
-# BEGIN GMSH LICENSE
 #
 # Gmsh is provided under the terms of the GNU General Public License
 # (GPL), Version 2 or later, with the following exception:
@@ -312,7 +310,7 @@
 #
 # 		     END OF TERMS AND CONDITIONS
 #
-# END GMSH LICENSE
+# End of Gmsh license
 
 """Type-annotated and linted Gmsh Python interface"""
 
