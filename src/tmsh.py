@@ -478,18 +478,6 @@ def _ivectorstring(o):
     ), ctypes.c_size_t(len(o))
 
 
-def _ivectorvectorint(os):
-    n = len(os)
-    parrays = [_ivectorint(o) for o in os]
-    sizes = (ctypes.c_size_t * n)(*(a[1] for a in parrays))
-    arrays = (ctypes.POINTER(ctypes.c_int) * n)(
-        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_int)) for a in parrays)
-    )
-    arrays.ref = [a[0] for a in parrays]
-    size = ctypes.c_size_t(n)
-    return arrays, sizes, size
-
-
 def _ivectorvectorsize(os):
     n = len(os)
     parrays = [_ivectorsize(o) for o in os]
