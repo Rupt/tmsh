@@ -523,24 +523,24 @@ def _iargcargv(o):
 # Gmsh Python API begins here
 
 
-def initialize(argv=[], readConfigFiles=True, run=False, interruptible=True):
-    """
+def initialize(
+    *,
+    argv: list[str] = [],
+    readConfigFiles: bool = True,
+    run: bool = False,
+    interruptible: bool = True,
+) -> None:
+    """Initialize the Gmsh API.
+
     gmsh.initialize(argv=[], readConfigFiles=True, run=False)
 
-    Initialize the Gmsh API. This must be called before any call to the other
-    functions in the API. If `argc' and `argv' (or just `argv' in Python or
-    Julia) are provided, they will be handled in the same way as the command
-    line arguments in the Gmsh app. If `readConfigFiles' is set, read system
-    Gmsh configuration files (gmshrc and gmsh-options). If `run' is set, run in
-    the same way as the Gmsh app, either interactively or in batch mode
-    depending on the command line arguments. If `run' is not set, initializing
-    the API sets the options "General.AbortOnError" to 2 and "General.Terminal"
-    to 1.
-
-    Types:
-    - `argv': command line arguments
-    - `readConfigFiles': boolean
-    - `run': boolean
+    This must be called before any call to the other functions in the API. If
+    `argv` is provided, it will be handled in the same way as the command line
+    arguments in the Gmsh app. If `readConfigFiles' is set, read system Gmsh
+    configuration files (gmshrc and gmsh-options). If `run' is set, run in the
+    same way as the Gmsh app, either interactively or in batch mode depending
+    on the command line arguments. If `run' is not set, initializing the API
+    sets the options "General.AbortOnError" to 2 and "General.Terminal" to 1.
     """
     api_argc_, api_argv_ = _iargcargv(argv)
     ierr = ctypes.c_int()
