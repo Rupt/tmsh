@@ -2982,7 +2982,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def relocateNodes(dim=-1, tag=-1):
+        def relocateNodes(dim: int = -1, tag: int = -1):
             """gmsh.model.mesh.relocateNodes(dim=-1, tag=-1)
 
             Relocate the nodes classified on the entity of dimension `dim' and tag
@@ -3002,7 +3002,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getElements(dim=-1, tag=-1):
+        def getElements(dim: int = -1, tag: int = -1):
             """gmsh.model.mesh.getElements(dim=-1, tag=-1)
 
             Get the elements classified on the entity of dimension `dim' and tag `tag'.
@@ -3255,7 +3255,7 @@ class model:
             return (api_u_.value, api_v_.value, api_w_.value)
 
         @staticmethod
-        def getElementTypes(dim=-1, tag=-1):
+        def getElementTypes(dim: int = -1, tag: int = -1):
             """gmsh.model.mesh.getElementTypes(dim=-1, tag=-1)
 
             Get the types of elements in the entity of dimension `dim' and tag `tag'.
