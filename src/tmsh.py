@@ -384,7 +384,8 @@ def _ovectorstring(ptr, size):
 
 def _ovectorvectorint(ptr, size, n):
     v = [
-        _ovectorint(pointer(ptr[i].contents), size[i]) for i in range(n.value)
+        _ovectorint(ctypes.pointer(ptr[i].contents), size[i])
+        for i in range(n.value)
     ]
     gmsh.lib.gmshFree(size)
     gmsh.lib.gmshFree(ptr)
@@ -393,7 +394,8 @@ def _ovectorvectorint(ptr, size, n):
 
 def _ovectorvectorsize(ptr, size, n):
     v = [
-        _ovectorsize(pointer(ptr[i].contents), size[i]) for i in range(n.value)
+        _ovectorsize(ctypes.pointer(ptr[i].contents), size[i])
+        for i in range(n.value)
     ]
     gmsh.lib.gmshFree(size)
     gmsh.lib.gmshFree(ptr)
@@ -402,7 +404,7 @@ def _ovectorvectorsize(ptr, size, n):
 
 def _ovectorvectordouble(ptr, size, n):
     v = [
-        _ovectordouble(pointer(ptr[i].contents), size[i])
+        _ovectordouble(ctypes.pointer(ptr[i].contents), size[i])
         for i in range(n.value)
     ]
     gmsh.lib.gmshFree(size)
@@ -412,7 +414,8 @@ def _ovectorvectordouble(ptr, size, n):
 
 def _ovectorvectorpair(ptr, size, n):
     v = [
-        _ovectorpair(pointer(ptr[i].contents), size[i]) for i in range(n.value)
+        _ovectorpair(ctypes.pointer(ptr[i].contents), size[i])
+        for i in range(n.value)
     ]
     gmsh.lib.gmshFree(size)
     gmsh.lib.gmshFree(ptr)
