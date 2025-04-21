@@ -28,6 +28,10 @@ output-format = "concise"
 [tool.ruff.lint]
 select = ["I"]
 ignore = []
+dummy-variable-rgx = "^_$"
+
+[tool.ruff.lint.isort]
+split-on-trailing-comma = false
 
 [tool.ruff.format]
 skip-magic-trailing-comma = true
