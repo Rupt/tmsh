@@ -326,7 +326,14 @@ import gmsh
 import numpy
 
 if TYPE_CHECKING:
+    import builtins
     from collections.abc import Sequence
+
+    from numpy.typing import NDArray
+
+if not gmsh.use_numpy:
+    _msg = "tmsh requires numpy support"
+    raise RuntimeError(_msg)
 
 
 def _ostring(s: ctypes.c_char_p) -> str:
@@ -344,42 +351,30 @@ def _ovectorpair(ptr, size: int):
     return v
 
 
-def _ovectorint(ptr, size: int):
-    if gmsh.use_numpy:
-        if size == 0:
-            gmsh.lib.gmshFree(ptr)
-            return numpy.ndarray((0,), numpy.int32)
-        v = numpy.ctypeslib.as_array(ptr, (size,))
-        weakref.finalize(v, gmsh.lib.gmshFree, ptr)
-    else:
-        v = [ptr[i] for i in range(size)]
+def _ovectorint(ptr, size: int) -> NDArray[numpy.int32]:
+    if size == 0:
         gmsh.lib.gmshFree(ptr)
+        return numpy.ndarray((0,), numpy.int32)
+    v = numpy.ctypeslib.as_array(ptr, (size,))
+    weakref.finalize(v, gmsh.lib.gmshFree, ptr)
     return v
 
 
-def _ovectorsize(ptr, size: int):
-    if gmsh.use_numpy:
-        if size == 0:
-            gmsh.lib.gmshFree(ptr)
-            return numpy.ndarray((0,), numpy.uintp)
-        v = numpy.ctypeslib.as_array(ptr, (size,))
-        weakref.finalize(v, gmsh.lib.gmshFree, ptr)
-    else:
-        v = [ptr[i] for i in range(size)]
+def _ovectorsize(ptr, size: int) -> NDArray[numpy.uintp]:
+    if size == 0:
         gmsh.lib.gmshFree(ptr)
+        return numpy.ndarray((0,), numpy.uintp)
+    v = numpy.ctypeslib.as_array(ptr, (size,))
+    weakref.finalize(v, gmsh.lib.gmshFree, ptr)
     return v
 
 
-def _ovectordouble(ptr, size: int):
-    if gmsh.use_numpy:
-        if size == 0:
-            gmsh.lib.gmshFree(ptr)
-            return numpy.ndarray((0,), numpy.float64)
-        v = numpy.ctypeslib.as_array(ptr, (size,))
-        weakref.finalize(v, gmsh.lib.gmshFree, ptr)
-    else:
-        v = [ptr[i] for i in range(size)]
+def _ovectordouble(ptr, size: int) -> NDArray[numpy.float64]:
+    if size == 0:
         gmsh.lib.gmshFree(ptr)
+        return numpy.ndarray((0,), numpy.float64)
+    v = numpy.ctypeslib.as_array(ptr, (size,))
+    weakref.finalize(v, gmsh.lib.gmshFree, ptr)
     return v
 
 
@@ -389,7 +384,7 @@ def _ovectorstring(ptr, size: int) -> list[str]:
     return v
 
 
-def _ovectorvectorint(ptr, size, n):
+def _ovectorvectorint(ptr, size, n) -> list[NDArray[numpy.int32]]:
     v = [
         _ovectorint(ctypes.pointer(ptr[i].contents), size[i])
         for i in range(n.value)
@@ -399,7 +394,7 @@ def _ovectorvectorint(ptr, size, n):
     return v
 
 
-def _ovectorvectorsize(ptr, size, n):
+def _ovectorvectorsize(ptr, size, n) -> list[NDArray[numpy.uintp]]:
     v = [
         _ovectorsize(ctypes.pointer(ptr[i].contents), size[i])
         for i in range(n.value)
@@ -409,7 +404,7 @@ def _ovectorvectorsize(ptr, size, n):
     return v
 
 
-def _ovectorvectordouble(ptr, size, n):
+def _ovectorvectordouble(ptr, size, n) -> list[NDArray[numpy.float64]]:
     v = [
         _ovectordouble(ctypes.pointer(ptr[i].contents), size[i])
         for i in range(n.value)
@@ -835,7 +830,7 @@ class model:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def list() -> list[str]:
+    def list() -> builtins.list[str]:
         """gmsh.model.list()
 
         List the names of all models.
@@ -934,7 +929,7 @@ class model:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getEntities(dim=-1) -> list[tuple[int, int]]:
+    def getEntities(dim=-1) -> builtins.list[tuple[int, int]]:
         """gmsh.model.getEntities(dim=-1)
 
         Get all the entities in the current model. A model entity is represented by
@@ -1402,7 +1397,9 @@ class model:
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
-    def getBoundingBox(dim: int, tag: int) -> tuple[float, float, float, float, float, float]:
+    def getBoundingBox(
+        dim: int, tag: int
+    ) -> tuple[float, float, float, float, float, float]:
         """gmsh.model.getBoundingBox(dim, tag)
 
         Get the bounding box (`xmin', `ymin', `zmin'), (`xmax', `ymax', `zmax') of
@@ -9896,7 +9893,9 @@ class model:
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
         @staticmethod
-        def getBoundingBox(dim: int, tag: int) -> tuple[float, float, float, float, float, float]:
+        def getBoundingBox(
+            dim: int, tag: int
+        ) -> tuple[float, float, float, float, float, float]:
             """gmsh.model.occ.getBoundingBox(dim, tag)
 
             Get the bounding box (`xmin', `ymin', `zmin'), (`xmax', `ymax', `zmax') of
