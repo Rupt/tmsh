@@ -482,7 +482,7 @@ def _ivectorpair(o):
 
 def _ivectorstring(o):
     return (ctypes.c_char_p * len(o))(
-        *(s.encode() for s in o)
+        *(s.encode() for s in o),
     ), ctypes.c_size_t(len(o))
 
 
@@ -493,7 +493,7 @@ def _ivectorvectorsize(os):
     arrays = (ctypes.POINTER(ctypes.c_size_t) * n)(
         # TODO: patch erroneous type casts
         #   https://github.com/Rupt/tmsh/issues/13
-        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_size_t)) for a in parrays)  # pyright: ignore [reportArgumentType]
+        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_size_t)) for a in parrays),  # pyright: ignore [reportArgumentType]
     )
     # TODO: avoid illegal attribute assignments
     #   https://github.com/Rupt/tmsh/issues/11
@@ -509,7 +509,7 @@ def _ivectorvectordouble(os):
     arrays = (ctypes.POINTER(ctypes.c_double) * n)(
         # TODO: patch erroneous type casts
         #   https://github.com/Rupt/tmsh/issues/13
-        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_double)) for a in parrays)  # pyright: ignore [reportArgumentType]
+        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_double)) for a in parrays),  # pyright: ignore [reportArgumentType]
     )
     # TODO: avoid illegal attribute assignments
     #   https://github.com/Rupt/tmsh/issues/11
@@ -520,7 +520,7 @@ def _ivectorvectordouble(os):
 
 def _iargcargv(o):
     return ctypes.c_int(len(o)), (ctypes.c_char_p * len(o))(
-        *(s.encode() for s in o)
+        *(s.encode() for s in o),
     )
 
 
@@ -552,7 +552,7 @@ def initialize(
     )
     if interruptible:
         gmsh.prev_interrupt_handler = signal.signal(
-            signal.SIGINT, signal.SIG_DFL
+            signal.SIGINT, signal.SIG_DFL,
         )
     if ierr.value != 0:
         raise RuntimeError(logger.getLastError())
@@ -580,7 +580,7 @@ def finalize() -> None:
         raise RuntimeError(logger.getLastError())
 
 
-def open(fileName: str) -> None:
+def open(fileName: str) -> None:  # noqa: A001
     """Open a file.
 
     Equivalent to the `File->Open' menu in the Gmsh app. Handling of the file
@@ -832,7 +832,7 @@ class model:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelAdd(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(name.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -890,7 +890,7 @@ class model:
         api_name_ = ctypes.c_char_p()
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelGetCurrent(
-            ctypes.byref(api_name_), ctypes.byref(ierr)
+            ctypes.byref(api_name_), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -909,7 +909,7 @@ class model:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelSetCurrent(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(name.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -930,7 +930,7 @@ class model:
         api_fileName_ = ctypes.c_char_p()
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelGetFileName(
-            ctypes.byref(api_fileName_), ctypes.byref(ierr)
+            ctypes.byref(api_fileName_), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -948,7 +948,7 @@ class model:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelSetFileName(
-            ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -1045,7 +1045,7 @@ class model:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelRemoveEntityName(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(name.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -1217,7 +1217,7 @@ class model:
         api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelRemovePhysicalGroups(
-            api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+            api_dimTags_, api_dimTags_n_, ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -1282,7 +1282,7 @@ class model:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelRemovePhysicalName(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(name.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -1627,7 +1627,7 @@ class model:
         """
         ierr = ctypes.c_int()
         api_result_ = gmsh.lib.gmshModelGetNumberOfPartitions(
-            ctypes.byref(ierr)
+            ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -1686,7 +1686,7 @@ class model:
         - `coord': vector of doubles
         """
         api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
-            parametricCoord
+            parametricCoord,
         )
         api_coord_, api_coord_n_ = (
             ctypes.POINTER(ctypes.c_double)(),
@@ -1730,7 +1730,7 @@ class model:
         - `derivatives': vector of doubles
         """
         api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
-            parametricCoord
+            parametricCoord,
         )
         api_derivatives_, api_derivatives_n_ = (
             ctypes.POINTER(ctypes.c_double)(),
@@ -1776,7 +1776,7 @@ class model:
         - `derivatives': vector of doubles
         """
         api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
-            parametricCoord
+            parametricCoord,
         )
         api_derivatives_, api_derivatives_n_ = (
             ctypes.POINTER(ctypes.c_double)(),
@@ -1816,7 +1816,7 @@ class model:
         - `curvatures': vector of doubles
         """
         api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
-            parametricCoord
+            parametricCoord,
         )
         api_curvatures_, api_curvatures_n_ = (
             ctypes.POINTER(ctypes.c_double)(),
@@ -1857,7 +1857,7 @@ class model:
         - `directionMin': vector of doubles
         """
         api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
-            parametricCoord
+            parametricCoord,
         )
         api_curvatureMax_, api_curvatureMax_n_ = (
             ctypes.POINTER(ctypes.c_double)(),
@@ -1917,7 +1917,7 @@ class model:
         - `normals': vector of doubles
         """
         api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
-            parametricCoord
+            parametricCoord,
         )
         api_normals_, api_normals_n_ = (
             ctypes.POINTER(ctypes.c_double)(),
@@ -1974,7 +1974,7 @@ class model:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
         return _ovectordouble(
-            api_parametricCoord_, api_parametricCoord_n_.value
+            api_parametricCoord_, api_parametricCoord_n_.value,
         )
 
     @staticmethod
@@ -2123,7 +2123,7 @@ class model:
         - `which': integer
         """
         api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
-            parametricCoord
+            parametricCoord,
         )
         api_surfaceParametricCoord_, api_surfaceParametricCoord_n_ = (
             ctypes.POINTER(ctypes.c_double)(),
@@ -2144,7 +2144,7 @@ class model:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
         return _ovectordouble(
-            api_surfaceParametricCoord_, api_surfaceParametricCoord_n_.value
+            api_surfaceParametricCoord_, api_surfaceParametricCoord_n_.value,
         )
 
     @staticmethod
@@ -2213,7 +2213,7 @@ class model:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelSetVisibilityPerWindow(
-            ctypes.c_int(value), ctypes.c_int(windowIndex), ctypes.byref(ierr)
+            ctypes.c_int(value), ctypes.c_int(windowIndex), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -2400,7 +2400,7 @@ class model:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelRemoveAttribute(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(name.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -2422,7 +2422,7 @@ class model:
             """
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshGenerate(
-                ctypes.c_int(dim), ctypes.byref(ierr)
+                ctypes.c_int(dim), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -2538,7 +2538,7 @@ class model:
             """
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshSetOrder(
-                ctypes.c_int(order), ctypes.byref(ierr)
+                ctypes.c_int(order), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -2615,7 +2615,7 @@ class model:
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshClear(
-                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -2662,7 +2662,7 @@ class model:
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshReverse(
-                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -2680,7 +2680,7 @@ class model:
             api_elementTags_, api_elementTags_n_ = _ivectorsize(elementTags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshReverseElements(
-                api_elementTags_, api_elementTags_n_, ctypes.byref(ierr)
+                api_elementTags_, api_elementTags_n_, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -2701,7 +2701,7 @@ class model:
             - `dimTags': vector of pairs of integers
             """
             api_affineTransform_, api_affineTransform_n_ = _ivectordouble(
-                affineTransform
+                affineTransform,
             )
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             ierr = ctypes.c_int()
@@ -2717,7 +2717,7 @@ class model:
 
         @staticmethod
         def getNodes(
-            dim=-1, tag=-1, includeBoundary=False, returnParametricCoord=True
+            dim=-1, tag=-1, includeBoundary=False, returnParametricCoord=True,
         ):
             """
             gmsh.model.mesh.getNodes(dim=-1, tag=-1, includeBoundary=False, returnParametricCoord=True)
@@ -2779,13 +2779,13 @@ class model:
                 _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
                 _ovectordouble(api_coord_, api_coord_n_.value),
                 _ovectordouble(
-                    api_parametricCoord_, api_parametricCoord_n_.value
+                    api_parametricCoord_, api_parametricCoord_n_.value,
                 ),
             )
 
         @staticmethod
         def getNodesByElementType(
-            elementType, tag=-1, returnParametricCoord=True
+            elementType, tag=-1, returnParametricCoord=True,
         ):
             """
             gmsh.model.mesh.getNodesByElementType(elementType, tag=-1, returnParametricCoord=True)
@@ -2834,7 +2834,7 @@ class model:
                 _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
                 _ovectordouble(api_coord_, api_coord_n_.value),
                 _ovectordouble(
-                    api_parametricCoord_, api_parametricCoord_n_.value
+                    api_parametricCoord_, api_parametricCoord_n_.value,
                 ),
             )
 
@@ -2884,7 +2884,7 @@ class model:
             return (
                 _ovectordouble(api_coord_, api_coord_n_.value),
                 _ovectordouble(
-                    api_parametricCoord_, api_parametricCoord_n_.value
+                    api_parametricCoord_, api_parametricCoord_n_.value,
                 ),
                 api_dim_.value,
                 api_tag_.value,
@@ -2907,7 +2907,7 @@ class model:
             """
             api_coord_, api_coord_n_ = _ivectordouble(coord)
             api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
-                parametricCoord
+                parametricCoord,
             )
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshSetNode(
@@ -2933,7 +2933,7 @@ class model:
             """
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshRebuildNodeCache(
-                ctypes.c_int(bool(onlyIfNecessary)), ctypes.byref(ierr)
+                ctypes.c_int(bool(onlyIfNecessary)), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -2950,7 +2950,7 @@ class model:
             """
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshRebuildElementCache(
-                ctypes.c_int(bool(onlyIfNecessary)), ctypes.byref(ierr)
+                ctypes.c_int(bool(onlyIfNecessary)), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -3013,7 +3013,7 @@ class model:
             api_maxTag_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshGetMaxNodeTag(
-                ctypes.byref(api_maxTag_), ctypes.byref(ierr)
+                ctypes.byref(api_maxTag_), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -3044,7 +3044,7 @@ class model:
             api_nodeTags_, api_nodeTags_n_ = _ivectorsize(nodeTags)
             api_coord_, api_coord_n_ = _ivectordouble(coord)
             api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
-                parametricCoord
+                parametricCoord,
             )
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshAddNodes(
@@ -3092,7 +3092,7 @@ class model:
             """
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshRelocateNodes(
-                ctypes.c_int(dim), ctypes.c_int(tag), ctypes.byref(ierr)
+                ctypes.c_int(dim), ctypes.c_int(tag), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -3158,10 +3158,10 @@ class model:
             return (
                 _ovectorint(api_elementTypes_, api_elementTypes_n_.value),
                 _ovectorvectorsize(
-                    api_elementTags_, api_elementTags_n_, api_elementTags_nn_
+                    api_elementTags_, api_elementTags_n_, api_elementTags_nn_,
                 ),
                 _ovectorvectorsize(
-                    api_nodeTags_, api_nodeTags_n_, api_nodeTags_nn_
+                    api_nodeTags_, api_nodeTags_n_, api_nodeTags_nn_,
                 ),
             )
 
@@ -3466,7 +3466,7 @@ class model:
                 api_order_.value,
                 api_numNodes_.value,
                 _ovectordouble(
-                    api_localNodeCoord_, api_localNodeCoord_n_.value
+                    api_localNodeCoord_, api_localNodeCoord_n_.value,
                 ),
                 api_numPrimaryNodes_.value,
             )
@@ -3538,7 +3538,7 @@ class model:
             api_maxTag_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshGetMaxElementTag(
-                ctypes.byref(api_maxTag_), ctypes.byref(ierr)
+                ctypes.byref(api_maxTag_), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -3546,7 +3546,7 @@ class model:
 
         @staticmethod
         def getElementQualities(
-            elementTags, qualityName="minSICN", task=0, numTasks=1
+            elementTags, qualityName="minSICN", task=0, numTasks=1,
         ):
             """
             gmsh.model.mesh.getElementQualities(elementTags, qualityName="minSICN", task=0, numTasks=1)
@@ -3593,7 +3593,7 @@ class model:
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
             return _ovectordouble(
-                api_elementsQuality_, api_elementsQuality_n_.value
+                api_elementsQuality_, api_elementsQuality_n_.value,
             )
 
         @staticmethod
@@ -3860,7 +3860,7 @@ class model:
 
         @staticmethod
         def getBasisFunctions(
-            elementType, localCoord, functionSpaceType, wantedOrientations=[]
+            elementType, localCoord, functionSpaceType, wantedOrientations=[],
         ):
             """
             gmsh.model.mesh.getBasisFunctions(elementType, localCoord, functionSpaceType, wantedOrientations=[])
@@ -3905,7 +3905,7 @@ class model:
             )
             api_numOrientations_ = ctypes.c_int()
             api_wantedOrientations_, api_wantedOrientations_n_ = _ivectorint(
-                wantedOrientations
+                wantedOrientations,
             )
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshGetBasisFunctions(
@@ -3926,14 +3926,14 @@ class model:
             return (
                 api_numComponents_.value,
                 _ovectordouble(
-                    api_basisFunctions_, api_basisFunctions_n_.value
+                    api_basisFunctions_, api_basisFunctions_n_.value,
                 ),
                 api_numOrientations_.value,
             )
 
         @staticmethod
         def getBasisFunctionsOrientation(
-            elementType, functionSpaceType, tag=-1, task=0, numTasks=1
+            elementType, functionSpaceType, tag=-1, task=0, numTasks=1,
         ):
             """
             gmsh.model.mesh.getBasisFunctionsOrientation(elementType, functionSpaceType, tag=-1, task=0, numTasks=1)
@@ -3981,7 +3981,7 @@ class model:
 
         @staticmethod
         def getBasisFunctionsOrientationForElement(
-            elementTag, functionSpaceType
+            elementTag, functionSpaceType,
         ):
             """
             gmsh.model.mesh.getBasisFunctionsOrientationForElement(elementTag, functionSpaceType)
@@ -4079,7 +4079,7 @@ class model:
             return (
                 _ovectorsize(api_edgeTags_, api_edgeTags_n_.value),
                 _ovectorint(
-                    api_edgeOrientations_, api_edgeOrientations_n_.value
+                    api_edgeOrientations_, api_edgeOrientations_n_.value,
                 ),
             )
 
@@ -4127,7 +4127,7 @@ class model:
             return (
                 _ovectorsize(api_faceTags_, api_faceTags_n_.value),
                 _ovectorint(
-                    api_faceOrientations_, api_faceOrientations_n_.value
+                    api_faceOrientations_, api_faceOrientations_n_.value,
                 ),
             )
 
@@ -4145,7 +4145,7 @@ class model:
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshCreateEdges(
-                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -4164,7 +4164,7 @@ class model:
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshCreateFaces(
-                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -4433,7 +4433,7 @@ class model:
 
         @staticmethod
         def getKeysInformation(
-            typeKeys, entityKeys, elementType, functionSpaceType
+            typeKeys, entityKeys, elementType, functionSpaceType,
         ):
             """
             gmsh.model.mesh.getKeysInformation(typeKeys, entityKeys, elementType, functionSpaceType)
@@ -4479,7 +4479,7 @@ class model:
 
         @staticmethod
         def getBarycenters(
-            elementType, tag, fast, primary, task=0, numTasks=1
+            elementType, tag, fast, primary, task=0, numTasks=1,
         ):
             """
             gmsh.model.mesh.getBarycenters(elementType, tag, fast, primary, task=0, numTasks=1)
@@ -4526,7 +4526,7 @@ class model:
 
         @staticmethod
         def getElementEdgeNodes(
-            elementType, tag=-1, primary=False, task=0, numTasks=1
+            elementType, tag=-1, primary=False, task=0, numTasks=1,
         ):
             """
             gmsh.model.mesh.getElementEdgeNodes(elementType, tag=-1, primary=False, task=0, numTasks=1)
@@ -4571,7 +4571,7 @@ class model:
 
         @staticmethod
         def getElementFaceNodes(
-            elementType, faceType, tag=-1, primary=False, task=0, numTasks=1
+            elementType, faceType, tag=-1, primary=False, task=0, numTasks=1,
         ):
             """
             gmsh.model.mesh.getElementFaceNodes(elementType, faceType, tag=-1, primary=False, task=0, numTasks=1)
@@ -4731,7 +4731,7 @@ class model:
             - `sizes': vector of doubles
             """
             api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
-                parametricCoord
+                parametricCoord,
             )
             api_sizes_, api_sizes_n_ = _ivectordouble(sizes)
             ierr = ctypes.c_int()
@@ -4779,12 +4779,12 @@ class model:
             global api_callback_
             api_callback_ = api_callback_type_(
                 lambda dim, tag, x, y, z, lc, _: callback(
-                    dim, tag, x, y, z, lc
-                )
+                    dim, tag, x, y, z, lc,
+                ),
             )
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshSetSizeCallback(
-                api_callback_, None, ctypes.byref(ierr)
+                api_callback_, None, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -4803,7 +4803,7 @@ class model:
 
         @staticmethod
         def setTransfiniteCurve(
-            tag, numNodes, meshType="Progression", coef=1.0
+            tag, numNodes, meshType="Progression", coef=1.0,
         ):
             """
             gmsh.model.mesh.setTransfiniteCurve(tag, numNodes, meshType="Progression", coef=1.)
@@ -4886,7 +4886,7 @@ class model:
 
         @staticmethod
         def setTransfiniteAutomatic(
-            dimTags=[], cornerAngle=2.35, recombine=True
+            dimTags=[], cornerAngle=2.35, recombine=True,
         ):
             """
             gmsh.model.mesh.setTransfiniteAutomatic(dimTags=[], cornerAngle=2.35, recombine=True)
@@ -5055,7 +5055,7 @@ class model:
             api_tags_, api_tags_n_ = _ivectorint(tags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshSetCompound(
-                ctypes.c_int(dim), api_tags_, api_tags_n_, ctypes.byref(ierr)
+                ctypes.c_int(dim), api_tags_, api_tags_n_, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -5075,7 +5075,7 @@ class model:
             """
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshSetOutwardOrientation(
-                ctypes.c_int(tag), ctypes.byref(ierr)
+                ctypes.c_int(tag), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -5095,7 +5095,7 @@ class model:
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshRemoveConstraints(
-                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -5340,7 +5340,7 @@ class model:
             api_tags_, api_tags_n_ = _ivectorint(tags)
             api_tagsMaster_, api_tagsMaster_n_ = _ivectorint(tagsMaster)
             api_affineTransform_, api_affineTransform_n_ = _ivectordouble(
-                affineTransform
+                affineTransform,
             )
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshSetPeriodic(
@@ -5445,13 +5445,13 @@ class model:
                 _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
                 _ovectorsize(api_nodeTagsMaster_, api_nodeTagsMaster_n_.value),
                 _ovectordouble(
-                    api_affineTransform_, api_affineTransform_n_.value
+                    api_affineTransform_, api_affineTransform_n_.value,
                 ),
             )
 
         @staticmethod
         def getPeriodicKeys(
-            elementType, functionSpaceType, tag, returnCoord=True
+            elementType, functionSpaceType, tag, returnCoord=True,
         ):
             """
             gmsh.model.mesh.getPeriodicKeys(elementType, functionSpaceType, tag, returnCoord=True)
@@ -5532,7 +5532,7 @@ class model:
                 _ovectorint(api_typeKeysMaster_, api_typeKeysMaster_n_.value),
                 _ovectorsize(api_entityKeys_, api_entityKeys_n_.value),
                 _ovectorsize(
-                    api_entityKeysMaster_, api_entityKeysMaster_n_.value
+                    api_entityKeysMaster_, api_entityKeysMaster_n_.value,
                 ),
                 _ovectordouble(api_coord_, api_coord_n_.value),
                 _ovectordouble(api_coordMaster_, api_coordMaster_n_.value),
@@ -5596,7 +5596,7 @@ class model:
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshRemoveDuplicateNodes(
-                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -5616,7 +5616,7 @@ class model:
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshRemoveDuplicateElements(
-                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -5635,7 +5635,7 @@ class model:
             """
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshSplitQuadrangles(
-                ctypes.c_double(quality), ctypes.c_int(tag), ctypes.byref(ierr)
+                ctypes.c_double(quality), ctypes.c_int(tag), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -5748,7 +5748,7 @@ class model:
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshCreateGeometry(
-                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -5780,7 +5780,10 @@ class model:
 
         @staticmethod
         def addHomologyRequest(
-            type="Homology", domainTags=[], subdomainTags=[], dims=[]
+            type="Homology",  # noqa: A002
+            domainTags=[],
+            subdomainTags=[],
+            dims=[],
         ):
             """
             gmsh.model.mesh.addHomologyRequest(type="Homology", domainTags=[], subdomainTags=[], dims=[])
@@ -5805,7 +5808,7 @@ class model:
             """
             api_domainTags_, api_domainTags_n_ = _ivectorint(domainTags)
             api_subdomainTags_, api_subdomainTags_n_ = _ivectorint(
-                subdomainTags
+                subdomainTags,
             )
             api_dims_, api_dims_n_ = _ivectorint(dims)
             ierr = ctypes.c_int()
@@ -5998,7 +6001,7 @@ class model:
                 """
                 ierr = ctypes.c_int()
                 gmsh.lib.gmshModelMeshFieldRemove(
-                    ctypes.c_int(tag), ctypes.byref(ierr)
+                    ctypes.c_int(tag), ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
                     raise RuntimeError(logger.getLastError())
@@ -6215,7 +6218,7 @@ class model:
                 """
                 ierr = ctypes.c_int()
                 gmsh.lib.gmshModelMeshFieldSetAsBackgroundMesh(
-                    ctypes.c_int(tag), ctypes.byref(ierr)
+                    ctypes.c_int(tag), ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
                     raise RuntimeError(logger.getLastError())
@@ -6232,7 +6235,7 @@ class model:
                 """
                 ierr = ctypes.c_int()
                 gmsh.lib.gmshModelMeshFieldSetAsBoundaryLayer(
-                    ctypes.c_int(tag), ctypes.byref(ierr)
+                    ctypes.c_int(tag), ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
                     raise RuntimeError(logger.getLastError())
@@ -6306,7 +6309,7 @@ class model:
 
         @staticmethod
         def addCircleArc(
-            startTag, centerTag, endTag, tag=-1, nx=0.0, ny=0.0, nz=0.0
+            startTag, centerTag, endTag, tag=-1, nx=0.0, ny=0.0, nz=0.0,
         ):
             """
             gmsh.model.geo.addCircleArc(startTag, centerTag, endTag, tag=-1, nx=0., ny=0., nz=0.)
@@ -6822,7 +6825,7 @@ class model:
 
         @staticmethod
         def extrude(
-            dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False
+            dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False,
         ):
             """
             gmsh.model.geo.extrude(dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False)
@@ -7371,7 +7374,7 @@ class model:
             """
             ierr = ctypes.c_int()
             api_result_ = gmsh.lib.gmshModelGeoGetMaxTag(
-                ctypes.c_int(dim), ctypes.byref(ierr)
+                ctypes.c_int(dim), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -7391,7 +7394,7 @@ class model:
             """
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelGeoSetMaxTag(
-                ctypes.c_int(dim), ctypes.c_int(maxTag), ctypes.byref(ierr)
+                ctypes.c_int(dim), ctypes.c_int(maxTag), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -7443,7 +7446,7 @@ class model:
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelGeoRemovePhysicalGroups(
-                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -7496,7 +7499,7 @@ class model:
 
             @staticmethod
             def setTransfiniteCurve(
-                tag, nPoints, meshType="Progression", coef=1.0
+                tag, nPoints, meshType="Progression", coef=1.0,
             ):
                 """
                 gmsh.model.geo.mesh.setTransfiniteCurve(tag, nPoints, meshType="Progression", coef=1.)
@@ -8025,7 +8028,7 @@ class model:
             api_weights_, api_weights_n_ = _ivectordouble(weights)
             api_knots_, api_knots_n_ = _ivectordouble(knots)
             api_multiplicities_, api_multiplicities_n_ = _ivectorint(
-                multiplicities
+                multiplicities,
             )
             ierr = ctypes.c_int()
             api_result_ = gmsh.lib.gmshModelOccAddBSpline(
@@ -8326,7 +8329,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addBSplineFilling(wireTag, tag=-1, type=""):
+        def addBSplineFilling(wireTag, tag=-1, type=""):  # noqa: A002
             """
             gmsh.model.occ.addBSplineFilling(wireTag, tag=-1, type="")
 
@@ -8357,7 +8360,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addBezierFilling(wireTag, tag=-1, type=""):
+        def addBezierFilling(wireTag, tag=-1, type=""):  # noqa: A002
             """
             gmsh.model.occ.addBezierFilling(wireTag, tag=-1, type="")
 
@@ -8438,10 +8441,10 @@ class model:
             api_knotsU_, api_knotsU_n_ = _ivectordouble(knotsU)
             api_knotsV_, api_knotsV_n_ = _ivectordouble(knotsV)
             api_multiplicitiesU_, api_multiplicitiesU_n_ = _ivectorint(
-                multiplicitiesU
+                multiplicitiesU,
             )
             api_multiplicitiesV_, api_multiplicitiesV_n_ = _ivectorint(
-                multiplicitiesV
+                multiplicitiesV,
             )
             api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
             ierr = ctypes.c_int()
@@ -8473,7 +8476,7 @@ class model:
 
         @staticmethod
         def addBezierSurface(
-            pointTags, numPointsU, tag=-1, wireTags=[], wire3D=False
+            pointTags, numPointsU, tag=-1, wireTags=[], wire3D=False,
         ):
             """
             gmsh.model.occ.addBezierSurface(pointTags, numPointsU, tag=-1, wireTags=[], wire3D=False)
@@ -8953,7 +8956,7 @@ class model:
             - `tag': integer
             """
             api_excludeSurfaceTags_, api_excludeSurfaceTags_n_ = _ivectorint(
-                excludeSurfaceTags
+                excludeSurfaceTags,
             )
             api_outDimTags_, api_outDimTags_n_ = (
                 ctypes.POINTER(ctypes.c_int)(),
@@ -8976,7 +8979,7 @@ class model:
 
         @staticmethod
         def extrude(
-            dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False
+            dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False,
         ):
             """
             gmsh.model.occ.extrude(dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False)
@@ -9190,7 +9193,7 @@ class model:
 
         @staticmethod
         def chamfer(
-            volumeTags, curveTags, surfaceTags, distances, removeVolume=True
+            volumeTags, curveTags, surfaceTags, distances, removeVolume=True,
         ):
             """
             gmsh.model.occ.chamfer(volumeTags, curveTags, surfaceTags, distances, removeVolume=True)
@@ -9461,7 +9464,7 @@ class model:
             - `removeTool': boolean
             """
             api_objectDimTags_, api_objectDimTags_n_ = _ivectorpair(
-                objectDimTags
+                objectDimTags,
             )
             api_toolDimTags_, api_toolDimTags_n_ = _ivectorpair(toolDimTags)
             api_outDimTags_, api_outDimTags_n_ = (
@@ -9530,7 +9533,7 @@ class model:
             - `removeTool': boolean
             """
             api_objectDimTags_, api_objectDimTags_n_ = _ivectorpair(
-                objectDimTags
+                objectDimTags,
             )
             api_toolDimTags_, api_toolDimTags_n_ = _ivectorpair(toolDimTags)
             api_outDimTags_, api_outDimTags_n_ = (
@@ -9599,7 +9602,7 @@ class model:
             - `removeTool': boolean
             """
             api_objectDimTags_, api_objectDimTags_n_ = _ivectorpair(
-                objectDimTags
+                objectDimTags,
             )
             api_toolDimTags_, api_toolDimTags_n_ = _ivectorpair(toolDimTags)
             api_outDimTags_, api_outDimTags_n_ = (
@@ -9672,7 +9675,7 @@ class model:
             - `removeTool': boolean
             """
             api_objectDimTags_, api_objectDimTags_n_ = _ivectorpair(
-                objectDimTags
+                objectDimTags,
             )
             api_toolDimTags_, api_toolDimTags_n_ = _ivectorpair(toolDimTags)
             api_outDimTags_, api_outDimTags_n_ = (
@@ -9887,7 +9890,7 @@ class model:
             """
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             api_affineTransform_, api_affineTransform_n_ = _ivectordouble(
-                affineTransform
+                affineTransform,
             )
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccAffineTransform(
@@ -10036,13 +10039,13 @@ class model:
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccConvertToNURBS(
-                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def importShapes(fileName, highestDimOnly=True, format=""):
+        def importShapes(fileName, highestDimOnly=True, format=""):  # noqa: A002
             """
             gmsh.model.occ.importShapes(fileName, highestDimOnly=True, format="")
 
@@ -10148,7 +10151,7 @@ class model:
 
         @staticmethod
         def getEntitiesInBoundingBox(
-            xmin, ymin, zmin, xmax, ymax, zmax, dim=-1
+            xmin, ymin, zmin, xmax, ymax, zmax, dim=-1,
         ):
             """
             gmsh.model.occ.getEntitiesInBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax, dim=-1)
@@ -10280,7 +10283,7 @@ class model:
             return (
                 _ovectorint(api_curveLoopTags_, api_curveLoopTags_n_.value),
                 _ovectorvectorint(
-                    api_curveTags_, api_curveTags_n_, api_curveTags_nn_
+                    api_curveTags_, api_curveTags_n_, api_curveTags_nn_,
                 ),
             )
 
@@ -10323,10 +10326,10 @@ class model:
                 raise RuntimeError(logger.getLastError())
             return (
                 _ovectorint(
-                    api_surfaceLoopTags_, api_surfaceLoopTags_n_.value
+                    api_surfaceLoopTags_, api_surfaceLoopTags_n_.value,
                 ),
                 _ovectorvectorint(
-                    api_surfaceTags_, api_surfaceTags_n_, api_surfaceTags_nn_
+                    api_surfaceTags_, api_surfaceTags_n_, api_surfaceTags_nn_,
                 ),
             )
 
@@ -10437,7 +10440,7 @@ class model:
             """
             ierr = ctypes.c_int()
             api_result_ = gmsh.lib.gmshModelOccGetMaxTag(
-                ctypes.c_int(dim), ctypes.byref(ierr)
+                ctypes.c_int(dim), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -10457,7 +10460,7 @@ class model:
             """
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccSetMaxTag(
-                ctypes.c_int(dim), ctypes.c_int(maxTag), ctypes.byref(ierr)
+                ctypes.c_int(dim), ctypes.c_int(maxTag), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -10570,7 +10573,7 @@ class view:
         """
         ierr = ctypes.c_int()
         api_result_ = gmsh.lib.gmshViewGetIndex(
-            ctypes.c_int(tag), ctypes.byref(ierr)
+            ctypes.c_int(tag), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -11008,7 +11011,14 @@ class view:
 
     @staticmethod
     def setInterpolationMatrices(
-        tag, type, d, coef, exp, dGeo=0, coefGeo=[], expGeo=[]
+        tag,
+        type,  # noqa: A002
+        d,
+        coef,
+        exp,
+        dGeo=0,
+        coefGeo=[],
+        expGeo=[],
     ):
         """
         gmsh.view.setInterpolationMatrices(tag, type, d, coef, exp, dGeo=0, coefGeo=[], expGeo=[])
@@ -11428,7 +11438,7 @@ class view:
             """
             ierr = ctypes.c_int()
             gmsh.lib.gmshViewOptionCopy(
-                ctypes.c_int(refTag), ctypes.c_int(tag), ctypes.byref(ierr)
+                ctypes.c_int(refTag), ctypes.c_int(tag), ctypes.byref(ierr),
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
@@ -11506,7 +11516,7 @@ class plugin:
         """
         ierr = ctypes.c_int()
         api_result_ = gmsh.lib.gmshPluginRun(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(name.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -11608,7 +11618,7 @@ class fltk:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshFltkAwake(
-            ctypes.c_char_p(action.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(action.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -11788,7 +11798,7 @@ class fltk:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshFltkSetCurrentWindow(
-            ctypes.c_int(windowIndex), ctypes.byref(ierr)
+            ctypes.c_int(windowIndex), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -11827,7 +11837,7 @@ class fltk:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshFltkShowContextWindow(
-            ctypes.c_int(dim), ctypes.c_int(tag), ctypes.byref(ierr)
+            ctypes.c_int(dim), ctypes.c_int(tag), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -11844,7 +11854,7 @@ class fltk:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshFltkOpenTreeItem(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(name.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -11861,7 +11871,7 @@ class fltk:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshFltkCloseTreeItem(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(name.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -12018,7 +12028,7 @@ class parser:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshParserClear(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(name.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -12035,7 +12045,7 @@ class parser:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshParserParse(
-            ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -12047,7 +12057,7 @@ class onelab:
     """
 
     @staticmethod
-    def set(data, format="json"):
+    def set(data, format="json"):  # noqa: A002
         """
         gmsh.onelab.set(data, format="json")
 
@@ -12067,7 +12077,7 @@ class onelab:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def get(name="", format="json"):
+    def get(name="", format="json"):  # noqa: A002
         """
         gmsh.onelab.get(name="", format="json")
 
@@ -12243,7 +12253,7 @@ class onelab:
         """
         ierr = ctypes.c_int()
         api_result_ = gmsh.lib.gmshOnelabGetChanged(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(name.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -12282,7 +12292,7 @@ class onelab:
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshOnelabClear(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            ctypes.c_char_p(name.encode()), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
@@ -12464,7 +12474,7 @@ class logger:
         api_error_ = ctypes.c_char_p()
         ierr = ctypes.c_int()
         gmsh.lib.gmshLoggerGetLastError(
-            ctypes.byref(api_error_), ctypes.byref(ierr)
+            ctypes.byref(api_error_), ctypes.byref(ierr),
         )
         if ierr.value != 0:
             raise RuntimeError("Could not get last error")

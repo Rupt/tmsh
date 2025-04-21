@@ -26,9 +26,32 @@ line-length = 79
 output-format = "concise"
 
 [tool.ruff.lint]
-select = ["I", "E", "F"]
+select = [
+    "ERA",
+    "YTT",
+    "ANN401",
+    "S",
+    "BLE",
+    "FBT",
+    "B",
+    "A",
+    "COM",
+    "I",
+    "E",
+    "F",
+]
 ignore = [
-    "E501", # Line too long
+    "E501",
+    "ANN001",
+    "ANN002",
+    "ANN003",
+    "ANN201",
+    "ANN202",
+    "ANN204",
+    "ANN205",
+    "ANN206",
+    "FBT002",
+    "B006",
 ]
 dummy-variable-rgx = "^_$"
 
