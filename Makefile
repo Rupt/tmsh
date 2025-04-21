@@ -14,3 +14,18 @@ lint: .venv/.tombstone
 	-.venv/bin/python -m ruff check
 	-.venv/bin/python -m pyright src tests
 	-.venv/bin/python -m mypy src tests
+
+# TODO: use the dev group once pip (25.1) releases support
+# 	e.g. `.venv/bin/pip install --upgrade --group dev`
+.PHONY: upgrade
+upgrade: .venv/.tombstone
+	.venv/bin/pip install --upgrade \
+		'build >=1.2.2.post1' \
+		'mypy >=1.15.0' \
+		'pip >=25.0.1' \
+		'pyright >=1.1.399' \
+		'ruff >=0.11.6' \
+		'setuptools >=79.0.0'
+	.venv/bin/pip freeze > dev-requirements.txt
+# TODO: automate changing the absolute path to `tmsh` to relative `./tmsh`
+#	or remove it entirely?
