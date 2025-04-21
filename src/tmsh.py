@@ -1179,7 +1179,7 @@ class model:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setPhysicalName(dim, tag, name):
+    def setPhysicalName(dim: int, tag: int, name: str) -> None:
         """gmsh.model.setPhysicalName(dim, tag, name)
 
         Set the name of the physical group of dimension `dim' and tag `tag'.
@@ -1225,7 +1225,7 @@ class model:
         return _ostring(api_name_)
 
     @staticmethod
-    def removePhysicalName(name: str):
+    def removePhysicalName(name: str) -> None:
         """gmsh.model.removePhysicalName(name)
 
         Remove the physical name `name' from the current model.
@@ -1241,7 +1241,7 @@ class model:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setTag(dim, tag, newTag):
+    def setTag(dim: int, tag: int, newTag: int) -> None:
         """gmsh.model.setTag(dim, tag, newTag)
 
         Set the tag of the entity of dimension `dim' and tag `tag' to the new value
@@ -1263,7 +1263,7 @@ class model:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getBoundary(dimTags, combined=True, oriented=True, recursive=False):
+    def getBoundary(dimTags, *, combined: bool=True, oriented: bool=True, recursive: bool=False):
         """gmsh.model.getBoundary(dimTags, combined=True, oriented=True, recursive=False)
 
         Get the boundary of the model entities `dimTags', given as a vector of
@@ -1304,7 +1304,7 @@ class model:
         return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
     @staticmethod
-    def getAdjacencies(dim: int, tag: int):
+    def getAdjacencies(dim: int, tag: int) -> tuple[NDArray[numpy.int32], NDArray[numpy.int32]]:
         """gmsh.model.getAdjacencies(dim, tag)
 
         Get the upward and downward adjacencies of the model entity of dimension
@@ -1346,7 +1346,7 @@ class model:
         )
 
     @staticmethod
-    def getEntitiesInBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax, dim=-1):
+    def getEntitiesInBoundingBox(xmin: float, ymin: float, zmin: float, xmax: float, ymax: float, zmax: float, dim: int=-1):
         """gmsh.model.getEntitiesInBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax, dim=-1)
 
         Get the model entities in the bounding box defined by the two points
@@ -1453,7 +1453,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def addDiscreteEntity(dim, tag=-1, boundary=[]):
+    def addDiscreteEntity(dim: int, tag: int=-1, boundary=[]):
         """gmsh.model.addDiscreteEntity(dim, tag=-1, boundary=[])
 
         Add a discrete model entity (defined by a mesh) of dimension `dim' in the
@@ -1483,7 +1483,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def removeEntities(dimTags, recursive=False):
+    def removeEntities(dimTags, *, recursive: bool=False) -> None:
         """gmsh.model.removeEntities(dimTags, recursive=False)
 
         Remove the entities `dimTags' (given as a vector of (dim, tag) pairs) of
@@ -1578,7 +1578,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def getPartitions(dim: int, tag: int):
+    def getPartitions(dim: int, tag: int)-> NDArray[numpy.int32]:
         """gmsh.model.getPartitions(dim, tag)
 
         In a partitioned model, return the tags of the partition(s) to which the
@@ -1608,7 +1608,7 @@ class model:
         return _ovectorint(api_partitions_, api_partitions_n_.value)
 
     @staticmethod
-    def getValue(dim, tag, parametricCoord):
+    def getValue(dim: int, tag: int, parametricCoord)-> NDArray[numpy.float64]:
         """gmsh.model.getValue(dim, tag, parametricCoord)
 
         Evaluate the parametrization of the entity of dimension `dim' and tag `tag'
@@ -1649,7 +1649,7 @@ class model:
         return _ovectordouble(api_coord_, api_coord_n_.value)
 
     @staticmethod
-    def getDerivative(dim, tag, parametricCoord):
+    def getDerivative(dim: int, tag: int, parametricCoord)-> NDArray[numpy.float64]:
         """gmsh.model.getDerivative(dim, tag, parametricCoord)
 
         Evaluate the derivative of the parametrization of the entity of dimension
@@ -1692,7 +1692,7 @@ class model:
         return _ovectordouble(api_derivatives_, api_derivatives_n_.value)
 
     @staticmethod
-    def getSecondDerivative(dim, tag, parametricCoord):
+    def getSecondDerivative(dim: int, tag: int, parametricCoord)-> NDArray[numpy.float64]:
         """gmsh.model.getSecondDerivative(dim, tag, parametricCoord)
 
         Evaluate the second derivative of the parametrization of the entity of
