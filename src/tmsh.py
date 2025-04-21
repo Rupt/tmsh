@@ -1056,7 +1056,7 @@ class model:
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
-    def getEntitiesForPhysicalGroup(dim, tag):
+    def getEntitiesForPhysicalGroup(dim: int, tag: int):
         """gmsh.model.getEntitiesForPhysicalGroup(dim, tag)
 
         Get the tags of the model entities making up the physical group of
@@ -1114,7 +1114,7 @@ class model:
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
-    def getPhysicalGroupsForEntity(dim, tag):
+    def getPhysicalGroupsForEntity(dim: int, tag: int):
         """gmsh.model.getPhysicalGroupsForEntity(dim, tag)
 
         Get the tags of the physical groups (if any) to which the model entity of
@@ -1214,7 +1214,7 @@ class model:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getPhysicalName(dim, tag):
+    def getPhysicalName(dim: int, tag: int) -> str:
         """gmsh.model.getPhysicalName(dim, tag)
 
         Get the name of the physical group of dimension `dim' and tag `tag'.
@@ -1318,7 +1318,7 @@ class model:
         return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
     @staticmethod
-    def getAdjacencies(dim, tag):
+    def getAdjacencies(dim: int, tag: int):
         """gmsh.model.getAdjacencies(dim, tag)
 
         Get the upward and downward adjacencies of the model entity of dimension
@@ -1402,7 +1402,7 @@ class model:
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
-    def getBoundingBox(dim, tag):
+    def getBoundingBox(dim: int, tag: int) -> tuple[float, float, float, float, float, float]:
         """gmsh.model.getBoundingBox(dim, tag)
 
         Get the bounding box (`xmin', `ymin', `zmin'), (`xmax', `ymax', `zmax') of
@@ -1519,7 +1519,7 @@ class model:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getType(dim, tag):
+    def getType(dim: int, tag: int) -> str:
         """gmsh.model.getType(dim, tag)
 
         Get the type of the entity of dimension `dim' and tag `tag'.
@@ -1544,7 +1544,7 @@ class model:
         return _ostring(api_entityType_)
 
     @staticmethod
-    def getParent(dim, tag):
+    def getParent(dim: int, tag: int) -> tuple[int, int]:
         """gmsh.model.getParent(dim, tag)
 
         In a partitioned model, get the parent of the entity of dimension `dim' and
@@ -1590,7 +1590,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def getPartitions(dim, tag):
+    def getPartitions(dim: int, tag: int):
         """gmsh.model.getPartitions(dim, tag)
 
         In a partitioned model, return the tags of the partition(s) to which the
@@ -1926,7 +1926,7 @@ class model:
         )
 
     @staticmethod
-    def getParametrizationBounds(dim, tag):
+    def getParametrizationBounds(dim: int, tag: int):
         """gmsh.model.getParametrizationBounds(dim, tag)
 
         Get the `min' and `max' bounds of the parametric coordinates for the entity
@@ -2117,7 +2117,7 @@ class model:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getVisibility(dim, tag):
+    def getVisibility(dim: int, tag: int) -> int:
         """gmsh.model.getVisibility(dim, tag)
 
         Get the visibility of the model entity of dimension `dim' and tag `tag'.
@@ -2192,7 +2192,7 @@ class model:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getColor(dim, tag):
+    def getColor(dim: int, tag: int) -> tuple[int, int, int, int]:
         """gmsh.model.getColor(dim, tag)
 
         Get the color of the model entity of dimension `dim' and tag `tag'. If no
@@ -2868,7 +2868,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getNodesForPhysicalGroup(dim, tag):
+        def getNodesForPhysicalGroup(dim: int, tag: int):
             """gmsh.model.mesh.getNodesForPhysicalGroup(dim, tag)
 
             Get the nodes from all the elements belonging to the physical group of
@@ -4490,7 +4490,7 @@ class model:
             return _ovectorsize(api_nodeTags_, api_nodeTags_n_.value)
 
         @staticmethod
-        def getGhostElements(dim, tag):
+        def getGhostElements(dim: int, tag: int):
             """gmsh.model.mesh.getGhostElements(dim, tag)
 
             Get the ghost elements `elementTags' and their associated `partitions'
@@ -5009,7 +5009,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getEmbedded(dim, tag):
+        def getEmbedded(dim: int, tag: int):
             """gmsh.model.mesh.getEmbedded(dim, tag)
 
             Get the entities (if any) embedded in the model entity of dimension `dim'
@@ -9896,7 +9896,7 @@ class model:
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
         @staticmethod
-        def getBoundingBox(dim, tag):
+        def getBoundingBox(dim: int, tag: int) -> tuple[float, float, float, float, float, float]:
             """gmsh.model.occ.getBoundingBox(dim, tag)
 
             Get the bounding box (`xmin', `ymin', `zmin'), (`xmax', `ymax', `zmax') of
@@ -10032,7 +10032,7 @@ class model:
             )
 
         @staticmethod
-        def getMass(dim, tag):
+        def getMass(dim: int, tag: int) -> float:
             """gmsh.model.occ.getMass(dim, tag)
 
             Get the mass of the OpenCASCADE entity of dimension `dim' and tag `tag'. If
@@ -10059,7 +10059,7 @@ class model:
             return api_mass_.value
 
         @staticmethod
-        def getCenterOfMass(dim, tag):
+        def getCenterOfMass(dim: int, tag: int) -> tuple[float, float, float]:
             """gmsh.model.occ.getCenterOfMass(dim, tag)
 
             Get the center of mass of the OpenCASCADE entity of dimension `dim' and tag
@@ -10091,7 +10091,7 @@ class model:
             return (api_x_.value, api_y_.value, api_z_.value)
 
         @staticmethod
-        def getMatrixOfInertia(dim, tag):
+        def getMatrixOfInertia(dim: int, tag: int):
             """gmsh.model.occ.getMatrixOfInertia(dim, tag)
 
             Get the matrix of inertia (by row) of the OpenCASCADE entity of dimension
@@ -11460,7 +11460,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def showContextWindow(dim, tag):
+    def showContextWindow(dim: int, tag: int) -> None:
         """gmsh.fltk.showContextWindow(dim, tag)
 
         Show context window for the entity of dimension `dim' and tag `tag'.
