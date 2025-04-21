@@ -312,7 +312,7 @@
 #
 # End of Gmsh license
 
-"""Type-annotated and linted Gmsh Python interface"""
+"""Type-annotated and linted Python interface for Gmsh"""
 
 from ctypes import *
 from ctypes.util import find_library
@@ -321,10 +321,10 @@ import os
 import platform
 from math import pi
 
-GMSH_API_VERSION = "4.14.0"
+GMSH_API_VERSION = "4.13.1"
 GMSH_API_VERSION_MAJOR = 4
-GMSH_API_VERSION_MINOR = 14
-GMSH_API_VERSION_PATCH = 0
+GMSH_API_VERSION_MINOR = 13
+GMSH_API_VERSION_PATCH = 1
 
 __version__ = GMSH_API_VERSION
 
@@ -333,28 +333,25 @@ parentdir1 = os.path.dirname(moduledir)
 parentdir2 = os.path.dirname(parentdir1)
 
 if platform.system() == "Windows":
-    libname = "gmsh-4.14.dll"
+    libname = "gmsh-4.13.dll"
 elif platform.system() == "Darwin":
-    libname = "libgmsh.4.14.dylib"
+    libname = "libgmsh.4.13.dylib"
 else:
-    libname = "libgmsh.so.4.14"
+    libname = "libgmsh.so.4.13"
 
 # Searching lib in various subfolders
 libpath = None
 possible_libpaths = [os.path.join(moduledir, libname),
                      os.path.join(moduledir, "lib", libname),
                      os.path.join(moduledir, "Lib", libname),
-                     os.path.join(moduledir, "bin", libname),
                      # first parent dir
                      os.path.join(parentdir1, libname),
                      os.path.join(parentdir1, "lib", libname),
                      os.path.join(parentdir1, "Lib", libname),
-                     os.path.join(parentdir1, "bin", libname),
                      # second parent dir
                      os.path.join(parentdir2, libname),
                      os.path.join(parentdir2, "lib", libname),
-                     os.path.join(parentdir2, "Lib", libname),
-                     os.path.join(parentdir2, "bin", libname)
+                     os.path.join(parentdir2, "Lib", libname)
                      ]
 
 for libpath_to_look in possible_libpaths:
@@ -365,7 +362,7 @@ for libpath_to_look in possible_libpaths:
 # if we couldn't find it, use ctype's find_library utility...
 if not libpath:
     if platform.system() == "Windows":
-        libpath = find_library("gmsh-4.14")
+        libpath = find_library("gmsh-4.11")
         if not libpath:
             libpath = find_library("gmsh")
     else:
@@ -1581,38 +1578,11 @@ class model:
     remove_entities = removeEntities
 
     @staticmethod
-    def getEntityType(dim, tag):
-        """
-        gmsh.model.getEntityType(dim, tag)
-
-        Get the type of the entity of dimension `dim' and tag `tag'.
-
-        Return `entityType'.
-
-        Types:
-        - `dim': integer
-        - `tag': integer
-        - `entityType': string
-        """
-        api_entityType_ = c_char_p()
-        ierr = c_int()
-        lib.gmshModelGetEntityType(
-            c_int(dim),
-            c_int(tag),
-            byref(api_entityType_),
-            byref(ierr))
-        if ierr.value != 0:
-            raise Exception(logger.getLastError())
-        return _ostring(api_entityType_)
-    get_entity_type = getEntityType
-
-    @staticmethod
     def getType(dim, tag):
         """
         gmsh.model.getType(dim, tag)
 
-        Get the type of the entity of dimension `dim' and tag `tag'. (This is a
-        deprecated synonym for `getType'.)
+        Get the type of the entity of dimension `dim' and tag `tag'.
 
         Return `entityType'.
 
@@ -1632,37 +1602,6 @@ class model:
             raise Exception(logger.getLastError())
         return _ostring(api_entityType_)
     get_type = getType
-
-    @staticmethod
-    def getEntityProperties(dim, tag):
-        """
-        gmsh.model.getEntityProperties(dim, tag)
-
-        Get the properties of the entity of dimension `dim' and tag `tag'.
-
-        Return `integers', `reals'.
-
-        Types:
-        - `dim': integer
-        - `tag': integer
-        - `integers': vector of integers
-        - `reals': vector of doubles
-        """
-        api_integers_, api_integers_n_ = POINTER(c_int)(), c_size_t()
-        api_reals_, api_reals_n_ = POINTER(c_double)(), c_size_t()
-        ierr = c_int()
-        lib.gmshModelGetEntityProperties(
-            c_int(dim),
-            c_int(tag),
-            byref(api_integers_), byref(api_integers_n_),
-            byref(api_reals_), byref(api_reals_n_),
-            byref(ierr))
-        if ierr.value != 0:
-            raise Exception(logger.getLastError())
-        return (
-            _ovectorint(api_integers_, api_integers_n_.value),
-            _ovectordouble(api_reals_, api_reals_n_.value))
-    get_entity_properties = getEntityProperties
 
     @staticmethod
     def getParent(dim, tag):
@@ -6261,11 +6200,10 @@ class model:
             Add a `geometry' in the built-in CAD representation. `geometry' can
             currently be one of "Sphere" or "PolarSphere" (where `numbers' should
             contain the x, y, z coordinates of the center, followed by the radius), or
-            "ParametricSurface" (where `strings' should contains three expression
-            evaluating to the x, y and z coordinates in terms of parametric coordinates
-            u and v). If `tag' is positive, set the tag of the geometry explicitly;
-            otherwise a new tag is selected automatically. Return the tag of the
-            geometry.
+            "Parametric" (where `strings' should contains three expression evaluating
+            to the x, y and z coordinates. If `tag' is positive, set the tag of the
+            geometry explicitly; otherwise a new tag is selected automatically. Return
+            the tag of the geometry.
 
             Return an integer.
 
@@ -6657,8 +6595,8 @@ class model:
 
             Mirror the entities `dimTags' (given as a vector of (dim, tag) pairs) in
             the built-in CAD representation, with respect to the plane of equation `a'
-            * x + `b' * y + `c' * z + `d' = 0. (This is a deprecated synonym for
-            `mirror'.)
+            * x + `b' * y + `c' * z + `d' = 0. (This is a synonym for `mirror', which
+            will be deprecated in a future release.)
 
             Types:
             - `dimTags': vector of pairs of integers
@@ -6749,8 +6687,8 @@ class model:
 
             Split the curve of tag `tag' in the built-in CAD representation, on the
             specified control points `pointTags'. This feature is only available for
-            splines and b-splines. Return the tag(s) `curveTags' of the newly created
-            curve(s).
+            lines, splines and b-splines. Return the tag(s) `curveTags' of the newly
+            created curve(s).
 
             Return `curveTags'.
 
@@ -8512,16 +8450,13 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def fillet2D(edgeTag1, edgeTag2, radius, tag=-1, pointTag=-1, reverse=False):
+        def fillet2D(edgeTag1, edgeTag2, radius, tag=-1):
             """
-            gmsh.model.occ.fillet2D(edgeTag1, edgeTag2, radius, tag=-1, pointTag=-1, reverse=False)
+            gmsh.model.occ.fillet2D(edgeTag1, edgeTag2, radius, tag=-1)
 
             Create a fillet edge between edges `edgeTag1' and `edgeTag2' with radius
             `radius'. The modifed edges keep their tag. If `tag' is positive, set the
-            tag explicitly; otherwise a new tag is selected automatically. If
-            `pointTag' is positive, set the point on the edge at which the fillet is
-            created. If `reverse' is set, the normal of the plane through the two
-            planes is reversed before the fillet is created.
+            tag explicitly; otherwise a new tag is selected automatically.
 
             Return an integer.
 
@@ -8530,8 +8465,6 @@ class model:
             - `edgeTag2': integer
             - `radius': double
             - `tag': integer
-            - `pointTag': integer
-            - `reverse': boolean
             """
             ierr = c_int()
             api_result_ = lib.gmshModelOccFillet2D(
@@ -8539,8 +8472,6 @@ class model:
                 c_int(edgeTag2),
                 c_double(radius),
                 c_int(tag),
-                c_int(pointTag),
-                c_int(bool(reverse)),
                 byref(ierr))
             if ierr.value != 0:
                 raise Exception(logger.getLastError())
