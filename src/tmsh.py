@@ -803,7 +803,7 @@ class model:
     """Model functions"""
 
     @staticmethod
-    def add(name) -> None:
+    def add(name: str) -> None:
         """gmsh.model.add(name)
 
         Add a new model, with name `name', and set it as the current model.
@@ -875,7 +875,7 @@ class model:
         return _ostring(api_name_)
 
     @staticmethod
-    def setCurrent(name) -> None:
+    def setCurrent(name: str) -> None:
         """gmsh.model.setCurrent(name)
 
         Set the current model to the model with name `name'. If several models have
@@ -913,7 +913,7 @@ class model:
         return _ostring(api_fileName_)
 
     @staticmethod
-    def setFileName(fileName) -> None:
+    def setFileName(fileName: str) -> None:
         """gmsh.model.setFileName(fileName)
 
         Set the file name associated with the current model.
@@ -1081,7 +1081,7 @@ class model:
         return _ovectorint(api_tags_, api_tags_n_.value)
 
     @staticmethod
-    def getEntitiesForPhysicalName(name):
+    def getEntitiesForPhysicalName(name: str):
         """gmsh.model.getEntitiesForPhysicalName(name)
 
         Get the model entities (as a vector (dim, tag) pairs) making up the
@@ -1234,7 +1234,7 @@ class model:
         return _ostring(api_name_)
 
     @staticmethod
-    def removePhysicalName(name):
+    def removePhysicalName(name: str):
         """gmsh.model.removePhysicalName(name)
 
         Remove the physical name `name' from the current model.
@@ -2269,7 +2269,7 @@ class model:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getAttribute(name):
+    def getAttribute(name: str):
         """gmsh.model.getAttribute(name)
 
         Get the values of the attribute with name `name'.
@@ -2321,7 +2321,7 @@ class model:
         return _ovectorstring(api_names_, api_names_n_.value)
 
     @staticmethod
-    def removeAttribute(name):
+    def removeAttribute(name: str):
         """gmsh.model.removeAttribute(name)
 
         Remove the attribute with name `name'.
@@ -10996,7 +10996,7 @@ class view:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getString(tag, name):
+        def getString(tag: int, name: str) -> str:
             """gmsh.view.option.getString(tag, name)
 
             Get the `value' of the string option `name' for the view with tag `tag'.
@@ -11021,7 +11021,9 @@ class view:
             return _ostring(api_value_)
 
         @staticmethod
-        def setColor(tag, name, r, g, b, a=255):
+        def setColor(
+            tag: int, name: str, *, r: int, g: int, b: int, a: int = 255
+        ) -> None:
             """gmsh.view.option.setColor(tag, name, r, g, b, a=255)
 
             Set the color option `name' to the RGBA value (`r', `g', `b', `a') for the
@@ -11050,7 +11052,7 @@ class view:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getColor(tag, name):
+        def getColor(tag: int, name: str) -> tuple[int, int, int, int]:
             """gmsh.view.option.getColor(tag, name)
 
             Get the `r', `g', `b', `a' value of the color option `name' for the view
@@ -11085,7 +11087,7 @@ class view:
             return (api_r_.value, api_g_.value, api_b_.value, api_a_.value)
 
         @staticmethod
-        def copy(refTag, tag):
+        def copy(refTag: int, tag: int) -> None:
             """gmsh.view.option.copy(refTag, tag)
 
             Copy the options from the view with tag `refTag' to the view with tag
@@ -11107,7 +11109,7 @@ class plugin:
     """Plugin functions"""
 
     @staticmethod
-    def setNumber(name, option, value):
+    def setNumber(name: str, option: str, value: float) -> None:
         """gmsh.plugin.setNumber(name, option, value)
 
         Set the numerical option `option' to the value `value' for plugin `name'.
@@ -11131,7 +11133,7 @@ class plugin:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setString(name, option, value):
+    def setString(name: str, option: str, value: str) -> None:
         """gmsh.plugin.setString(name, option, value)
 
         Set the string option `option' to the value `value' for plugin `name'.
@@ -11155,7 +11157,7 @@ class plugin:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def run(name):
+    def run(name: str):
         """gmsh.plugin.run(name)
 
         Run the plugin `name'. Return the tag of the created view (if any). Plugins
@@ -11181,7 +11183,7 @@ class graphics:
     """Graphics functions"""
 
     @staticmethod
-    def draw():
+    def draw() -> None:
         """gmsh.graphics.draw()
 
         Draw all the OpenGL scenes.
@@ -11196,7 +11198,7 @@ class fltk:
     """FLTK graphical user interface functions"""
 
     @staticmethod
-    def initialize():
+    def initialize() -> None:
         """gmsh.fltk.initialize()
 
         Create the FLTK graphical user interface. Can only be called in the main
@@ -11208,7 +11210,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def finalize():
+    def finalize() -> None:
         """gmsh.fltk.finalize()
 
         Close the FLTK graphical user interface. Can only be called in the main
@@ -11220,7 +11222,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def wait(time=-1.0):
+    def wait(time: float = -1.0) -> None:
         """gmsh.fltk.wait(time=-1.)
 
         Wait at most `time' seconds for user interface events and return. If `time'
@@ -11236,7 +11238,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def update():
+    def update() -> None:
         """gmsh.fltk.update()
 
         Update the user interface (potentially creating new widgets and windows).
@@ -11250,7 +11252,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def awake(action=""):
+    def awake(action: str = "") -> None:
         """gmsh.fltk.awake(action="")
 
         Awake the main user interface thread and process pending events, and
@@ -11268,7 +11270,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def lock():
+    def lock() -> None:
         """gmsh.fltk.lock()
 
         Block the current thread until it can safely modify the user interface.
@@ -11279,7 +11281,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def unlock():
+    def unlock() -> None:
         """gmsh.fltk.unlock()
 
         Release the lock that was set using lock.
@@ -11290,7 +11292,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def run():
+    def run() -> None:
         """gmsh.fltk.run()
 
         Run the event loop of the graphical user interface, i.e. repeatedly call
@@ -11400,7 +11402,7 @@ class fltk:
         return (api_result_, _ovectorint(api_viewTags_, api_viewTags_n_.value))
 
     @staticmethod
-    def splitCurrentWindow(how="v", ratio=0.5):
+    def splitCurrentWindow(how="v", ratio=0.5) -> None:
         """gmsh.fltk.splitCurrentWindow(how="v", ratio=0.5)
 
         Split the current window horizontally (if `how' == "h") or vertically (if
@@ -11421,7 +11423,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setCurrentWindow(windowIndex=0):
+    def setCurrentWindow(windowIndex=0) -> None:
         """gmsh.fltk.setCurrentWindow(windowIndex=0)
 
         Set the current window by speficying its index (starting at 0) in the list
@@ -11439,7 +11441,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setStatusMessage(message, graphics=False):
+    def setStatusMessage(message, graphics=False) -> None:
         """gmsh.fltk.setStatusMessage(message, graphics=False)
 
         Set a status message in the current window. If `graphics' is set, display
@@ -11476,7 +11478,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def openTreeItem(name):
+    def openTreeItem(name: str) -> None:
         """gmsh.fltk.openTreeItem(name)
 
         Open the `name' item in the menu tree.
@@ -11492,7 +11494,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def closeTreeItem(name):
+    def closeTreeItem(name: str) -> None:
         """gmsh.fltk.closeTreeItem(name)
 
         Close the `name' item in the menu tree.
@@ -11512,7 +11514,7 @@ class parser:
     """Parser functions"""
 
     @staticmethod
-    def getNames(search=""):
+    def getNames(search: str = "") -> list[str]:
         """gmsh.parser.getNames(search="")
 
         Get the names of the variables in the Gmsh parser matching the `search'
@@ -11540,7 +11542,7 @@ class parser:
         return _ovectorstring(api_names_, api_names_n_.value)
 
     @staticmethod
-    def setNumber(name, value):
+    def setNumber(name: str, value: float) -> None:
         """gmsh.parser.setNumber(name, value)
 
         Set the value of the number variable `name' in the Gmsh parser. Create the
@@ -11562,7 +11564,7 @@ class parser:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setString(name, value):
+    def setString(name: str, value: Sequence[str]) -> None:
         """gmsh.parser.setString(name, value)
 
         Set the value of the string variable `name' in the Gmsh parser. Create the
@@ -11584,7 +11586,7 @@ class parser:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getNumber(name):
+    def getNumber(name: str) -> NDArray[numpy.float64]:
         """gmsh.parser.getNumber(name)
 
         Get the value of the number variable `name' from the Gmsh parser. Return an
@@ -11612,7 +11614,7 @@ class parser:
         return _ovectordouble(api_value_, api_value_n_.value)
 
     @staticmethod
-    def getString(name):
+    def getString(name: str) -> list[str]:
         """gmsh.parser.getString(name)
 
         Get the value of the string variable `name' from the Gmsh parser. Return an
@@ -11640,7 +11642,7 @@ class parser:
         return _ovectorstring(api_value_, api_value_n_.value)
 
     @staticmethod
-    def clear(name=""):
+    def clear(name: str = "") -> None:
         """gmsh.parser.clear(name="")
 
         Clear all the Gmsh parser variables, or remove a single variable if `name'
@@ -11657,7 +11659,7 @@ class parser:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def parse(fileName):
+    def parse(fileName: str) -> None:
         """gmsh.parser.parse(fileName)
 
         Parse the file `fileName' with the Gmsh parser.
@@ -11796,7 +11798,7 @@ class onelab:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getNumber(name):
+    def getNumber(name: str):
         """gmsh.onelab.getNumber(name)
 
         Get the value of the number parameter `name' from the ONELAB database.
@@ -11824,7 +11826,7 @@ class onelab:
         return _ovectordouble(api_value_, api_value_n_.value)
 
     @staticmethod
-    def getString(name):
+    def getString(name: str):
         """gmsh.onelab.getString(name)
 
         Get the value of the string parameter `name' from the ONELAB database.
@@ -11852,7 +11854,7 @@ class onelab:
         return _ovectorstring(api_value_, api_value_n_.value)
 
     @staticmethod
-    def getChanged(name):
+    def getChanged(name: str):
         """gmsh.onelab.getChanged(name)
 
         Check if any parameters in the ONELAB database used by the client `name'
