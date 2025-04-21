@@ -26,5 +26,6 @@ upgrade: .venv/.tombstone
 		'mypy >=1.15.0' \
 		'pyright >=1.1.399' \
 		'ruff >=0.11.6' \
-		'setuptools >=79.0.0'
+		'setuptools >=79.0.0' \
+		'twine >=6.1.0'
 	.venv/bin/pip freeze | grep -v tmsh > requirements.txt
