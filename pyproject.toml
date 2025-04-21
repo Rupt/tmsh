@@ -41,3 +41,8 @@ line-ending = "lf"
 include = ["src", "tests"]
 typeCheckingMode = "standard"
 useLibraryCodeForTypes = false
+
+[tool.mypy]
+files = ["src/*.py", "tests/*.py"]
+disable_error_code = "import-untyped"
+color_output = false

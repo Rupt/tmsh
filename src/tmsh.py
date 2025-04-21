@@ -428,7 +428,9 @@ def _ivectorint(o):
         if len(o) and array.ndim != 1:
             raise ValueError("Invalid data for input vector of integers")
         ct = array.ctypes
-        ct.array = array
+        # TODO: avoid illegal attribute assignments
+        #   https://github.com/Rupt/tmsh/issues/11
+        ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
         return ct, ctypes.c_size_t(len(o))
     else:
         return (ctypes.c_int * len(o))(*o), ctypes.c_size_t(len(o))
@@ -440,7 +442,9 @@ def _ivectorsize(o):
         if len(o) and array.ndim != 1:
             raise ValueError("Invalid data for input vector of sizes")
         ct = array.ctypes
-        ct.array = array
+        # TODO: avoid illegal attribute assignments
+        #   https://github.com/Rupt/tmsh/issues/11
+        ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
         return ct, ctypes.c_size_t(len(o))
     else:
         return (ctypes.c_size_t * len(o))(*o), ctypes.c_size_t(len(o))
@@ -452,7 +456,9 @@ def _ivectordouble(o):
         if len(o) and array.ndim != 1:
             raise ValueError("Invalid data for input vector of doubles")
         ct = array.ctypes
-        ct.array = array
+        # TODO: avoid illegal attribute assignments
+        #   https://github.com/Rupt/tmsh/issues/11
+        ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
         return ct, ctypes.c_size_t(len(o))
     else:
         return (ctypes.c_double * len(o))(*o), ctypes.c_size_t(len(o))
@@ -464,7 +470,9 @@ def _ivectorpair(o):
         if len(o) and (array.ndim != 2 or array.shape[1] != 2):
             raise ValueError("Invalid data for input vector of pairs")
         ct = array.ctypes
-        ct.array = array
+        # TODO: avoid illegal attribute assignments
+        #   https://github.com/Rupt/tmsh/issues/11
+        ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
         return ct, ctypes.c_size_t(len(o) * 2)
     else:
         if len(o) and len(o[0]) != 2:
@@ -483,9 +491,13 @@ def _ivectorvectorsize(os):
     parrays = [_ivectorsize(o) for o in os]
     sizes = (ctypes.c_size_t * n)(*(a[1] for a in parrays))
     arrays = (ctypes.POINTER(ctypes.c_size_t) * n)(
-        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_size_t)) for a in parrays)
+        # TODO: patch erroneous type casts
+        #   https://github.com/Rupt/tmsh/issues/13
+        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_size_t)) for a in parrays)  # pyright: ignore [reportArgumentType]
     )
-    arrays.ref = [a[0] for a in parrays]
+    # TODO: avoid illegal attribute assignments
+    #   https://github.com/Rupt/tmsh/issues/11
+    arrays.ref = [a[0] for a in parrays]  # pyright: ignore [reportAttributeAccessIssue]
     size = ctypes.c_size_t(n)
     return arrays, sizes, size
 
@@ -495,9 +507,13 @@ def _ivectorvectordouble(os):
     parrays = [_ivectordouble(o) for o in os]
     sizes = (ctypes.c_size_t * n)(*(a[1] for a in parrays))
     arrays = (ctypes.POINTER(ctypes.c_double) * n)(
-        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_double)) for a in parrays)
+        # TODO: patch erroneous type casts
+        #   https://github.com/Rupt/tmsh/issues/13
+        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_double)) for a in parrays)  # pyright: ignore [reportArgumentType]
     )
-    arrays.ref = [a[0] for a in parrays]
+    # TODO: avoid illegal attribute assignments
+    #   https://github.com/Rupt/tmsh/issues/11
+    arrays.ref = [a[0] for a in parrays]  # pyright: ignore [reportAttributeAccessIssue]
     size = ctypes.c_size_t(n)
     return arrays, sizes, size
 
