@@ -1,4 +1,4 @@
-# `tmsh` is a type-annotated and linted Python interface for Gmsh
+# Type-annotated and linted Python interface for Gmsh
 
 ## Development
 
