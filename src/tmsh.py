@@ -425,62 +425,51 @@ def _ovectorvectorpair(ptr, size, n):
 
 
 def _ivectorint(o):
-    if gmsh.use_numpy:
-        array = numpy.ascontiguousarray(o, numpy.int32)
-        if len(o) and array.ndim != 1:
-            msg = "Invalid data for input vector of integers"
-            raise ValueError(msg)
-        ct = array.ctypes
-        # TODO: avoid illegal attribute assignments
-        #   https://github.com/Rupt/tmsh/issues/11
-        ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
-        return ct, ctypes.c_size_t(len(o))
-    return (ctypes.c_int * len(o))(*o), ctypes.c_size_t(len(o))
+    array = numpy.ascontiguousarray(o, numpy.int32)
+    if len(o) and array.ndim != 1:
+        msg = "Invalid data for input vector of integers"
+        raise ValueError(msg)
+    ct = array.ctypes
+    # TODO: avoid illegal attribute assignments
+    #   https://github.com/Rupt/tmsh/issues/11
+    ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
+    return ct, ctypes.c_size_t(len(o))
 
 
 def _ivectorsize(o):
-    if gmsh.use_numpy:
-        array = numpy.ascontiguousarray(o, numpy.uintp)
-        if len(o) and array.ndim != 1:
-            msg = "Invalid data for input vector of sizes"
-            raise ValueError(msg)
-        ct = array.ctypes
-        # TODO: avoid illegal attribute assignments
-        #   https://github.com/Rupt/tmsh/issues/11
-        ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
-        return ct, ctypes.c_size_t(len(o))
-    return (ctypes.c_size_t * len(o))(*o), ctypes.c_size_t(len(o))
+    array = numpy.ascontiguousarray(o, numpy.uintp)
+    if len(o) and array.ndim != 1:
+        msg = "Invalid data for input vector of sizes"
+        raise ValueError(msg)
+    ct = array.ctypes
+    # TODO: avoid illegal attribute assignments
+    #   https://github.com/Rupt/tmsh/issues/11
+    ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
+    return ct, ctypes.c_size_t(len(o))
 
 
 def _ivectordouble(o):
-    if gmsh.use_numpy:
-        array = numpy.ascontiguousarray(o, numpy.float64)
-        if len(o) and array.ndim != 1:
-            msg = "Invalid data for input vector of doubles"
-            raise ValueError(msg)
-        ct = array.ctypes
-        # TODO: avoid illegal attribute assignments
-        #   https://github.com/Rupt/tmsh/issues/11
-        ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
-        return ct, ctypes.c_size_t(len(o))
-    return (ctypes.c_double * len(o))(*o), ctypes.c_size_t(len(o))
+    array = numpy.ascontiguousarray(o, numpy.float64)
+    if len(o) and array.ndim != 1:
+        msg = "Invalid data for input vector of doubles"
+        raise ValueError(msg)
+    ct = array.ctypes
+    # TODO: avoid illegal attribute assignments
+    #   https://github.com/Rupt/tmsh/issues/11
+    ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
+    return ct, ctypes.c_size_t(len(o))
 
 
 def _ivectorpair(o):
-    if gmsh.use_numpy:
-        array = numpy.ascontiguousarray(o, numpy.int32)
-        if len(o) and (array.ndim != 2 or array.shape[1] != 2):
-            msg = "Invalid data for input vector of pairs"
-            raise ValueError(msg)
-        ct = array.ctypes
-        # TODO: avoid illegal attribute assignments
-        #   https://github.com/Rupt/tmsh/issues/11
-        ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
-        return ct, ctypes.c_size_t(len(o) * 2)
-    if len(o) and len(o[0]) != 2:
+    array = numpy.ascontiguousarray(o, numpy.int32)
+    if len(o) and (array.ndim != 2 or array.shape[1] != 2):
         msg = "Invalid data for input vector of pairs"
         raise ValueError(msg)
-    return ((ctypes.c_int * 2) * len(o))(*o), ctypes.c_size_t(len(o) * 2)
+    ct = array.ctypes
+    # TODO: avoid illegal attribute assignments
+    #   https://github.com/Rupt/tmsh/issues/11
+    ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
+    return ct, ctypes.c_size_t(len(o) * 2)
 
 
 def _ivectorstring(
@@ -1051,7 +1040,9 @@ class model:
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
-    def getEntitiesForPhysicalGroup(dim: int, tag: int):
+    def getEntitiesForPhysicalGroup(
+        dim: int, tag: int
+    ) -> NDArray[numpy.int32]:
         """gmsh.model.getEntitiesForPhysicalGroup(dim, tag)
 
         Get the tags of the model entities making up the physical group of
@@ -1109,7 +1100,7 @@ class model:
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
-    def getPhysicalGroupsForEntity(dim: int, tag: int):
+    def getPhysicalGroupsForEntity(dim: int, tag: int) -> NDArray[numpy.int32]:
         """gmsh.model.getPhysicalGroupsForEntity(dim, tag)
 
         Get the tags of the physical groups (if any) to which the model entity of
@@ -1170,7 +1161,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def removePhysicalGroups(dimTags=[]):
+    def removePhysicalGroups(dimTags=[]) -> None:
         """gmsh.model.removePhysicalGroups(dimTags=[])
 
         Remove the physical groups `dimTags' (given as a vector of (dim, tag)
