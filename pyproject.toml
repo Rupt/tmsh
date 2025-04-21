@@ -36,3 +36,8 @@ split-on-trailing-comma = false
 [tool.ruff.format]
 skip-magic-trailing-comma = true
 line-ending = "lf"
+
+[tool.pyright]
+include = ["src", "tests"]
+typeCheckingMode = "standard"
+useLibraryCodeForTypes = false
