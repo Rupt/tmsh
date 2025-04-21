@@ -330,7 +330,7 @@ def _ostring(s):
 
 
 def _ovectorpair(ptr, size):
-    v = list((ptr[i * 2], ptr[i * 2 + 1]) for i in range(size // 2))
+    v = [(ptr[i * 2], ptr[i * 2 + 1]) for i in range(size // 2)]
     gmsh.lib.gmshFree(ptr)
     return v
 
@@ -343,7 +343,7 @@ def _ovectorint(ptr, size):
         v = numpy.ctypeslib.as_array(ptr, (size,))
         weakref.finalize(v, gmsh.lib.gmshFree, ptr)
     else:
-        v = list(ptr[i] for i in range(size))
+        v = [ptr[i] for i in range(size)]
         gmsh.lib.gmshFree(ptr)
     return v
 
@@ -356,7 +356,7 @@ def _ovectorsize(ptr, size):
         v = numpy.ctypeslib.as_array(ptr, (size,))
         weakref.finalize(v, gmsh.lib.gmshFree, ptr)
     else:
-        v = list(ptr[i] for i in range(size))
+        v = [ptr[i] for i in range(size)]
         gmsh.lib.gmshFree(ptr)
     return v
 
@@ -369,15 +369,15 @@ def _ovectordouble(ptr, size):
         v = numpy.ctypeslib.as_array(ptr, (size,))
         weakref.finalize(v, gmsh.lib.gmshFree, ptr)
     else:
-        v = list(ptr[i] for i in range(size))
+        v = [ptr[i] for i in range(size)]
         gmsh.lib.gmshFree(ptr)
     return v
 
 
 def _ovectorstring(ptr, size):
-    v = list(
+    v = [
         _ostring(ctypes.cast(ptr[i], ctypes.c_char_p)) for i in range(size)
-    )
+    ]
     gmsh.lib.gmshFree(ptr)
     return v
 
