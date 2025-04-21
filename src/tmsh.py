@@ -312,7 +312,7 @@
 #
 # End of Gmsh license
 
-"""Type-annotated and linted Python interface for Gmsh"""
+"""Type-annotated and linted Python interface for Gmsh."""
 
 from __future__ import annotations
 
@@ -324,12 +324,12 @@ import weakref
 import gmsh
 import numpy
 
+from collections.abc import Sequence
 
 def _ostring(s):
     sp = s.value.decode("utf-8")
     gmsh.lib.gmshFree(s)
     return sp
-
 
 def _ovectorpair(ptr, size):
     v = [(ptr[i * 2], ptr[i * 2 + 1]) for i in range(size // 2)]
@@ -519,7 +519,7 @@ def _ivectorvectordouble(os):
     return arrays, sizes, size
 
 
-def _iargcargv(o):
+def _iargcargv(o: Sequence[str]) -> tuple[ctypes.c_int, ctypes.Array[ctypes.c_char_p]]:
     return ctypes.c_int(len(o)), (ctypes.c_char_p * len(o))(
         *(s.encode() for s in o),
     )
@@ -527,7 +527,7 @@ def _iargcargv(o):
 
 def initialize(
     *,
-    argv: list[str] = [],
+    argv: Sequence[str]=(),
     readConfigFiles: bool = True,
     run: bool = False,
     interruptible: bool = True,
@@ -631,20 +631,16 @@ def clear() -> None:
 
 
 class option:
-    """Option handling functions"""
+    """Option handling functions."""
 
     @staticmethod
-    def setNumber(name, value):
-        """gmsh.option.setNumber(name, value)
+    def setNumber(name: str, value: float) -> None:
+        """Set a numerical option to `value'.
 
-        Set a numerical option to `value'. `name' is of the form "Category.Option"
-        or "Category[num].Option". Available categories and options are listed in
-        the "Gmsh options" chapter of the Gmsh reference manual
+        `name' is of the form "Category.Option" or "Category[num].Option".
+        Available categories and options are listed in the "Gmsh options"
+        chapter of the Gmsh reference manual
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
-
-        Types:
-        - `name': string
-        - `value': double
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshOptionSetNumber(
@@ -656,19 +652,13 @@ class option:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getNumber(name):
-        """gmsh.option.getNumber(name)
+    def getNumber(name: str) -> float:
+        """Get the `value' of a numerical option.
 
-        Get the `value' of a numerical option. `name' is of the form
-        "Category.Option" or "Category[num].Option". Available categories and
-        options are listed in the "Gmsh options" chapter of the Gmsh reference
-        manual (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
-
-        Return `value'.
-
-        Types:
-        - `name': string
-        - `value': double
+        `name' is of the form "Category.Option" or "Category[num].Option". 
+        Available categories and options are listed in the "Gmsh options" 
+        chapter of the Gmsh reference manual
+        (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
         """
         api_value_ = ctypes.c_double()
         ierr = ctypes.c_int()
@@ -682,17 +672,13 @@ class option:
         return api_value_.value
 
     @staticmethod
-    def setString(name, value):
-        """gmsh.option.setString(name, value)
+    def setString(name: str, value: str) -> None:
+        """Set a string option to `value'.
 
-        Set a string option to `value'. `name' is of the form "Category.Option" or
-        "Category[num].Option". Available categories and options are listed in the
-        "Gmsh options" chapter of the Gmsh reference manual
+        `name' is of the form "Category.Option" or "Category[num].Option". 
+        Available categories and options are listed in the "Gmsh options"
+        chapter of the Gmsh reference manual
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
-
-        Types:
-        - `name': string
-        - `value': string
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshOptionSetString(
