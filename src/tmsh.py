@@ -1737,7 +1737,7 @@ class model:
         return _ovectordouble(api_derivatives_, api_derivatives_n_.value)
 
     @staticmethod
-    def getCurvature(dim, tag, parametricCoord):
+    def getCurvature(dim: int, tag: int,  parametricCoord):
         """gmsh.model.getCurvature(dim, tag, parametricCoord)
 
         Evaluate the (maximum) curvature of the entity of dimension `dim' and tag
@@ -1776,7 +1776,7 @@ class model:
         return _ovectordouble(api_curvatures_, api_curvatures_n_.value)
 
     @staticmethod
-    def getPrincipalCurvatures(tag, parametricCoord):
+    def getPrincipalCurvatures(tag: int, parametricCoord):
         """gmsh.model.getPrincipalCurvatures(tag, parametricCoord)
 
         Evaluate the principal curvatures of the surface with tag `tag' at the
@@ -1838,7 +1838,7 @@ class model:
         )
 
     @staticmethod
-    def getNormal(tag, parametricCoord):
+    def getNormal(tag: int, parametricCoord)-> NDArray[numpy.float64]:
         """gmsh.model.getNormal(tag, parametricCoord)
 
         Get the normal to the surface with tag `tag' at the parametric coordinates
@@ -1874,7 +1874,7 @@ class model:
         return _ovectordouble(api_normals_, api_normals_n_.value)
 
     @staticmethod
-    def getParametrization(dim, tag, coord):
+    def getParametrization(dim: int, tag: int,  coord)-> NDArray[numpy.float64]:
         """gmsh.model.getParametrization(dim, tag, coord)
 
         Get the parametric coordinates `parametricCoord' for the points `coord' on
@@ -1914,7 +1914,7 @@ class model:
         )
 
     @staticmethod
-    def getParametrizationBounds(dim: int, tag: int):
+    def getParametrizationBounds(dim: int, tag: int)-> tuple[NDArray[numpy.float64], NDArray[numpy.float64]]:
         """gmsh.model.getParametrizationBounds(dim, tag)
 
         Get the `min' and `max' bounds of the parametric coordinates for the entity
@@ -1954,7 +1954,7 @@ class model:
         )
 
     @staticmethod
-    def isInside(dim, tag, coord, parametric=False):
+    def isInside(dim: int, tag: int,  coord, parametric=False):
         """gmsh.model.isInside(dim, tag, coord, parametric=False)
 
         Check if the coordinates (or the parametric coordinates if `parametric' is
@@ -1986,7 +1986,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def getClosestPoint(dim, tag, coord):
+    def getClosestPoint(dim: int, tag: int,  coord)-> tuple[NDArray[numpy.float64], NDArray[numpy.float64]]:
         """gmsh.model.getClosestPoint(dim, tag, coord)
 
         Get the points `closestCoord' on the entity of dimension `dim' and tag
@@ -2034,7 +2034,7 @@ class model:
         )
 
     @staticmethod
-    def reparametrizeOnSurface(dim, tag, parametricCoord, surfaceTag, which=0):
+    def reparametrizeOnSurface(dim: int, tag: int,  parametricCoord, surfaceTag: int, which: int=0) -> NDArray[numpy.float64]:
         """gmsh.model.reparametrizeOnSurface(dim, tag, parametricCoord, surfaceTag, which=0)
 
         Reparametrize the boundary entity (point or curve, i.e. with `dim' == 0 or
@@ -2080,7 +2080,7 @@ class model:
         )
 
     @staticmethod
-    def setVisibility(dimTags, value, recursive=False):
+    def setVisibility(dimTags, value, *, recursive: bool=False ) -> None:
         """gmsh.model.setVisibility(dimTags, value, recursive=False)
 
         Set the visibility of the model entities `dimTags' (given as a vector of
@@ -2130,7 +2130,7 @@ class model:
         return api_value_.value
 
     @staticmethod
-    def setVisibilityPerWindow(value, windowIndex=0):
+    def setVisibilityPerWindow(value: int, windowIndex: int=0) -> None:
         """gmsh.model.setVisibilityPerWindow(value, windowIndex=0)
 
         Set the global visibility of the model per window to `value', where
@@ -2216,7 +2216,7 @@ class model:
         return (api_r_.value, api_g_.value, api_b_.value, api_a_.value)
 
     @staticmethod
-    def setCoordinates(tag, x, y, z):
+    def setCoordinates(tag: int, x, y, z):
         """gmsh.model.setCoordinates(tag, x, y, z)
 
         Set the `x', `y', `z' coordinates of a geometrical point.
@@ -2531,7 +2531,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def removeElements(dim, tag, elementTags=[]):
+        def removeElements(dim: int, tag: int,  elementTags=[]):
             """gmsh.model.mesh.removeElements(dim, tag, elementTags=[])
 
             Remove the elements with tags `elementTags' from the entity of dimension
@@ -2918,7 +2918,7 @@ class model:
             return api_maxTag_.value
 
         @staticmethod
-        def addNodes(dim, tag, nodeTags, coord, parametricCoord=[]):
+        def addNodes(dim: int, tag: int,  nodeTags, coord, parametricCoord=[]):
             """gmsh.model.mesh.addNodes(dim, tag, nodeTags, coord, parametricCoord=[])
 
             Add nodes classified on the model entity of dimension `dim' and tag `tag'.
@@ -3481,7 +3481,7 @@ class model:
             )
 
         @staticmethod
-        def addElements(dim, tag, elementTypes, elementTags, nodeTags):
+        def addElements(dim: int, tag: int,  elementTypes, elementTags, nodeTags):
             """gmsh.model.mesh.addElements(dim, tag, elementTypes, elementTags, nodeTags)
 
             Add elements classified on the entity of dimension `dim' and tag `tag'.
@@ -3527,7 +3527,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def addElementsByType(tag, elementType, elementTags, nodeTags):
+        def addElementsByType(tag: int, elementType, elementTags, nodeTags):
             """gmsh.model.mesh.addElementsByType(tag, elementType, elementTags, nodeTags)
 
             Add elements of type `elementType' classified on the entity of tag `tag'.
@@ -4573,7 +4573,7 @@ class model:
             return _ovectordouble(api_sizes_, api_sizes_n_.value)
 
         @staticmethod
-        def setSizeAtParametricPoints(dim, tag, parametricCoord, sizes):
+        def setSizeAtParametricPoints(dim: int, tag: int,  parametricCoord, sizes):
             """gmsh.model.mesh.setSizeAtParametricPoints(dim, tag, parametricCoord, sizes)
 
             Set mesh size constraints at the given parametric points `parametricCoord'
@@ -4682,7 +4682,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setTransfiniteSurface(tag, arrangement="Left", cornerTags=[]):
+        def setTransfiniteSurface(tag: int, arrangement="Left", cornerTags=[]):
             """gmsh.model.mesh.setTransfiniteSurface(tag, arrangement="Left", cornerTags=[])
 
             Set a transfinite meshing constraint on the surface `tag'. `arrangement'
@@ -4711,7 +4711,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setTransfiniteVolume(tag, cornerTags=[]):
+        def setTransfiniteVolume(tag: int, cornerTags=[]):
             """gmsh.model.mesh.setTransfiniteVolume(tag, cornerTags=[])
 
             Set a transfinite meshing constraint on the surface `tag'. `cornerTags' can
@@ -4766,7 +4766,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setRecombine(dim, tag, angle=45.0):
+        def setRecombine(dim: int, tag: int,  angle=45.0):
             """gmsh.model.mesh.setRecombine(dim, tag, angle=45.)
 
             Set a recombination meshing constraint on the model entity of dimension
@@ -4790,7 +4790,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setSmoothing(dim, tag, val):
+        def setSmoothing(dim: int, tag: int,  val):
             """gmsh.model.mesh.setSmoothing(dim, tag, val)
 
             Set a smoothing meshing constraint on the model entity of dimension `dim'
@@ -4812,7 +4812,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setReverse(dim, tag, val=True):
+        def setReverse(dim: int, tag: int,  val=True):
             """gmsh.model.mesh.setReverse(dim, tag, val=True)
 
             Set a reverse meshing constraint on the model entity of dimension `dim' and
@@ -4837,7 +4837,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setAlgorithm(dim, tag, val):
+        def setAlgorithm(dim: int, tag: int,  val):
             """gmsh.model.mesh.setAlgorithm(dim, tag, val)
 
             Set the meshing algorithm on the model entity of dimension `dim' and tag
@@ -4860,7 +4860,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setSizeFromBoundary(dim, tag, val):
+        def setSizeFromBoundary(dim: int, tag: int,  val):
             """gmsh.model.mesh.setSizeFromBoundary(dim, tag, val)
 
             Force the mesh size to be extended from the boundary, or not, for the model
@@ -5221,7 +5221,7 @@ class model:
             return _ovectorint(api_tagMaster_, api_tagMaster_n_.value)
 
         @staticmethod
-        def getPeriodicNodes(dim, tag, includeHighOrderNodes=False):
+        def getPeriodicNodes(dim: int, tag: int,  includeHighOrderNodes=False):
             """gmsh.model.mesh.getPeriodicNodes(dim, tag, includeHighOrderNodes=False)
 
             Get the master entity `tagMaster', the node tags `nodeTags' and their
@@ -5864,7 +5864,7 @@ class model:
                 return _ostring(api_fileType_)
 
             @staticmethod
-            def setNumber(tag, option, value):
+            def setNumber(tag: int, option: str, value):
                 """gmsh.model.mesh.field.setNumber(tag, option, value)
 
                 Set the numerical option `option' to value `value' for field `tag'.
@@ -5885,7 +5885,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def getNumber(tag, option):
+            def getNumber(tag: int, option: str):
                 """gmsh.model.mesh.field.getNumber(tag, option)
 
                 Get the value of the numerical option `option' for field `tag'.
@@ -5910,7 +5910,7 @@ class model:
                 return api_value_.value
 
             @staticmethod
-            def setString(tag, option, value):
+            def setString(tag: int, option: str, value):
                 """gmsh.model.mesh.field.setString(tag, option, value)
 
                 Set the string option `option' to value `value' for field `tag'.
@@ -5931,7 +5931,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def getString(tag, option):
+            def getString(tag: int, option: str):
                 """gmsh.model.mesh.field.getString(tag, option)
 
                 Get the value of the string option `option' for field `tag'.
@@ -5956,7 +5956,7 @@ class model:
                 return _ostring(api_value_)
 
             @staticmethod
-            def setNumbers(tag, option, values):
+            def setNumbers(tag: int, option: str, values):
                 """gmsh.model.mesh.field.setNumbers(tag, option, values)
 
                 Set the numerical list option `option' to value `values' for field `tag'.
@@ -5979,7 +5979,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def getNumbers(tag, option):
+            def getNumbers(tag: int, option: str):
                 """gmsh.model.mesh.field.getNumbers(tag, option)
 
                 Get the value of the numerical list option `option' for field `tag'.
@@ -7092,7 +7092,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def splitCurve(tag, pointTags):
+        def splitCurve(tag: int, pointTags):
             """gmsh.model.geo.splitCurve(tag, pointTags)
 
             Split the curve of tag `tag' in the built-in CAD representation, on the
@@ -7285,7 +7285,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setTransfiniteSurface(tag, arrangement="Left", cornerTags=[]):
+            def setTransfiniteSurface(tag: int, arrangement="Left", cornerTags=[]):
                 """gmsh.model.geo.mesh.setTransfiniteSurface(tag, arrangement="Left", cornerTags=[])
 
                 Set a transfinite meshing constraint on the surface `tag' in the built-in
@@ -7314,7 +7314,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setTransfiniteVolume(tag, cornerTags=[]):
+            def setTransfiniteVolume(tag: int, cornerTags=[]):
                 """gmsh.model.geo.mesh.setTransfiniteVolume(tag, cornerTags=[])
 
                 Set a transfinite meshing constraint on the surface `tag' in the built-in
@@ -7337,7 +7337,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setRecombine(dim, tag, angle=45.0):
+            def setRecombine(dim: int, tag: int,  angle=45.0):
                 """gmsh.model.geo.mesh.setRecombine(dim, tag, angle=45.)
 
                 Set a recombination meshing constraint on the entity of dimension `dim' and
@@ -7362,7 +7362,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setSmoothing(dim, tag, val):
+            def setSmoothing(dim: int, tag: int,  val):
                 """gmsh.model.geo.mesh.setSmoothing(dim, tag, val)
 
                 Set a smoothing meshing constraint on the entity of dimension `dim' and tag
@@ -7385,7 +7385,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setReverse(dim, tag, val=True):
+            def setReverse(dim: int, tag: int,  val=True):
                 """gmsh.model.geo.mesh.setReverse(dim, tag, val=True)
 
                 Set a reverse meshing constraint on the entity of dimension `dim' and tag
@@ -7410,7 +7410,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setAlgorithm(dim, tag, val):
+            def setAlgorithm(dim: int, tag: int,  val):
                 """gmsh.model.geo.mesh.setAlgorithm(dim, tag, val)
 
                 Set the meshing algorithm on the entity of dimension `dim' and tag `tag' in
@@ -7433,7 +7433,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setSizeFromBoundary(dim, tag, val):
+            def setSizeFromBoundary(dim: int, tag: int,  val):
                 """gmsh.model.geo.mesh.setSizeFromBoundary(dim, tag, val)
 
                 Force the mesh size to be extended from the boundary, or not, for the
@@ -10389,7 +10389,7 @@ class view:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getModelData(tag, step):
+    def getModelData(tag: int, step):
         """gmsh.view.getModelData(tag, step)
 
         Get model-based post-processing data from the view with tag `tag' at step
@@ -10445,7 +10445,7 @@ class view:
         )
 
     @staticmethod
-    def getHomogeneousModelData(tag, step):
+    def getHomogeneousModelData(tag: int, step):
         """gmsh.view.getHomogeneousModelData(tag, step)
 
         Get homogeneous model-based post-processing data from the view with tag
@@ -10499,7 +10499,7 @@ class view:
         )
 
     @staticmethod
-    def addListData(tag, dataType, numEle, data):
+    def addListData(tag: int, dataType, numEle, data):
         """gmsh.view.addListData(tag, dataType, numEle, data)
 
         Add list-based post-processing data to the view with tag `tag'. List-based
@@ -10533,7 +10533,7 @@ class view:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getListData(tag, returnAdaptive=False):
+    def getListData(tag: int, returnAdaptive=False):
         """gmsh.view.getListData(tag, returnAdaptive=False)
 
         Get list-based post-processing data from the view with tag `tag'. Return
@@ -10585,7 +10585,7 @@ class view:
         )
 
     @staticmethod
-    def addListDataString(tag, coord, data, style=[]):
+    def addListDataString(tag: int, coord, data, style=[]):
         """gmsh.view.addListDataString(tag, coord, data, style=[])
 
         Add a string to a list-based post-processing view with tag `tag'. If
@@ -10626,7 +10626,7 @@ class view:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getListDataStrings(tag, dim):
+    def getListDataStrings(tag: int, dim):
         """gmsh.view.getListDataStrings(tag, dim)
 
         Get list-based post-processing data strings (2D strings if `dim' == 2, 3D
@@ -10872,7 +10872,7 @@ class view:
         )
 
     @staticmethod
-    def write(tag, fileName, append=False):
+    def write(tag: int, fileName, append=False):
         """gmsh.view.write(tag, fileName, append=False)
 
         Write the view to a file `fileName'. The export format is determined by the
@@ -10894,7 +10894,7 @@ class view:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setVisibilityPerWindow(tag, value, windowIndex=0):
+    def setVisibilityPerWindow(tag: int, value, windowIndex=0):
         """gmsh.view.setVisibilityPerWindow(tag, value, windowIndex=0)
 
         Set the global visibility of the view `tag' per window to `value', where
@@ -10919,7 +10919,7 @@ class view:
         """View option handling functions"""
 
         @staticmethod
-        def setNumber(tag, name, value):
+        def setNumber(tag: int, name: str, value):
             """gmsh.view.option.setNumber(tag, name, value)
 
             Set the numerical option `name' to value `value' for the view with tag
@@ -10941,7 +10941,7 @@ class view:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getNumber(tag, name):
+        def getNumber(tag: int, name):
             """gmsh.view.option.getNumber(tag, name)
 
             Get the `value' of the numerical option `name' for the view with tag `tag'.
@@ -10966,7 +10966,7 @@ class view:
             return api_value_.value
 
         @staticmethod
-        def setString(tag, name, value):
+        def setString(tag: int, name: str, value):
             """gmsh.view.option.setString(tag, name, value)
 
             Set the string option `name' to value `value' for the view with tag `tag'.
