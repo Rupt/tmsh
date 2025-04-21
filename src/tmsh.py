@@ -426,7 +426,8 @@ def _ivectorint(o):
     if gmsh.use_numpy:
         array = numpy.ascontiguousarray(o, numpy.int32)
         if len(o) and array.ndim != 1:
-            raise ValueError("Invalid data for input vector of integers")
+            msg = "Invalid data for input vector of integers"
+            raise ValueError(msg)
         ct = array.ctypes
         # TODO: avoid illegal attribute assignments
         #   https://github.com/Rupt/tmsh/issues/11
@@ -440,7 +441,8 @@ def _ivectorsize(o):
     if gmsh.use_numpy:
         array = numpy.ascontiguousarray(o, numpy.uintp)
         if len(o) and array.ndim != 1:
-            raise ValueError("Invalid data for input vector of sizes")
+            msg = "Invalid data for input vector of sizes"
+            raise ValueError(msg)
         ct = array.ctypes
         # TODO: avoid illegal attribute assignments
         #   https://github.com/Rupt/tmsh/issues/11
@@ -454,7 +456,8 @@ def _ivectordouble(o):
     if gmsh.use_numpy:
         array = numpy.ascontiguousarray(o, numpy.float64)
         if len(o) and array.ndim != 1:
-            raise ValueError("Invalid data for input vector of doubles")
+            msg = "Invalid data for input vector of doubles"
+            raise ValueError(msg)
         ct = array.ctypes
         # TODO: avoid illegal attribute assignments
         #   https://github.com/Rupt/tmsh/issues/11
@@ -468,7 +471,8 @@ def _ivectorpair(o):
     if gmsh.use_numpy:
         array = numpy.ascontiguousarray(o, numpy.int32)
         if len(o) and (array.ndim != 2 or array.shape[1] != 2):
-            raise ValueError("Invalid data for input vector of pairs")
+            msg = "Invalid data for input vector of pairs"
+            raise ValueError(msg)
         ct = array.ctypes
         # TODO: avoid illegal attribute assignments
         #   https://github.com/Rupt/tmsh/issues/11
@@ -476,7 +480,8 @@ def _ivectorpair(o):
         return ct, ctypes.c_size_t(len(o) * 2)
     else:
         if len(o) and len(o[0]) != 2:
-            raise ValueError("Invalid data for input vector of pairs")
+            msg = "Invalid data for input vector of pairs"
+            raise ValueError(msg)
         return ((ctypes.c_int * 2) * len(o))(*o), ctypes.c_size_t(len(o) * 2)
 
 
@@ -12477,5 +12482,6 @@ class logger:
             ctypes.byref(api_error_), ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise RuntimeError("Could not get last error")
+            msg = "Could not get last error"
+            raise RuntimeError(msg)
         return _ostring(api_error_)
