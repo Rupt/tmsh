@@ -320,77 +320,10 @@ import signal
 import os
 import platform
 from math import pi
+import gmsh
 
-GMSH_API_VERSION = "4.13.1"
-GMSH_API_VERSION_MAJOR = 4
-GMSH_API_VERSION_MINOR = 13
-GMSH_API_VERSION_PATCH = 1
+lib = gmsh.lib
 
-__version__ = GMSH_API_VERSION
-
-moduledir = os.path.dirname(os.path.realpath(__file__))
-parentdir1 = os.path.dirname(moduledir)
-parentdir2 = os.path.dirname(parentdir1)
-
-if platform.system() == "Windows":
-    libname = "gmsh-4.13.dll"
-elif platform.system() == "Darwin":
-    libname = "libgmsh.4.13.dylib"
-else:
-    libname = "libgmsh.so.4.13"
-
-# Searching lib in various subfolders
-libpath = None
-possible_libpaths = [os.path.join(moduledir, libname),
-                     os.path.join(moduledir, "lib", libname),
-                     os.path.join(moduledir, "Lib", libname),
-                     # first parent dir
-                     os.path.join(parentdir1, libname),
-                     os.path.join(parentdir1, "lib", libname),
-                     os.path.join(parentdir1, "Lib", libname),
-                     # second parent dir
-                     os.path.join(parentdir2, libname),
-                     os.path.join(parentdir2, "lib", libname),
-                     os.path.join(parentdir2, "Lib", libname)
-                     ]
-
-for libpath_to_look in possible_libpaths:
-    if os.path.exists(libpath_to_look):
-        libpath = libpath_to_look
-        break
-
-# if we couldn't find it, use ctype's find_library utility...
-if not libpath:
-    if platform.system() == "Windows":
-        libpath = find_library("gmsh-4.11")
-        if not libpath:
-            libpath = find_library("gmsh")
-    else:
-        libpath = find_library("gmsh")
-
-# ... and print a warning if everything failed
-if not libpath:
-    print("Warning: could not find Gmsh shared library " + libname +
-          " with ctypes.util.find_library() or in the following locations: " +
-          str(possible_libpaths))
-
-lib = CDLL(libpath)
-
-try_numpy = True # set this to False to never use numpy
-
-use_numpy = False
-if try_numpy:
-    try:
-        import numpy
-        try:
-            from weakref import finalize as weakreffinalize
-        except:
-            from backports.weakref import finalize as weakreffinalize
-        use_numpy = True
-    except:
-        pass
-
-prev_interrupt_handler = None
 
 # Utility functions, not part of the Gmsh Python API
 
@@ -405,7 +338,7 @@ def _ovectorpair(ptr, size):
     return v
 
 def _ovectorint(ptr, size):
-    if use_numpy:
+    if gmsh.use_numpy:
         if size == 0 :
             lib.gmshFree(ptr)
             return numpy.ndarray((0,),numpy.int32)
@@ -417,7 +350,7 @@ def _ovectorint(ptr, size):
     return v
 
 def _ovectorsize(ptr, size):
-    if use_numpy:
+    if gmsh.use_numpy:
         if size == 0 :
             lib.gmshFree(ptr)
             return numpy.ndarray((0,),numpy.uintp)
@@ -429,7 +362,7 @@ def _ovectorsize(ptr, size):
     return v
 
 def _ovectordouble(ptr, size):
-    if use_numpy:
+    if gmsh.use_numpy:
         if size == 0 :
             lib.gmshFree(ptr)
             return numpy.ndarray((0,),numpy.float64)
@@ -470,7 +403,7 @@ def _ovectorvectorpair(ptr, size, n):
     return v
 
 def _ivectorint(o):
-    if use_numpy:
+    if gmsh.use_numpy:
         array = numpy.ascontiguousarray(o, numpy.int32)
         if(len(o) and array.ndim != 1):
             raise Exception("Invalid data for input vector of integers")
@@ -481,7 +414,7 @@ def _ivectorint(o):
         return (c_int * len(o))(*o), c_size_t(len(o))
 
 def _ivectorsize(o):
-    if use_numpy:
+    if gmsh.use_numpy:
         array = numpy.ascontiguousarray(o, numpy.uintp)
         if(len(o) and array.ndim != 1):
             raise Exception("Invalid data for input vector of sizes")
@@ -492,7 +425,7 @@ def _ivectorsize(o):
         return (c_size_t * len(o))(*o), c_size_t(len(o))
 
 def _ivectordouble(o):
-    if use_numpy:
+    if gmsh.use_numpy:
         array = numpy.ascontiguousarray(o, numpy.float64)
         if(len(o) and array.ndim != 1):
             raise Exception("Invalid data for input vector of doubles")
@@ -503,7 +436,7 @@ def _ivectordouble(o):
         return (c_double * len(o))(*o), c_size_t(len(o))
 
 def _ivectorpair(o):
-    if use_numpy:
+    if gmsh.use_numpy:
         array = numpy.ascontiguousarray(o, numpy.int32)
         if(len(o) and (array.ndim != 2 or array.shape[1] != 2)):
             raise Exception("Invalid data for input vector of pairs")
@@ -577,7 +510,7 @@ def initialize(argv=[], readConfigFiles=True, run=False, interruptible=True):
         c_int(bool(run)),
         byref(ierr))
     if interruptible == True:
-        prev_interrupt_handler = signal.signal(signal.SIGINT, signal.SIG_DFL)
+        gmsh.prev_interrupt_handler = signal.signal(signal.SIGINT, signal.SIG_DFL)
     if ierr.value != 0:
         raise Exception(logger.getLastError())
 
@@ -607,8 +540,8 @@ def finalize():
     ierr = c_int()
     lib.gmshFinalize(
         byref(ierr))
-    if prev_interrupt_handler is not None:
-        signal.signal(signal.SIGINT, prev_interrupt_handler)
+    if gmsh.prev_interrupt_handler is not None:
+        signal.signal(signal.SIGINT, gmsh.prev_interrupt_handler)
     if ierr.value != 0:
         raise Exception(logger.getLastError())
 
