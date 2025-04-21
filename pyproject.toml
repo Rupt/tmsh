@@ -38,6 +38,15 @@ select = [
     "COM",
     "C4",
     "EM",
+    "FA",
+    "ISC",
+    "ICN",
+    "PIE",
+    "T20",
+    "PYI",
+    "Q",
+    "RSE",
+    "RET",
     "I",
     "E",
     "F",
@@ -56,6 +65,9 @@ ignore = [
     "B006",
 ]
 dummy-variable-rgx = "^_$"
+
+[tool.ruff.lint.flake8-import-conventions.aliases]
+numpy = "numpy"
 
 [tool.ruff.lint.isort]
 split-on-trailing-comma = false

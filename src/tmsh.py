@@ -434,8 +434,7 @@ def _ivectorint(o):
         #   https://github.com/Rupt/tmsh/issues/11
         ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
         return ct, ctypes.c_size_t(len(o))
-    else:
-        return (ctypes.c_int * len(o))(*o), ctypes.c_size_t(len(o))
+    return (ctypes.c_int * len(o))(*o), ctypes.c_size_t(len(o))
 
 
 def _ivectorsize(o):
@@ -449,8 +448,7 @@ def _ivectorsize(o):
         #   https://github.com/Rupt/tmsh/issues/11
         ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
         return ct, ctypes.c_size_t(len(o))
-    else:
-        return (ctypes.c_size_t * len(o))(*o), ctypes.c_size_t(len(o))
+    return (ctypes.c_size_t * len(o))(*o), ctypes.c_size_t(len(o))
 
 
 def _ivectordouble(o):
@@ -464,8 +462,7 @@ def _ivectordouble(o):
         #   https://github.com/Rupt/tmsh/issues/11
         ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
         return ct, ctypes.c_size_t(len(o))
-    else:
-        return (ctypes.c_double * len(o))(*o), ctypes.c_size_t(len(o))
+    return (ctypes.c_double * len(o))(*o), ctypes.c_size_t(len(o))
 
 
 def _ivectorpair(o):
@@ -479,11 +476,10 @@ def _ivectorpair(o):
         #   https://github.com/Rupt/tmsh/issues/11
         ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
         return ct, ctypes.c_size_t(len(o) * 2)
-    else:
-        if len(o) and len(o[0]) != 2:
-            msg = "Invalid data for input vector of pairs"
-            raise ValueError(msg)
-        return ((ctypes.c_int * 2) * len(o))(*o), ctypes.c_size_t(len(o) * 2)
+    if len(o) and len(o[0]) != 2:
+        msg = "Invalid data for input vector of pairs"
+        raise ValueError(msg)
+    return ((ctypes.c_int * 2) * len(o))(*o), ctypes.c_size_t(len(o) * 2)
 
 
 def _ivectorstring(o):
