@@ -11997,7 +11997,7 @@ class logger:
     """Information logging functions"""
 
     @staticmethod
-    def write(message, level="info"):
+    def write(message: str, level: str = "info") -> None:
         """gmsh.logger.write(message, level="info")
 
         Write a `message'. `level' can be "info", "warning" or "error".
@@ -12016,7 +12016,7 @@ class logger:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def start():
+    def start() -> None:
         """gmsh.logger.start()
 
         Start logging messages.
@@ -12027,7 +12027,7 @@ class logger:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def get():
+    def get() -> list[str]:
         """gmsh.logger.get()
 
         Get logged messages.
@@ -12052,7 +12052,7 @@ class logger:
         return _ovectorstring(api_log_, api_log_n_.value)
 
     @staticmethod
-    def stop():
+    def stop() -> None:
         """gmsh.logger.stop()
 
         Stop logging messages.
@@ -12063,7 +12063,7 @@ class logger:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getWallTime():
+    def getWallTime() -> float:
         """gmsh.logger.getWallTime()
 
         Return wall clock time (in s).
@@ -12078,7 +12078,7 @@ class logger:
         return api_result_
 
     @staticmethod
-    def getCpuTime():
+    def getCpuTime() -> float:
         """gmsh.logger.getCpuTime()
 
         Return CPU time (in s).
@@ -12093,7 +12093,7 @@ class logger:
         return api_result_
 
     @staticmethod
-    def getMemory():
+    def getMemory() -> float:
         """gmsh.logger.getMemory()
 
         Return memory usage (in Mb).
@@ -12108,7 +12108,7 @@ class logger:
         return api_result_
 
     @staticmethod
-    def getTotalMemory():
+    def getTotalMemory() -> float:
         """gmsh.logger.getTotalMemory()
 
         Return total available memory (in Mb).
@@ -12123,7 +12123,7 @@ class logger:
         return api_result_
 
     @staticmethod
-    def getLastError():
+    def getLastError() -> str:
         """gmsh.logger.getLastError()
 
         Return last error message, if any.
