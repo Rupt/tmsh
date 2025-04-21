@@ -26,8 +26,10 @@ line-length = 79
 output-format = "concise"
 
 [tool.ruff.lint]
-select = ["I", "E4", "E7", "E9", "F"]
-ignore = []
+select = ["I", "E", "F"]
+ignore = [
+    "E501", # Line too long
+]
 dummy-variable-rgx = "^_$"
 
 [tool.ruff.lint.isort]
