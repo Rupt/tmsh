@@ -47,9 +47,25 @@ select = [
     "Q",
     "RSE",
     "RET",
+    "SLF",
+    "SIM",
+    "SLOT",
+    "TID",
+    "TD",
+    "TC",
+    "ARG",
+    "PTH",
+    "FLY",
     "I",
+    "C90",
+    "NPY",
+    "PERF",
     "E",
+    "W",
+    "D",
     "F",
+    "PGH",
+    "PL",
 ]
 ignore = [
     "E501",
@@ -63,8 +79,16 @@ ignore = [
     "ANN206",
     "FBT002",
     "B006",
+    "TD00",
+    "D415",
+    "D200",
+    "PLR0913",  # too many arguments in function definition
+    "PLR2004",  # magic value
 ]
 dummy-variable-rgx = "^_$"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["D"]
 
 [tool.ruff.lint.flake8-import-conventions.aliases]
 numpy = "numpy"
@@ -72,6 +96,9 @@ numpy = "numpy"
 [tool.ruff.lint.isort]
 split-on-trailing-comma = false
 required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.ruff.format]
 skip-magic-trailing-comma = true
