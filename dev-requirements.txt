@@ -1,0 +1,7 @@
+gmsh==4.13.1
+mypy==1.15.0
+mypy-extensions==1.0.0
+nodeenv==1.9.1
+pyright==1.1.399
+ruff==0.11.6
+typing_extensions==4.13.2
