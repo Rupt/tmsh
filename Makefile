@@ -1,7 +1,7 @@
 .SUFFIXES:  # disables implicit rules; see https://www.gnu.org/software/make/manual/html_node/Suffix-Rules.html
 
 .venv/.tombstone:
-	python3.13 -m venv .venv
+	python3.12 -m venv .venv
 	.venv/bin/pip install --upgrade 'pip >=25.0.1'
 	.venv/bin/pip install --upgrade . -r requirements.txt
 	touch $@

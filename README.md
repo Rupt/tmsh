@@ -2,9 +2,9 @@
 
 ## Development
 
-Install a version of Python 3.13 in your environment.
+Install a version of Python 3.12 in your environment.
 For example, if you manage python versions with `uv`, then you may prepare
-the environment by prefixing commands with `uv run --no-project --python 313`.
+the environment by prefixing commands with `uv run --no-project --python 312`.
 
 Prepare a development environment with `make`.
 

@@ -3,7 +3,7 @@ name = "tmsh"
 version = "0.0.1"
 description = "Type-annotated and linted Python interface for Gmsh"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = ["gmsh ==4.13.1", "numpy >=2.0.0"]
 classifiers = [
     "Development Status :: 1 - Planning",
@@ -11,6 +11,7 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python",
 ]
