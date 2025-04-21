@@ -529,8 +529,6 @@ def initialize(
 ) -> None:
     """Initialize the Gmsh API.
 
-    gmsh.initialize(argv=[], readConfigFiles=True, run=False)
-
     This must be called before any call to the other functions in the API. If
     `argv` is provided, it will be handled in the same way as the command line
     arguments in the Gmsh app. If `readConfigFiles' is set, read system Gmsh
@@ -556,14 +554,8 @@ def initialize(
         raise RuntimeError(logger.getLastError())
 
 
-def isInitialized():
-    """
-    gmsh.isInitialized()
-
-    Return 1 if the Gmsh API is initialized, and 0 if not.
-
-    Return an integer.
-    """
+def isInitialized() -> int:
+    """Return 1 if the Gmsh API is initialized, and 0 if not."""
     ierr = ctypes.c_int()
     api_result_ = gmsh.lib.gmshIsInitialized(ctypes.byref(ierr))
     if ierr.value != 0:
@@ -571,15 +563,10 @@ def isInitialized():
     return api_result_
 
 
-is_initialized = isInitialized
+def finalize() -> None:
+    """Finalize the Gmsh API.
 
-
-def finalize():
-    """
-    gmsh.finalize()
-
-    Finalize the Gmsh API. This must be called when you are done using the Gmsh
-    API.
+    This must be called when you are done using the Gmsh API.
     """
     ierr = ctypes.c_int()
     gmsh.lib.gmshFinalize(ctypes.byref(ierr))
@@ -589,16 +576,12 @@ def finalize():
         raise RuntimeError(logger.getLastError())
 
 
-def open(fileName):
-    """
-    gmsh.open(fileName)
+def open(fileName: str) -> None:
+    """Open a file.
 
-    Open a file. Equivalent to the `File->Open' menu in the Gmsh app. Handling
-    of the file depends on its extension and/or its contents: opening a file
-    with model data will create a new model.
-
-    Types:
-    - `fileName': string
+    Equivalent to the `File->Open' menu in the Gmsh app. Handling of the file
+    depends on its extension and/or its contents: opening a file with model
+    data will create a new model.
     """
     ierr = ctypes.c_int()
     gmsh.lib.gmshOpen(ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr))
@@ -606,16 +589,13 @@ def open(fileName):
         raise RuntimeError(logger.getLastError())
 
 
-def merge(fileName):
-    """
-    gmsh.merge(fileName)
+def merge(fileName: str) -> None:
+    """Merge a file.
 
-    Merge a file. Equivalent to the `File->Merge' menu in the Gmsh app.
+    Equivalent to the `File->Merge' menu in the Gmsh app.
+
     Handling of the file depends on its extension and/or its contents. Merging
     a file with model data will add the data to the current model.
-
-    Types:
-    - `fileName': string
     """
     ierr = ctypes.c_int()
     gmsh.lib.gmshMerge(ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr))
@@ -623,14 +603,10 @@ def merge(fileName):
         raise RuntimeError(logger.getLastError())
 
 
-def write(fileName):
-    """
-    gmsh.write(fileName)
+def write(fileName: str) -> None:
+    """Write a file.
 
-    Write a file. The export format is determined by the file extension.
-
-    Types:
-    - `fileName': string
+    The export format is determined by the file extension.
     """
     ierr = ctypes.c_int()
     gmsh.lib.gmshWrite(ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr))
@@ -638,12 +614,10 @@ def write(fileName):
         raise RuntimeError(logger.getLastError())
 
 
-def clear():
-    """
-    gmsh.clear()
+def clear() -> None:
+    """Clear Gmsh state.
 
-    Clear all loaded models and post-processing data, and add a new empty
-    model.
+    Clear all loaded models and post-processing data, and add a new empty model.
     """
     ierr = ctypes.c_int()
     gmsh.lib.gmshClear(ctypes.byref(ierr))
