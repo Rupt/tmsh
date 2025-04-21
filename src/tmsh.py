@@ -550,7 +550,7 @@ def initialize(
         ctypes.c_int(bool(run)),
         ctypes.byref(ierr),
     )
-    if interruptible == True:
+    if interruptible:
         gmsh.prev_interrupt_handler = signal.signal(
             signal.SIGINT, signal.SIG_DFL
         )

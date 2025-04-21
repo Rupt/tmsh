@@ -13,8 +13,8 @@ test: .venv/.tombstone
 lint: .venv/.tombstone
 	-.venv/bin/ruff check --fix
 	-.venv/bin/ruff format
-	-.venv/bin/pyright src tests
-	-.venv/bin/mypy src tests
+	-.venv/bin/pyright
+	-.venv/bin/mypy
 
 # TODO: use the dev group once pip (25.1) releases support
 # 	e.g. `.venv/bin/pip install --upgrade --group dev`

@@ -26,7 +26,7 @@ line-length = 79
 output-format = "concise"
 
 [tool.ruff.lint]
-select = ["I"]
+select = ["I", "E4", "E7", "E9", "F"]
 ignore = []
 dummy-variable-rgx = "^_$"
 
