@@ -556,7 +556,7 @@ def initialize(argv=[], readConfigFiles=True, run=False, interruptible=True):
             signal.SIGINT, signal.SIG_DFL
         )
     if ierr.value != 0:
-        raise Exception(logger.getLastError())
+        raise RuntimeError(logger.getLastError())
 
 
 def isInitialized():
@@ -570,7 +570,7 @@ def isInitialized():
     ierr = ctypes.c_int()
     api_result_ = gmsh.lib.gmshIsInitialized(ctypes.byref(ierr))
     if ierr.value != 0:
-        raise Exception(logger.getLastError())
+        raise RuntimeError(logger.getLastError())
     return api_result_
 
 
@@ -589,7 +589,7 @@ def finalize():
     if gmsh.prev_interrupt_handler is not None:
         signal.signal(signal.SIGINT, gmsh.prev_interrupt_handler)
     if ierr.value != 0:
-        raise Exception(logger.getLastError())
+        raise RuntimeError(logger.getLastError())
 
 
 def open(fileName):
@@ -606,7 +606,7 @@ def open(fileName):
     ierr = ctypes.c_int()
     gmsh.lib.gmshOpen(ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr))
     if ierr.value != 0:
-        raise Exception(logger.getLastError())
+        raise RuntimeError(logger.getLastError())
 
 
 def merge(fileName):
@@ -623,7 +623,7 @@ def merge(fileName):
     ierr = ctypes.c_int()
     gmsh.lib.gmshMerge(ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr))
     if ierr.value != 0:
-        raise Exception(logger.getLastError())
+        raise RuntimeError(logger.getLastError())
 
 
 def write(fileName):
@@ -638,7 +638,7 @@ def write(fileName):
     ierr = ctypes.c_int()
     gmsh.lib.gmshWrite(ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr))
     if ierr.value != 0:
-        raise Exception(logger.getLastError())
+        raise RuntimeError(logger.getLastError())
 
 
 def clear():
@@ -651,7 +651,7 @@ def clear():
     ierr = ctypes.c_int()
     gmsh.lib.gmshClear(ctypes.byref(ierr))
     if ierr.value != 0:
-        raise Exception(logger.getLastError())
+        raise RuntimeError(logger.getLastError())
 
 
 class option:
@@ -680,7 +680,7 @@ class option:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_number = setNumber
 
@@ -708,7 +708,7 @@ class option:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_value_.value
 
     get_number = getNumber
@@ -734,7 +734,7 @@ class option:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_string = setString
 
@@ -762,7 +762,7 @@ class option:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ostring(api_value_)
 
     get_string = getString
@@ -796,7 +796,7 @@ class option:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_color = setColor
 
@@ -834,7 +834,7 @@ class option:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (api_r_.value, api_g_.value, api_b_.value, api_a_.value)
 
     get_color = getColor
@@ -849,7 +849,7 @@ class option:
         ierr = ctypes.c_int()
         gmsh.lib.gmshOptionRestoreDefaults(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     restore_defaults = restoreDefaults
 
@@ -874,7 +874,7 @@ class model:
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def remove():
@@ -886,7 +886,7 @@ class model:
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelRemove(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def list():
@@ -911,7 +911,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorstring(api_names_, api_names_n_.value)
 
     @staticmethod
@@ -932,7 +932,7 @@ class model:
             ctypes.byref(api_name_), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ostring(api_name_)
 
     get_current = getCurrent
@@ -953,7 +953,7 @@ class model:
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_current = setCurrent
 
@@ -976,7 +976,7 @@ class model:
             ctypes.byref(api_fileName_), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ostring(api_fileName_)
 
     get_file_name = getFileName
@@ -996,7 +996,7 @@ class model:
             ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_file_name = setFileName
 
@@ -1029,7 +1029,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     get_entities = getEntities
@@ -1054,7 +1054,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_entity_name = setEntityName
 
@@ -1081,7 +1081,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ostring(api_name_)
 
     get_entity_name = getEntityName
@@ -1101,7 +1101,7 @@ class model:
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     remove_entity_name = removeEntityName
 
@@ -1132,7 +1132,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     get_physical_groups = getPhysicalGroups
@@ -1165,7 +1165,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorint(api_tags_, api_tags_n_.value)
 
     get_entities_for_physical_group = getEntitiesForPhysicalGroup
@@ -1196,7 +1196,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     get_entities_for_physical_name = getEntitiesForPhysicalName
@@ -1229,7 +1229,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorint(api_physicalTags_, api_physicalTags_n_.value)
 
     get_physical_groups_for_entity = getPhysicalGroupsForEntity
@@ -1263,7 +1263,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     add_physical_group = addPhysicalGroup
@@ -1285,7 +1285,7 @@ class model:
             api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     remove_physical_groups = removePhysicalGroups
 
@@ -1309,7 +1309,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_physical_name = setPhysicalName
 
@@ -1336,7 +1336,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ostring(api_name_)
 
     get_physical_name = getPhysicalName
@@ -1356,7 +1356,7 @@ class model:
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     remove_physical_name = removePhysicalName
 
@@ -1381,7 +1381,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_tag = setTag
 
@@ -1424,7 +1424,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
     get_boundary = getBoundary
@@ -1466,7 +1466,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (
             _ovectorint(api_upward_, api_upward_n_.value),
             _ovectorint(api_downward_, api_downward_n_.value),
@@ -1514,7 +1514,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     get_entities_in_bounding_box = getEntitiesInBoundingBox
@@ -1559,7 +1559,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (
             api_xmin_.value,
             api_ymin_.value,
@@ -1583,7 +1583,7 @@ class model:
         ierr = ctypes.c_int()
         api_result_ = gmsh.lib.gmshModelGetDimension(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     get_dimension = getDimension
@@ -1616,7 +1616,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     add_discrete_entity = addDiscreteEntity
@@ -1644,7 +1644,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     remove_entities = removeEntities
 
@@ -1671,7 +1671,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ostring(api_entityType_)
 
     get_type = getType
@@ -1704,7 +1704,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (api_parentDim_.value, api_parentTag_.value)
 
     get_parent = getParent
@@ -1723,7 +1723,7 @@ class model:
             ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     get_number_of_partitions = getNumberOfPartitions
@@ -1756,7 +1756,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorint(api_partitions_, api_partitions_n_.value)
 
     get_partitions = getPartitions
@@ -1800,7 +1800,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectordouble(api_coord_, api_coord_n_.value)
 
     get_value = getValue
@@ -1846,7 +1846,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectordouble(api_derivatives_, api_derivatives_n_.value)
 
     get_derivative = getDerivative
@@ -1894,7 +1894,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectordouble(api_derivatives_, api_derivatives_n_.value)
 
     get_second_derivative = getSecondDerivative
@@ -1936,7 +1936,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectordouble(api_curvatures_, api_curvatures_n_.value)
 
     get_curvature = getCurvature
@@ -1996,7 +1996,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (
             _ovectordouble(api_curvatureMax_, api_curvatureMax_n_.value),
             _ovectordouble(api_curvatureMin_, api_curvatureMin_n_.value),
@@ -2040,7 +2040,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectordouble(api_normals_, api_normals_n_.value)
 
     get_normal = getNormal
@@ -2081,7 +2081,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectordouble(
             api_parametricCoord_, api_parametricCoord_n_.value
         )
@@ -2123,7 +2123,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (
             _ovectordouble(api_min_, api_min_n_.value),
             _ovectordouble(api_max_, api_max_n_.value),
@@ -2161,7 +2161,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     is_inside = isInside
@@ -2209,7 +2209,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (
             _ovectordouble(api_closestCoord_, api_closestCoord_n_.value),
             _ovectordouble(api_parametricCoord_, api_parametricCoord_n_.value),
@@ -2259,7 +2259,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectordouble(
             api_surfaceParametricCoord_, api_surfaceParametricCoord_n_.value
         )
@@ -2290,7 +2290,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_visibility = setVisibility
 
@@ -2317,7 +2317,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_value_.value
 
     get_visibility = getVisibility
@@ -2339,7 +2339,7 @@ class model:
             ctypes.c_int(value), ctypes.c_int(windowIndex), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_visibility_per_window = setVisibilityPerWindow
 
@@ -2374,7 +2374,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_color = setColor
 
@@ -2412,7 +2412,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (api_r_.value, api_g_.value, api_b_.value, api_a_.value)
 
     get_color = getColor
@@ -2439,7 +2439,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_coordinates = setCoordinates
 
@@ -2463,7 +2463,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_attribute = setAttribute
 
@@ -2492,7 +2492,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorstring(api_values_, api_values_n_.value)
 
     get_attribute = getAttribute
@@ -2520,7 +2520,7 @@ class model:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorstring(api_names_, api_names_n_.value)
 
     get_attribute_names = getAttributeNames
@@ -2540,7 +2540,7 @@ class model:
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     remove_attribute = removeAttribute
 
@@ -2564,7 +2564,7 @@ class model:
                 ctypes.c_int(dim), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def partition(numPart, elementTags=[], partitions=[]):
@@ -2592,7 +2592,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def unpartition():
@@ -2604,7 +2604,7 @@ class model:
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshUnpartition(ctypes.byref(ierr))
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def optimize(method="", force=False, niter=1, dimTags=[]):
@@ -2638,7 +2638,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def recombine():
@@ -2650,7 +2650,7 @@ class model:
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshRecombine(ctypes.byref(ierr))
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def refine():
@@ -2662,7 +2662,7 @@ class model:
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshRefine(ctypes.byref(ierr))
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def setOrder(order):
@@ -2680,7 +2680,7 @@ class model:
                 ctypes.c_int(order), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_order = setOrder
 
@@ -2709,7 +2709,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
         get_last_entity_error = getLastEntityError
@@ -2738,7 +2738,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorsize(api_nodeTags_, api_nodeTags_n_.value)
 
         get_last_node_error = getLastNodeError
@@ -2763,7 +2763,7 @@ class model:
                 api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def removeElements(dim, tag, elementTags=[]):
@@ -2790,7 +2790,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         remove_elements = removeElements
 
@@ -2812,7 +2812,7 @@ class model:
                 api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def reverseElements(elementTags):
@@ -2830,7 +2830,7 @@ class model:
                 api_elementTags_, api_elementTags_n_, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         reverse_elements = reverseElements
 
@@ -2862,7 +2862,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         affine_transform = affineTransform
 
@@ -2925,7 +2925,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
                 _ovectordouble(api_coord_, api_coord_n_.value),
@@ -2982,7 +2982,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
                 _ovectordouble(api_coord_, api_coord_n_.value),
@@ -3035,7 +3035,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectordouble(api_coord_, api_coord_n_.value),
                 _ovectordouble(
@@ -3076,7 +3076,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_node = setNode
 
@@ -3095,7 +3095,7 @@ class model:
                 ctypes.c_int(bool(onlyIfNecessary)), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         rebuild_node_cache = rebuildNodeCache
 
@@ -3114,7 +3114,7 @@ class model:
                 ctypes.c_int(bool(onlyIfNecessary)), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         rebuild_element_cache = rebuildElementCache
 
@@ -3155,7 +3155,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
                 _ovectordouble(api_coord_, api_coord_n_.value),
@@ -3181,7 +3181,7 @@ class model:
                 ctypes.byref(api_maxTag_), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_maxTag_.value
 
         get_max_node_tag = getMaxNodeTag
@@ -3226,7 +3226,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         add_nodes = addNodes
 
@@ -3243,7 +3243,7 @@ class model:
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshReclassifyNodes(ctypes.byref(ierr))
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         reclassify_nodes = reclassifyNodes
 
@@ -3266,7 +3266,7 @@ class model:
                 ctypes.c_int(dim), ctypes.c_int(tag), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         relocate_nodes = relocateNodes
 
@@ -3327,7 +3327,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorint(api_elementTypes_, api_elementTypes_n_.value),
                 _ovectorvectorsize(
@@ -3378,7 +3378,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 api_elementType_.value,
                 _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
@@ -3441,7 +3441,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 api_elementTag_.value,
                 api_elementType_.value,
@@ -3491,7 +3491,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorsize(api_elementTags_, api_elementTags_n_.value)
 
         get_elements_by_coordinates = getElementsByCoordinates
@@ -3533,7 +3533,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (api_u_.value, api_v_.value, api_w_.value)
 
         get_local_coordinates_in_element = getLocalCoordinatesInElement
@@ -3567,7 +3567,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorint(api_elementTypes_, api_elementTypes_n_.value)
 
         get_element_types = getElementTypes
@@ -3597,7 +3597,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         get_element_type = getElementType
@@ -3646,7 +3646,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ostring(api_elementName_),
                 api_dim_.value,
@@ -3706,7 +3706,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorsize(api_elementTags_, api_elementTags_n_.value),
                 _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
@@ -3732,7 +3732,7 @@ class model:
                 ctypes.byref(api_maxTag_), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_maxTag_.value
 
         get_max_element_tag = getMaxElementTag
@@ -3784,7 +3784,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectordouble(
                 api_elementsQuality_, api_elementsQuality_n_.value
             )
@@ -3836,7 +3836,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         add_elements = addElements
 
@@ -3872,7 +3872,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         add_elements_by_type = addElementsByType
 
@@ -3921,7 +3921,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectordouble(api_localCoord_, api_localCoord_n_.value),
                 _ovectordouble(api_weights_, api_weights_n_.value),
@@ -3992,7 +3992,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectordouble(api_jacobians_, api_jacobians_n_.value),
                 _ovectordouble(api_determinants_, api_determinants_n_.value),
@@ -4054,7 +4054,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectordouble(api_jacobians_, api_jacobians_n_.value),
                 _ovectordouble(api_determinants_, api_determinants_n_.value),
@@ -4127,7 +4127,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 api_numComponents_.value,
                 _ovectordouble(
@@ -4180,7 +4180,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorint(
                 api_basisFunctionsOrientation_,
                 api_basisFunctionsOrientation_n_.value,
@@ -4213,7 +4213,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_basisFunctionsOrientation_.value
 
         get_basis_functions_orientation_for_element = (
@@ -4241,7 +4241,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         get_number_of_orientations = getNumberOfOrientations
@@ -4286,7 +4286,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorsize(api_edgeTags_, api_edgeTags_n_.value),
                 _ovectorint(
@@ -4336,7 +4336,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorsize(api_faceTags_, api_faceTags_n_.value),
                 _ovectorint(
@@ -4363,7 +4363,7 @@ class model:
                 api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         create_edges = createEdges
 
@@ -4384,7 +4384,7 @@ class model:
                 api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         create_faces = createFaces
 
@@ -4420,7 +4420,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorsize(api_edgeTags_, api_edgeTags_n_.value),
                 _ovectorsize(api_edgeNodes_, api_edgeNodes_n_.value),
@@ -4462,7 +4462,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorsize(api_faceTags_, api_faceTags_n_.value),
                 _ovectorsize(api_faceNodes_, api_faceNodes_n_.value),
@@ -4493,7 +4493,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         add_edges = addEdges
 
@@ -4522,7 +4522,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         add_faces = addFaces
 
@@ -4577,7 +4577,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorint(api_typeKeys_, api_typeKeys_n_.value),
                 _ovectorsize(api_entityKeys_, api_entityKeys_n_.value),
@@ -4629,7 +4629,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorint(api_typeKeys_, api_typeKeys_n_.value),
                 _ovectorsize(api_entityKeys_, api_entityKeys_n_.value),
@@ -4659,7 +4659,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         get_number_of_keys = getNumberOfKeys
@@ -4707,7 +4707,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_infoKeys_, api_infoKeys_n_.value)
 
         get_keys_information = getKeysInformation
@@ -4756,7 +4756,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectordouble(api_barycenters_, api_barycenters_n_.value)
 
         get_barycenters = getBarycenters
@@ -4803,7 +4803,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorsize(api_nodeTags_, api_nodeTags_n_.value)
 
         get_element_edge_nodes = getElementEdgeNodes
@@ -4853,7 +4853,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorsize(api_nodeTags_, api_nodeTags_n_.value)
 
         get_element_face_nodes = getElementFaceNodes
@@ -4893,7 +4893,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorsize(api_elementTags_, api_elementTags_n_.value),
                 _ovectorint(api_partitions_, api_partitions_n_.value),
@@ -4923,7 +4923,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_size = setSize
 
@@ -4957,7 +4957,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectordouble(api_sizes_, api_sizes_n_.value)
 
         get_sizes = getSizes
@@ -4992,7 +4992,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_size_at_parametric_points = setSizeAtParametricPoints
 
@@ -5036,7 +5036,7 @@ class model:
                 api_callback_, None, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_size_callback = setSizeCallback
 
@@ -5050,7 +5050,7 @@ class model:
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshRemoveSizeCallback(ctypes.byref(ierr))
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         remove_size_callback = removeSizeCallback
 
@@ -5081,7 +5081,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_transfinite_curve = setTransfiniteCurve
 
@@ -5113,7 +5113,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_transfinite_surface = setTransfiniteSurface
 
@@ -5139,7 +5139,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_transfinite_volume = setTransfiniteVolume
 
@@ -5174,7 +5174,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_transfinite_automatic = setTransfiniteAutomatic
 
@@ -5201,7 +5201,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_recombine = setRecombine
 
@@ -5226,7 +5226,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_smoothing = setSmoothing
 
@@ -5254,7 +5254,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_reverse = setReverse
 
@@ -5280,7 +5280,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_algorithm = setAlgorithm
 
@@ -5306,7 +5306,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_size_from_boundary = setSizeFromBoundary
 
@@ -5329,7 +5329,7 @@ class model:
                 ctypes.c_int(dim), api_tags_, api_tags_n_, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_compound = setCompound
 
@@ -5351,7 +5351,7 @@ class model:
                 ctypes.c_int(tag), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_outward_orientation = setOutwardOrientation
 
@@ -5373,7 +5373,7 @@ class model:
                 api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         remove_constraints = removeConstraints
 
@@ -5409,7 +5409,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def removeEmbedded(dimTags, dim=-1):
@@ -5433,7 +5433,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         remove_embedded = removeEmbedded
 
@@ -5465,7 +5465,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
         get_embedded = getEmbedded
@@ -5493,7 +5493,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         reorder_elements = reorderElements
 
@@ -5539,7 +5539,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorsize(api_oldTags_, api_oldTags_n_.value),
                 _ovectorsize(api_newTags_, api_newTags_n_.value),
@@ -5572,7 +5572,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         renumber_nodes = renumberNodes
 
@@ -5602,7 +5602,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         renumber_elements = renumberElements
 
@@ -5643,7 +5643,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_periodic = setPeriodic
 
@@ -5677,7 +5677,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorint(api_tagMaster_, api_tagMaster_n_.value)
 
         get_periodic = getPeriodic
@@ -5732,7 +5732,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 api_tagMaster_.value,
                 _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
@@ -5820,7 +5820,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 api_tagMaster_.value,
                 _ovectorint(api_typeKeys_, api_typeKeys_n_.value),
@@ -5845,7 +5845,7 @@ class model:
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshImportStl(ctypes.byref(ierr))
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         import_stl = importStl
 
@@ -5878,7 +5878,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorsize(api_tags_, api_tags_n_.value)
 
         get_duplicate_nodes = getDuplicateNodes
@@ -5900,7 +5900,7 @@ class model:
                 api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         remove_duplicate_nodes = removeDuplicateNodes
 
@@ -5922,7 +5922,7 @@ class model:
                 api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         remove_duplicate_elements = removeDuplicateElements
 
@@ -5943,7 +5943,7 @@ class model:
                 ctypes.c_double(quality), ctypes.c_int(tag), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         split_quadrangles = splitQuadrangles
 
@@ -5967,7 +5967,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_visibility = setVisibility
 
@@ -5998,7 +5998,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorint(api_values_, api_values_n_.value)
 
         get_visibility = getVisibility
@@ -6040,7 +6040,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         classify_surfaces = classifySurfaces
 
@@ -6064,7 +6064,7 @@ class model:
                 api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         create_geometry = createGeometry
 
@@ -6091,7 +6091,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         create_topology = createTopology
 
@@ -6137,7 +6137,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         add_homology_request = addHomologyRequest
 
@@ -6151,7 +6151,7 @@ class model:
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshClearHomologyRequests(ctypes.byref(ierr))
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         clear_homology_requests = clearHomologyRequests
 
@@ -6180,7 +6180,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
         compute_homology = computeHomology
@@ -6210,7 +6210,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorint(api_viewTags_, api_viewTags_n_.value)
 
         compute_cross_field = computeCrossField
@@ -6244,7 +6244,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorsize(api_tri_, api_tri_n_.value)
 
         @staticmethod
@@ -6276,7 +6276,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorsize(api_tetra_, api_tetra_n_.value)
 
         class field:
@@ -6308,7 +6308,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
                 return api_result_
 
             @staticmethod
@@ -6326,7 +6326,7 @@ class model:
                     ctypes.c_int(tag), ctypes.byref(ierr)
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             @staticmethod
             def list():
@@ -6351,7 +6351,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
                 return _ovectorint(api_tags_, api_tags_n_.value)
 
             @staticmethod
@@ -6375,7 +6375,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
                 return _ostring(api_fileType_)
 
             get_type = getType
@@ -6400,7 +6400,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_number = setNumber
 
@@ -6427,7 +6427,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
                 return api_value_.value
 
             get_number = getNumber
@@ -6452,7 +6452,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_string = setString
 
@@ -6479,7 +6479,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
                 return _ostring(api_value_)
 
             get_string = getString
@@ -6506,7 +6506,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_numbers = setNumbers
 
@@ -6537,7 +6537,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
                 return _ovectordouble(api_values_, api_values_n_.value)
 
             get_numbers = getNumbers
@@ -6557,7 +6557,7 @@ class model:
                     ctypes.c_int(tag), ctypes.byref(ierr)
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_as_background_mesh = setAsBackgroundMesh
 
@@ -6576,7 +6576,7 @@ class model:
                     ctypes.c_int(tag), ctypes.byref(ierr)
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_as_boundary_layer = setAsBoundaryLayer
 
@@ -6616,7 +6616,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_point = addPoint
@@ -6646,7 +6646,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_line = addLine
@@ -6688,7 +6688,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_circle_arc = addCircleArc
@@ -6739,7 +6739,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_ellipse_arc = addEllipseArc
@@ -6770,7 +6770,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_spline = addSpline
@@ -6801,7 +6801,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_bspline = addBSpline
@@ -6830,7 +6830,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_bezier = addBezier
@@ -6860,7 +6860,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_polyline = addPolyline
@@ -6893,7 +6893,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_compound_spline = addCompoundSpline
@@ -6926,7 +6926,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_compound_bspline = addCompoundBSpline
@@ -6961,7 +6961,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_curve_loop = addCurveLoop
@@ -6994,7 +6994,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorint(api_tags_, api_tags_n_.value)
 
         add_curve_loops = addCurveLoops
@@ -7025,7 +7025,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_plane_surface = addPlaneSurface
@@ -7058,7 +7058,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_surface_filling = addSurfaceFilling
@@ -7087,7 +7087,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_surface_loop = addSurfaceLoop
@@ -7118,7 +7118,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_volume = addVolume
@@ -7157,7 +7157,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_geometry = addGeometry
@@ -7194,7 +7194,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_point_on_geometry = addPointOnGeometry
@@ -7250,7 +7250,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
@@ -7324,7 +7324,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
@@ -7408,7 +7408,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
@@ -7468,7 +7468,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         extrude_boundary_layer = extrudeBoundaryLayer
@@ -7498,7 +7498,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def rotate(dimTags, x, y, z, ax, ay, az, angle):
@@ -7535,7 +7535,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def dilate(dimTags, x, y, z, a, b, c):
@@ -7570,7 +7570,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def mirror(dimTags, a, b, c, d):
@@ -7600,7 +7600,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def symmetrize(dimTags, a, b, c, d):
@@ -7631,7 +7631,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def copy(dimTags):
@@ -7661,7 +7661,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
@@ -7687,7 +7687,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def removeAllDuplicates():
@@ -7700,7 +7700,7 @@ class model:
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelGeoRemoveAllDuplicates(ctypes.byref(ierr))
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         remove_all_duplicates = removeAllDuplicates
 
@@ -7736,7 +7736,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorint(api_curveTags_, api_curveTags_n_.value)
 
         split_curve = splitCurve
@@ -7759,7 +7759,7 @@ class model:
                 ctypes.c_int(dim), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         get_max_tag = getMaxTag
@@ -7781,7 +7781,7 @@ class model:
                 ctypes.c_int(dim), ctypes.c_int(maxTag), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_max_tag = setMaxTag
 
@@ -7814,7 +7814,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_physical_group = addPhysicalGroup
@@ -7837,7 +7837,7 @@ class model:
                 api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         remove_physical_groups = removePhysicalGroups
 
@@ -7856,7 +7856,7 @@ class model:
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelGeoSynchronize(ctypes.byref(ierr))
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         class mesh:
             """
@@ -7885,7 +7885,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_size = setSize
 
@@ -7917,7 +7917,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_transfinite_curve = setTransfiniteCurve
 
@@ -7949,7 +7949,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_transfinite_surface = setTransfiniteSurface
 
@@ -7975,7 +7975,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_transfinite_volume = setTransfiniteVolume
 
@@ -8003,7 +8003,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_recombine = setRecombine
 
@@ -8029,7 +8029,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_smoothing = setSmoothing
 
@@ -8057,7 +8057,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_reverse = setReverse
 
@@ -8083,7 +8083,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_algorithm = setAlgorithm
 
@@ -8109,7 +8109,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_size_from_boundary = setSizeFromBoundary
 
@@ -8149,7 +8149,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_point = addPoint
@@ -8179,7 +8179,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_line = addLine
@@ -8215,7 +8215,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_circle_arc = addCircleArc
@@ -8274,7 +8274,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_circle = addCircle
@@ -8310,7 +8310,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_ellipse_arc = addEllipseArc
@@ -8373,7 +8373,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_ellipse = addEllipse
@@ -8412,7 +8412,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_spline = addSpline
@@ -8467,7 +8467,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_bspline = addBSpline
@@ -8496,7 +8496,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_bezier = addBezier
@@ -8529,7 +8529,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_wire = addWire
@@ -8564,7 +8564,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_curve_loop = addCurveLoop
@@ -8603,7 +8603,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_rectangle = addRectangle
@@ -8650,7 +8650,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_disk = addDisk
@@ -8681,7 +8681,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_plane_surface = addPlaneSurface
@@ -8761,7 +8761,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_surface_filling = addSurfaceFilling
@@ -8794,7 +8794,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_bspline_filling = addBSplineFilling
@@ -8827,7 +8827,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_bezier_filling = addBezierFilling
@@ -8913,7 +8913,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_bspline_surface = addBSplineSurface
@@ -8958,7 +8958,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_bezier_surface = addBezierSurface
@@ -8995,7 +8995,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_trimmed_surface = addTrimmedSurface
@@ -9028,7 +9028,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_surface_loop = addSurfaceLoop
@@ -9059,7 +9059,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_volume = addVolume
@@ -9110,7 +9110,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_sphere = addSphere
@@ -9148,7 +9148,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_box = addBox
@@ -9192,7 +9192,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_cylinder = addCylinder
@@ -9238,7 +9238,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_cone = addCone
@@ -9285,7 +9285,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_wedge = addWedge
@@ -9329,7 +9329,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         add_torus = addTorus
@@ -9395,7 +9395,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         add_thru_sections = addThruSections
@@ -9440,7 +9440,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         add_thick_solid = addThickSolid
@@ -9496,7 +9496,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
@@ -9571,7 +9571,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
@@ -9611,7 +9611,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         add_pipe = addPipe
@@ -9658,7 +9658,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
@@ -9711,7 +9711,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
@@ -9749,7 +9749,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
@@ -9778,7 +9778,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         fillet2_d = fillet2D
@@ -9812,7 +9812,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         chamfer2_d = chamfer2D
@@ -9846,7 +9846,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         offset_curve = offsetCurve
@@ -9899,7 +9899,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 api_distance_.value,
                 api_x1_.value,
@@ -9971,7 +9971,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorpair(api_outDimTags_, api_outDimTags_n_.value),
                 _ovectorvectorpair(
@@ -10040,7 +10040,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorpair(api_outDimTags_, api_outDimTags_n_.value),
                 _ovectorvectorpair(
@@ -10109,7 +10109,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorpair(api_outDimTags_, api_outDimTags_n_.value),
                 _ovectorvectorpair(
@@ -10182,7 +10182,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorpair(api_outDimTags_, api_outDimTags_n_.value),
                 _ovectorvectorpair(
@@ -10217,7 +10217,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def rotate(dimTags, x, y, z, ax, ay, az, angle):
@@ -10254,7 +10254,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def dilate(dimTags, x, y, z, a, b, c):
@@ -10289,7 +10289,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def mirror(dimTags, a, b, c, d):
@@ -10319,7 +10319,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def symmetrize(dimTags, a, b, c, d):
@@ -10350,7 +10350,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def affineTransform(dimTags, affineTransform):
@@ -10379,7 +10379,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         affine_transform = affineTransform
 
@@ -10411,7 +10411,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
@@ -10437,7 +10437,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         @staticmethod
         def removeAllDuplicates():
@@ -10451,7 +10451,7 @@ class model:
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccRemoveAllDuplicates(ctypes.byref(ierr))
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         remove_all_duplicates = removeAllDuplicates
 
@@ -10505,7 +10505,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         heal_shapes = healShapes
@@ -10526,7 +10526,7 @@ class model:
                 api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         convert_to_nurbs = convertToNURBS
 
@@ -10564,7 +10564,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         import_shapes = importShapes
@@ -10604,7 +10604,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         import_shapes_native_pointer = importShapesNativePointer
@@ -10636,7 +10636,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
         get_entities = getEntities
@@ -10683,7 +10683,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
         get_entities_in_bounding_box = getEntitiesInBoundingBox
@@ -10727,7 +10727,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 api_xmin_.value,
                 api_ymin_.value,
@@ -10775,7 +10775,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorint(api_curveLoopTags_, api_curveLoopTags_n_.value),
                 _ovectorvectorint(
@@ -10821,7 +10821,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (
                 _ovectorint(
                     api_surfaceLoopTags_, api_surfaceLoopTags_n_.value
@@ -10858,7 +10858,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_mass_.value
 
         get_mass = getMass
@@ -10893,7 +10893,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (api_x_.value, api_y_.value, api_z_.value)
 
         get_center_of_mass = getCenterOfMass
@@ -10926,7 +10926,7 @@ class model:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ovectordouble(api_mat_, api_mat_n_.value)
 
         get_matrix_of_inertia = getMatrixOfInertia
@@ -10949,7 +10949,7 @@ class model:
                 ctypes.c_int(dim), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_result_
 
         get_max_tag = getMaxTag
@@ -10971,7 +10971,7 @@ class model:
                 ctypes.c_int(dim), ctypes.c_int(maxTag), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_max_tag = setMaxTag
 
@@ -10990,7 +10990,7 @@ class model:
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccSynchronize(ctypes.byref(ierr))
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         class mesh:
             """
@@ -11019,7 +11019,7 @@ class model:
                     ctypes.byref(ierr),
                 )
                 if ierr.value != 0:
-                    raise Exception(logger.getLastError())
+                    raise RuntimeError(logger.getLastError())
 
             set_size = setSize
 
@@ -11051,7 +11051,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     @staticmethod
@@ -11067,7 +11067,7 @@ class view:
         ierr = ctypes.c_int()
         gmsh.lib.gmshViewRemove(ctypes.c_int(tag), ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def getIndex(tag):
@@ -11088,7 +11088,7 @@ class view:
             ctypes.c_int(tag), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     get_index = getIndex
@@ -11116,7 +11116,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorint(api_tags_, api_tags_n_.value)
 
     get_tags = getTags
@@ -11179,7 +11179,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     add_model_data = addModelData
 
@@ -11233,7 +11233,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     add_homogeneous_model_data = addHomogeneousModelData
 
@@ -11285,7 +11285,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (
             _ostring(api_dataType_),
             _ovectorsize(api_tags_, api_tags_n_.value),
@@ -11342,7 +11342,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (
             _ostring(api_dataType_),
             _ovectorsize(api_tags_, api_tags_n_.value),
@@ -11386,7 +11386,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     add_list_data = addListData
 
@@ -11436,7 +11436,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (
             _ovectorstring(api_dataType_, api_dataType_n_.value),
             _ovectorint(api_numElements_, api_numElements_n_.value),
@@ -11485,7 +11485,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     add_list_data_string = addListDataString
 
@@ -11532,7 +11532,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (
             _ovectordouble(api_coord_, api_coord_n_.value),
             _ovectorstring(api_data_, api_data_n_.value),
@@ -11591,7 +11591,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_interpolation_matrices = setInterpolationMatrices
 
@@ -11620,7 +11620,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     add_alias = addAlias
@@ -11650,7 +11650,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def probe(
@@ -11733,7 +11733,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (
             _ovectordouble(api_values_, api_values_n_.value),
             api_distance_.value,
@@ -11760,7 +11760,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def setVisibilityPerWindow(tag, value, windowIndex=0):
@@ -11783,7 +11783,7 @@ class view:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_visibility_per_window = setVisibilityPerWindow
 
@@ -11813,7 +11813,7 @@ class view:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_number = setNumber
 
@@ -11840,7 +11840,7 @@ class view:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return api_value_.value
 
         get_number = getNumber
@@ -11865,7 +11865,7 @@ class view:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_string = setString
 
@@ -11892,7 +11892,7 @@ class view:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return _ostring(api_value_)
 
         get_string = getString
@@ -11925,7 +11925,7 @@ class view:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
         set_color = setColor
 
@@ -11962,7 +11962,7 @@ class view:
                 ctypes.byref(ierr),
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
             return (api_r_.value, api_g_.value, api_b_.value, api_a_.value)
 
         get_color = getColor
@@ -11984,7 +11984,7 @@ class view:
                 ctypes.c_int(refTag), ctypes.c_int(tag), ctypes.byref(ierr)
             )
             if ierr.value != 0:
-                raise Exception(logger.getLastError())
+                raise RuntimeError(logger.getLastError())
 
 
 class plugin:
@@ -12015,7 +12015,7 @@ class plugin:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_number = setNumber
 
@@ -12042,7 +12042,7 @@ class plugin:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_string = setString
 
@@ -12066,7 +12066,7 @@ class plugin:
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
 
@@ -12085,7 +12085,7 @@ class graphics:
         ierr = ctypes.c_int()
         gmsh.lib.gmshGraphicsDraw(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
 
 class fltk:
@@ -12104,7 +12104,7 @@ class fltk:
         ierr = ctypes.c_int()
         gmsh.lib.gmshFltkInitialize(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def finalize():
@@ -12117,7 +12117,7 @@ class fltk:
         ierr = ctypes.c_int()
         gmsh.lib.gmshFltkFinalize(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def wait(time=-1.0):
@@ -12134,7 +12134,7 @@ class fltk:
         ierr = ctypes.c_int()
         gmsh.lib.gmshFltkWait(ctypes.c_double(time), ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def update():
@@ -12149,7 +12149,7 @@ class fltk:
         ierr = ctypes.c_int()
         gmsh.lib.gmshFltkUpdate(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def awake(action=""):
@@ -12168,7 +12168,7 @@ class fltk:
             ctypes.c_char_p(action.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def lock():
@@ -12180,7 +12180,7 @@ class fltk:
         ierr = ctypes.c_int()
         gmsh.lib.gmshFltkLock(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def unlock():
@@ -12192,7 +12192,7 @@ class fltk:
         ierr = ctypes.c_int()
         gmsh.lib.gmshFltkUnlock(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def run():
@@ -12206,7 +12206,7 @@ class fltk:
         ierr = ctypes.c_int()
         gmsh.lib.gmshFltkRun(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def isAvailable():
@@ -12221,7 +12221,7 @@ class fltk:
         ierr = ctypes.c_int()
         api_result_ = gmsh.lib.gmshFltkIsAvailable(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     is_available = isAvailable
@@ -12253,7 +12253,7 @@ class fltk:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (api_result_, _ovectorpair(api_dimTags_, api_dimTags_n_.value))
 
     select_entities = selectEntities
@@ -12281,7 +12281,7 @@ class fltk:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (
             api_result_,
             _ovectorsize(api_elementTags_, api_elementTags_n_.value),
@@ -12312,7 +12312,7 @@ class fltk:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return (api_result_, _ovectorint(api_viewTags_, api_viewTags_n_.value))
 
     select_views = selectViews
@@ -12337,7 +12337,7 @@ class fltk:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     split_current_window = splitCurrentWindow
 
@@ -12358,7 +12358,7 @@ class fltk:
             ctypes.c_int(windowIndex), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_current_window = setCurrentWindow
 
@@ -12381,7 +12381,7 @@ class fltk:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_status_message = setStatusMessage
 
@@ -12401,7 +12401,7 @@ class fltk:
             ctypes.c_int(dim), ctypes.c_int(tag), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     show_context_window = showContextWindow
 
@@ -12420,7 +12420,7 @@ class fltk:
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     open_tree_item = openTreeItem
 
@@ -12439,7 +12439,7 @@ class fltk:
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     close_tree_item = closeTreeItem
 
@@ -12475,7 +12475,7 @@ class parser:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorstring(api_names_, api_names_n_.value)
 
     get_names = getNames
@@ -12501,7 +12501,7 @@ class parser:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_number = setNumber
 
@@ -12526,7 +12526,7 @@ class parser:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_string = setString
 
@@ -12556,7 +12556,7 @@ class parser:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectordouble(api_value_, api_value_n_.value)
 
     get_number = getNumber
@@ -12587,7 +12587,7 @@ class parser:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorstring(api_value_, api_value_n_.value)
 
     get_string = getString
@@ -12608,7 +12608,7 @@ class parser:
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def parse(fileName):
@@ -12625,7 +12625,7 @@ class parser:
             ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
 
 class onelab:
@@ -12651,7 +12651,7 @@ class onelab:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def get(name="", format="json"):
@@ -12677,7 +12677,7 @@ class onelab:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ostring(api_data_)
 
     @staticmethod
@@ -12706,7 +12706,7 @@ class onelab:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorstring(api_names_, api_names_n_.value)
 
     get_names = getNames
@@ -12733,7 +12733,7 @@ class onelab:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_number = setNumber
 
@@ -12759,7 +12759,7 @@ class onelab:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_string = setString
 
@@ -12789,7 +12789,7 @@ class onelab:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectordouble(api_value_, api_value_n_.value)
 
     get_number = getNumber
@@ -12820,7 +12820,7 @@ class onelab:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorstring(api_value_, api_value_n_.value)
 
     get_string = getString
@@ -12843,7 +12843,7 @@ class onelab:
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     get_changed = getChanged
@@ -12867,7 +12867,7 @@ class onelab:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     set_changed = setChanged
 
@@ -12886,7 +12886,7 @@ class onelab:
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def run(name="", command=""):
@@ -12908,7 +12908,7 @@ class onelab:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
 
 class logger:
@@ -12934,7 +12934,7 @@ class logger:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def start():
@@ -12946,7 +12946,7 @@ class logger:
         ierr = ctypes.c_int()
         gmsh.lib.gmshLoggerStart(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def get():
@@ -12971,7 +12971,7 @@ class logger:
             ctypes.byref(ierr),
         )
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return _ovectorstring(api_log_, api_log_n_.value)
 
     @staticmethod
@@ -12984,7 +12984,7 @@ class logger:
         ierr = ctypes.c_int()
         gmsh.lib.gmshLoggerStop(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
 
     @staticmethod
     def getWallTime():
@@ -12999,7 +12999,7 @@ class logger:
         gmsh.lib.gmshLoggerGetWallTime.restype = ctypes.c_double
         api_result_ = gmsh.lib.gmshLoggerGetWallTime(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     get_wall_time = getWallTime
@@ -13017,7 +13017,7 @@ class logger:
         gmsh.lib.gmshLoggerGetCpuTime.restype = ctypes.c_double
         api_result_ = gmsh.lib.gmshLoggerGetCpuTime(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     get_cpu_time = getCpuTime
@@ -13035,7 +13035,7 @@ class logger:
         gmsh.lib.gmshLoggerGetMemory.restype = ctypes.c_double
         api_result_ = gmsh.lib.gmshLoggerGetMemory(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     get_memory = getMemory
@@ -13053,7 +13053,7 @@ class logger:
         gmsh.lib.gmshLoggerGetTotalMemory.restype = ctypes.c_double
         api_result_ = gmsh.lib.gmshLoggerGetTotalMemory(ctypes.byref(ierr))
         if ierr.value != 0:
-            raise Exception(logger.getLastError())
+            raise RuntimeError(logger.getLastError())
         return api_result_
 
     get_total_memory = getTotalMemory
@@ -13076,7 +13076,7 @@ class logger:
             ctypes.byref(api_error_), ctypes.byref(ierr)
         )
         if ierr.value != 0:
-            raise Exception("Could not get last error")
+            raise RuntimeError("Could not get last error")
         return _ostring(api_error_)
 
     get_last_error = getLastError
