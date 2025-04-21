@@ -19,10 +19,9 @@ lint: .venv/.tombstone
 # 	e.g. `.venv/bin/pip install --upgrade --group dev`
 .PHONY: upgrade
 upgrade: .venv/.tombstone
-	.venv/bin/pip install --upgrade \
+	.venv/bin/pip install --upgrade . \
 		'build >=1.2.2.post1' \
 		'mypy >=1.15.0' \
-		'pip >=25.0.1' \
 		'pyright >=1.1.399' \
 		'ruff >=0.11.6' \
 		'setuptools >=79.0.0'

@@ -322,6 +322,9 @@ import platform
 from math import pi
 import gmsh
 
+if gmsh.use_numpy:
+    import numpy
+
 lib = gmsh.lib
 
 

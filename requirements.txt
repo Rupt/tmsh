@@ -3,6 +3,7 @@ gmsh==4.13.1
 mypy==1.15.0
 mypy-extensions==1.0.0
 nodeenv==1.9.1
+numpy==2.2.5
 packaging==25.0
 pyproject_hooks==1.2.0
 pyright==1.1.399
