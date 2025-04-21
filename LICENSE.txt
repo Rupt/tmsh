@@ -4,7 +4,7 @@ GNU General Public License, version 2 or later, with a stated exception.
 
 Subsets of tmsh distributed without `src/tmsh.py` are not derived from Gmsh,
 and are available under the terms of the MIT License, given below, as
-permitted under the Gmsh license.
+permitted by the Gmsh License.
 
 Gmsh License
 
