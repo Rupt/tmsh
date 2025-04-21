@@ -520,9 +520,6 @@ def _iargcargv(o):
     )
 
 
-# Gmsh Python API begins here
-
-
 def initialize(
     *,
     argv: list[str] = [],
