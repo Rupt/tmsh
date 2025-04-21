@@ -33,4 +33,4 @@ upgrade: .venv/.tombstone
 .PHONY: publish
 publish: .venv/.tombstone
 	.venv/bin/python -m build --no-isolation
-	.venv/bin/python -m twine upload --repository pypi dist/* --verbose
+	.venv/bin/python -m twine upload --repository pypi dist/*
