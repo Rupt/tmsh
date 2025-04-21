@@ -929,7 +929,7 @@ class model:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getEntities(dim=-1) -> builtins.list[tuple[int, int]]:
+    def getEntities(dim: int = -1) -> builtins.list[tuple[int, int]]:
         """gmsh.model.getEntities(dim=-1)
 
         Get all the entities in the current model. A model entity is represented by
@@ -1022,7 +1022,7 @@ class model:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getPhysicalGroups(dim=-1):
+    def getPhysicalGroups(dim: int = -1):
         """gmsh.model.getPhysicalGroups(dim=-1)
 
         Get all the physical groups in the current model. If `dim' is >= 0, return
@@ -9820,7 +9820,7 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def getEntities(dim=-1):
+        def getEntities(dim: int = -1):
             """gmsh.model.occ.getEntities(dim=-1)
 
             Get all the OpenCASCADE entities. If `dim' is >= 0, return only the
@@ -11320,7 +11320,7 @@ class fltk:
         return api_result_
 
     @staticmethod
-    def selectEntities(dim=-1):
+    def selectEntities(dim: int = -1):
         """gmsh.fltk.selectEntities(dim=-1)
 
         Select entities in the user interface. Return the selected entities as a
