@@ -426,7 +426,7 @@ def _ivectorint(o):
     if gmsh.use_numpy:
         array = numpy.ascontiguousarray(o, numpy.int32)
         if len(o) and array.ndim != 1:
-            raise Exception("Invalid data for input vector of integers")
+            raise ValueError("Invalid data for input vector of integers")
         ct = array.ctypes
         ct.array = array
         return ct, ctypes.c_size_t(len(o))
@@ -438,7 +438,7 @@ def _ivectorsize(o):
     if gmsh.use_numpy:
         array = numpy.ascontiguousarray(o, numpy.uintp)
         if len(o) and array.ndim != 1:
-            raise Exception("Invalid data for input vector of sizes")
+            raise ValueError("Invalid data for input vector of sizes")
         ct = array.ctypes
         ct.array = array
         return ct, ctypes.c_size_t(len(o))
@@ -450,7 +450,7 @@ def _ivectordouble(o):
     if gmsh.use_numpy:
         array = numpy.ascontiguousarray(o, numpy.float64)
         if len(o) and array.ndim != 1:
-            raise Exception("Invalid data for input vector of doubles")
+            raise ValueError("Invalid data for input vector of doubles")
         ct = array.ctypes
         ct.array = array
         return ct, ctypes.c_size_t(len(o))
@@ -462,13 +462,13 @@ def _ivectorpair(o):
     if gmsh.use_numpy:
         array = numpy.ascontiguousarray(o, numpy.int32)
         if len(o) and (array.ndim != 2 or array.shape[1] != 2):
-            raise Exception("Invalid data for input vector of pairs")
+            raise ValueError("Invalid data for input vector of pairs")
         ct = array.ctypes
         ct.array = array
         return ct, ctypes.c_size_t(len(o) * 2)
     else:
         if len(o) and len(o[0]) != 2:
-            raise Exception("Invalid data for input vector of pairs")
+            raise ValueError("Invalid data for input vector of pairs")
         return ((ctypes.c_int * 2) * len(o))(*o), ctypes.c_size_t(len(o) * 2)
 
 
