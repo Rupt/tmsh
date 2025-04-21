@@ -11,7 +11,8 @@ test: .venv/.tombstone
 
 .PHONY: lint
 lint: .venv/.tombstone
-	-.venv/bin/python -m ruff check
+	-.venv/bin/python -m ruff check --fix
+	-.venv/bin/python -m ruff format
 	-.venv/bin/python -m pyright src tests
 	-.venv/bin/python -m mypy src tests
 
