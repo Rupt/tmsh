@@ -10381,8 +10381,6 @@ class model:
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
 
-        affine_transform = affineTransform
-
         @staticmethod
         def copy(dimTags):
             """
@@ -10453,8 +10451,6 @@ class model:
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
 
-        remove_all_duplicates = removeAllDuplicates
-
         @staticmethod
         def healShapes(
             dimTags=[],
@@ -10508,8 +10504,6 @@ class model:
                 raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
-        heal_shapes = healShapes
-
         @staticmethod
         def convertToNURBS(dimTags):
             """
@@ -10527,8 +10521,6 @@ class model:
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
-
-        convert_to_nurbs = convertToNURBS
 
         @staticmethod
         def importShapes(fileName, highestDimOnly=True, format=""):
@@ -10566,8 +10558,6 @@ class model:
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
-
-        import_shapes = importShapes
 
         @staticmethod
         def importShapesNativePointer(shape, highestDimOnly=True):
@@ -10607,8 +10597,6 @@ class model:
                 raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
-        import_shapes_native_pointer = importShapesNativePointer
-
         @staticmethod
         def getEntities(dim=-1):
             """
@@ -10638,8 +10626,6 @@ class model:
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
-
-        get_entities = getEntities
 
         @staticmethod
         def getEntitiesInBoundingBox(
@@ -10685,8 +10671,6 @@ class model:
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
-
-        get_entities_in_bounding_box = getEntitiesInBoundingBox
 
         @staticmethod
         def getBoundingBox(dim, tag):
@@ -10737,8 +10721,6 @@ class model:
                 api_zmax_.value,
             )
 
-        get_bounding_box = getBoundingBox
-
         @staticmethod
         def getCurveLoops(surfaceTag):
             """
@@ -10782,8 +10764,6 @@ class model:
                     api_curveTags_, api_curveTags_n_, api_curveTags_nn_
                 ),
             )
-
-        get_curve_loops = getCurveLoops
 
         @staticmethod
         def getSurfaceLoops(volumeTag):
@@ -10831,8 +10811,6 @@ class model:
                 ),
             )
 
-        get_surface_loops = getSurfaceLoops
-
         @staticmethod
         def getMass(dim, tag):
             """
@@ -10860,8 +10838,6 @@ class model:
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
             return api_mass_.value
-
-        get_mass = getMass
 
         @staticmethod
         def getCenterOfMass(dim, tag):
@@ -10896,8 +10872,6 @@ class model:
                 raise RuntimeError(logger.getLastError())
             return (api_x_.value, api_y_.value, api_z_.value)
 
-        get_center_of_mass = getCenterOfMass
-
         @staticmethod
         def getMatrixOfInertia(dim, tag):
             """
@@ -10928,8 +10902,6 @@ class model:
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
             return _ovectordouble(api_mat_, api_mat_n_.value)
-
-        get_matrix_of_inertia = getMatrixOfInertia
 
         @staticmethod
         def getMaxTag(dim):
@@ -10972,8 +10944,6 @@ class model:
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
-
-        set_max_tag = setMaxTag
 
         @staticmethod
         def synchronize():
@@ -11020,8 +10990,6 @@ class model:
                 )
                 if ierr.value != 0:
                     raise RuntimeError(logger.getLastError())
-
-            set_size = setSize
 
 
 class view:
@@ -11091,8 +11059,6 @@ class view:
             raise RuntimeError(logger.getLastError())
         return api_result_
 
-    get_index = getIndex
-
     @staticmethod
     def getTags():
         """
@@ -11118,8 +11084,6 @@ class view:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
         return _ovectorint(api_tags_, api_tags_n_.value)
-
-    get_tags = getTags
 
     @staticmethod
     def addModelData(
@@ -11181,8 +11145,6 @@ class view:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
 
-    add_model_data = addModelData
-
     @staticmethod
     def addHomogeneousModelData(
         tag,
@@ -11234,8 +11196,6 @@ class view:
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
-
-    add_homogeneous_model_data = addHomogeneousModelData
 
     @staticmethod
     def getModelData(tag, step):
@@ -11351,8 +11311,6 @@ class view:
             api_numComponents_.value,
         )
 
-    get_homogeneous_model_data = getHomogeneousModelData
-
     @staticmethod
     def addListData(tag, dataType, numEle, data):
         """
@@ -11387,8 +11345,6 @@ class view:
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
-
-    add_list_data = addListData
 
     @staticmethod
     def getListData(tag, returnAdaptive=False):
@@ -11443,8 +11399,6 @@ class view:
             _ovectorvectordouble(api_data_, api_data_n_, api_data_nn_),
         )
 
-    get_list_data = getListData
-
     @staticmethod
     def addListDataString(tag, coord, data, style=[]):
         """
@@ -11486,8 +11440,6 @@ class view:
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
-
-    add_list_data_string = addListDataString
 
     @staticmethod
     def getListDataStrings(tag, dim):
@@ -11538,8 +11490,6 @@ class view:
             _ovectorstring(api_data_, api_data_n_.value),
             _ovectorstring(api_style_, api_style_n_.value),
         )
-
-    get_list_data_strings = getListDataStrings
 
     @staticmethod
     def setInterpolationMatrices(
@@ -11593,8 +11543,6 @@ class view:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
 
-    set_interpolation_matrices = setInterpolationMatrices
-
     @staticmethod
     def addAlias(refTag, copyOptions=False, tag=-1):
         """
@@ -11622,8 +11570,6 @@ class view:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
         return api_result_
-
-    add_alias = addAlias
 
     @staticmethod
     def combine(what, how, remove=True, copyOptions=True):
@@ -11785,8 +11731,6 @@ class view:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
 
-    set_visibility_per_window = setVisibilityPerWindow
-
     class option:
         """
         View option handling functions
@@ -11815,8 +11759,6 @@ class view:
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
 
-        set_number = setNumber
-
         @staticmethod
         def getNumber(tag, name):
             """
@@ -11843,8 +11785,6 @@ class view:
                 raise RuntimeError(logger.getLastError())
             return api_value_.value
 
-        get_number = getNumber
-
         @staticmethod
         def setString(tag, name, value):
             """
@@ -11866,8 +11806,6 @@ class view:
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
-
-        set_string = setString
 
         @staticmethod
         def getString(tag, name):
@@ -11894,8 +11832,6 @@ class view:
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
             return _ostring(api_value_)
-
-        get_string = getString
 
         @staticmethod
         def setColor(tag, name, r, g, b, a=255):
@@ -11926,8 +11862,6 @@ class view:
             )
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
-
-        set_color = setColor
 
         @staticmethod
         def getColor(tag, name):
@@ -11964,8 +11898,6 @@ class view:
             if ierr.value != 0:
                 raise RuntimeError(logger.getLastError())
             return (api_r_.value, api_g_.value, api_b_.value, api_a_.value)
-
-        get_color = getColor
 
         @staticmethod
         def copy(refTag, tag):
@@ -12017,8 +11949,6 @@ class plugin:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
 
-    set_number = setNumber
-
     @staticmethod
     def setString(name, option, value):
         """
@@ -12043,8 +11973,6 @@ class plugin:
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
-
-    set_string = setString
 
     @staticmethod
     def run(name):
@@ -12224,8 +12152,6 @@ class fltk:
             raise RuntimeError(logger.getLastError())
         return api_result_
 
-    is_available = isAvailable
-
     @staticmethod
     def selectEntities(dim=-1):
         """
@@ -12256,8 +12182,6 @@ class fltk:
             raise RuntimeError(logger.getLastError())
         return (api_result_, _ovectorpair(api_dimTags_, api_dimTags_n_.value))
 
-    select_entities = selectEntities
-
     @staticmethod
     def selectElements():
         """
@@ -12287,8 +12211,6 @@ class fltk:
             _ovectorsize(api_elementTags_, api_elementTags_n_.value),
         )
 
-    select_elements = selectElements
-
     @staticmethod
     def selectViews():
         """
@@ -12315,8 +12237,6 @@ class fltk:
             raise RuntimeError(logger.getLastError())
         return (api_result_, _ovectorint(api_viewTags_, api_viewTags_n_.value))
 
-    select_views = selectViews
-
     @staticmethod
     def splitCurrentWindow(how="v", ratio=0.5):
         """
@@ -12338,8 +12258,6 @@ class fltk:
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
-
-    split_current_window = splitCurrentWindow
 
     @staticmethod
     def setCurrentWindow(windowIndex=0):
@@ -12383,8 +12301,6 @@ class fltk:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
 
-    set_status_message = setStatusMessage
-
     @staticmethod
     def showContextWindow(dim, tag):
         """
@@ -12403,8 +12319,6 @@ class fltk:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
 
-    show_context_window = showContextWindow
-
     @staticmethod
     def openTreeItem(name):
         """
@@ -12422,8 +12336,6 @@ class fltk:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
 
-    open_tree_item = openTreeItem
-
     @staticmethod
     def closeTreeItem(name):
         """
@@ -12440,8 +12352,6 @@ class fltk:
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
-
-    close_tree_item = closeTreeItem
 
 
 class parser:
@@ -12477,8 +12387,6 @@ class parser:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
         return _ovectorstring(api_names_, api_names_n_.value)
-
-    get_names = getNames
 
     @staticmethod
     def setNumber(name, value):
@@ -12528,8 +12436,6 @@ class parser:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
 
-    set_string = setString
-
     @staticmethod
     def getNumber(name):
         """
@@ -12559,8 +12465,6 @@ class parser:
             raise RuntimeError(logger.getLastError())
         return _ovectordouble(api_value_, api_value_n_.value)
 
-    get_number = getNumber
-
     @staticmethod
     def getString(name):
         """
@@ -12589,8 +12493,6 @@ class parser:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
         return _ovectorstring(api_value_, api_value_n_.value)
-
-    get_string = getString
 
     @staticmethod
     def clear(name=""):
@@ -12709,8 +12611,6 @@ class onelab:
             raise RuntimeError(logger.getLastError())
         return _ovectorstring(api_names_, api_names_n_.value)
 
-    get_names = getNames
-
     @staticmethod
     def setNumber(name, value):
         """
@@ -12735,8 +12635,6 @@ class onelab:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
 
-    set_number = setNumber
-
     @staticmethod
     def setString(name, value):
         """
@@ -12760,8 +12658,6 @@ class onelab:
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
-
-    set_string = setString
 
     @staticmethod
     def getNumber(name):
@@ -12792,8 +12688,6 @@ class onelab:
             raise RuntimeError(logger.getLastError())
         return _ovectordouble(api_value_, api_value_n_.value)
 
-    get_number = getNumber
-
     @staticmethod
     def getString(name):
         """
@@ -12823,8 +12717,6 @@ class onelab:
             raise RuntimeError(logger.getLastError())
         return _ovectorstring(api_value_, api_value_n_.value)
 
-    get_string = getString
-
     @staticmethod
     def getChanged(name):
         """
@@ -12846,8 +12738,6 @@ class onelab:
             raise RuntimeError(logger.getLastError())
         return api_result_
 
-    get_changed = getChanged
-
     @staticmethod
     def setChanged(name, value):
         """
@@ -12868,8 +12758,6 @@ class onelab:
         )
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
-
-    set_changed = setChanged
 
     @staticmethod
     def clear(name=""):
@@ -13002,8 +12890,6 @@ class logger:
             raise RuntimeError(logger.getLastError())
         return api_result_
 
-    get_wall_time = getWallTime
-
     @staticmethod
     def getCpuTime():
         """
@@ -13019,8 +12905,6 @@ class logger:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
         return api_result_
-
-    get_cpu_time = getCpuTime
 
     @staticmethod
     def getMemory():
@@ -13038,8 +12922,6 @@ class logger:
             raise RuntimeError(logger.getLastError())
         return api_result_
 
-    get_memory = getMemory
-
     @staticmethod
     def getTotalMemory():
         """
@@ -13055,8 +12937,6 @@ class logger:
         if ierr.value != 0:
             raise RuntimeError(logger.getLastError())
         return api_result_
-
-    get_total_memory = getTotalMemory
 
     @staticmethod
     def getLastError():
@@ -13078,5 +12958,3 @@ class logger:
         if ierr.value != 0:
             raise RuntimeError("Could not get last error")
         return _ostring(api_error_)
-
-    get_last_error = getLastError
