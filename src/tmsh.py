@@ -313,6 +313,7 @@
 # End of Gmsh license
 
 """Type-annotated and linted Python interface for Gmsh"""
+from __future__ import annotations
 
 import ctypes
 import math

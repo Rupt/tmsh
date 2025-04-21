@@ -59,6 +59,7 @@ dummy-variable-rgx = "^_$"
 
 [tool.ruff.lint.isort]
 split-on-trailing-comma = false
+required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.format]
 skip-magic-trailing-comma = true
