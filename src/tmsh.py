@@ -314,16 +314,12 @@
 
 """Type-annotated and linted Python interface for Gmsh"""
 
-from ctypes import *
-from ctypes.util import find_library
 import signal
-import os
-import platform
+from ctypes import *
 from math import pi
-import gmsh
 
-if gmsh.use_numpy:
-    import numpy
+import gmsh
+import numpy
 
 lib = gmsh.lib
 

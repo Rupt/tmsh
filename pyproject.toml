@@ -24,8 +24,10 @@ exclude = []
 include = ["src/*.py", "tests/*.py"]
 line-length = 79
 output-format = "concise"
-lint.select = []
-lint.ignore = []
+
+[tool.ruff.lint]
+select = ["I"]
+ignore = []
 
 [tool.ruff.format]
 skip-magic-trailing-comma = true
