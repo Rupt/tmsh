@@ -102,12 +102,13 @@ ignore = [
     "ANN206",
     "FBT002",
     "B006",
-    "TD00",
     "D415",
-    "D200",
+    # "D200",
     # Not to enable
+    "COM812",
     "PLR0913",
     "PLR2004",
+    "TD002",
 ]
 dummy-variable-rgx = "^_$"
 
@@ -120,6 +121,9 @@ numpy = "numpy"
 [tool.ruff.lint.isort]
 split-on-trailing-comma = false
 required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
