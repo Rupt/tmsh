@@ -320,11 +320,13 @@ import ctypes
 import math
 import signal
 import weakref
+from typing import TYPE_CHECKING
 
 import gmsh
 import numpy
 
-from collections.abc import Sequence
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 def _ostring(s):
     sp = s.value.decode("utf-8")
