@@ -4,10 +4,7 @@ version = "0.0.1"
 description = "Type-annotated and linted Python interface for Gmsh"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = [
-    "gmsh ==4.13.1",
-    "numpy >=2",
-]
+dependencies = ["gmsh ==4.13.1", "numpy >=2"]
 
 [dependency-groups]
 dev = [
@@ -15,9 +12,21 @@ dev = [
     "mypy >=1.15.0",
     "pyright >=1.1.399",
     "ruff >=0.11.6",
-    "setuptools >=79.0.0"
+    "setuptools >=79.0.0",
 ]
 
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+exclude = []
+include = ["src/*.py", "tests/*.py"]
+line-length = 79
+output-format = "concise"
+lint.select = []
+lint.ignore = []
+
+[tool.ruff.format]
+skip-magic-trailing-comma = true
+line-ending = "lf"
