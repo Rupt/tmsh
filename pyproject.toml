@@ -66,8 +66,16 @@ select = [
     "F",
     "PGH",
     "PL",
+    "PLE",
+    "PLR",
+    "PLW",
+    "UP",
+    "FURB",
+    "RUF",
+    "TRY",
 ]
 ignore = [
+    # To enable
     "E501",
     "ANN001",
     "ANN002",
@@ -82,8 +90,9 @@ ignore = [
     "TD00",
     "D415",
     "D200",
-    "PLR0913",  # too many arguments in function definition
-    "PLR2004",  # magic value
+    # Not to enable
+    "PLR0913",
+    "PLR2004",
 ]
 dummy-variable-rgx = "^_$"
 
