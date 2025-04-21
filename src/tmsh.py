@@ -320,7 +320,7 @@ import ctypes
 import math
 import signal
 import weakref
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 import gmsh
 import numpy
@@ -351,7 +351,7 @@ def _ovectorpair(ptr, size: int):
     return v
 
 
-def _ovectorint(ptr, size: int) -> NDArray[numpy.int32]:
+def _ovectorint(ptr, size: int):
     if size == 0:
         gmsh.lib.gmshFree(ptr)
         return numpy.ndarray((0,), numpy.int32)
@@ -360,7 +360,7 @@ def _ovectorint(ptr, size: int) -> NDArray[numpy.int32]:
     return v
 
 
-def _ovectorsize(ptr, size: int) -> NDArray[numpy.uintp]:
+def _ovectorsize(ptr, size: int):
     if size == 0:
         gmsh.lib.gmshFree(ptr)
         return numpy.ndarray((0,), numpy.uintp)
@@ -369,7 +369,9 @@ def _ovectorsize(ptr, size: int) -> NDArray[numpy.uintp]:
     return v
 
 
-def _ovectordouble(ptr, size: int) -> NDArray[numpy.float64]:
+def _ovectordouble(
+    ptr: ctypes._Pointer[ctypes.c_double], size: int
+) -> NDArray[numpy.float64]:
     if size == 0:
         gmsh.lib.gmshFree(ptr)
         return numpy.ndarray((0,), numpy.float64)
@@ -384,7 +386,7 @@ def _ovectorstring(ptr, size: int) -> list[str]:
     return v
 
 
-def _ovectorvectorint(ptr, size, n) -> list[NDArray[numpy.int32]]:
+def _ovectorvectorint(ptr, size, n):
     v = [
         _ovectorint(ctypes.pointer(ptr[i].contents), size[i])
         for i in range(n.value)
@@ -394,7 +396,7 @@ def _ovectorvectorint(ptr, size, n) -> list[NDArray[numpy.int32]]:
     return v
 
 
-def _ovectorvectorsize(ptr, size, n) -> list[NDArray[numpy.uintp]]:
+def _ovectorvectorsize(ptr, size, n):
     v = [
         _ovectorsize(ctypes.pointer(ptr[i].contents), size[i])
         for i in range(n.value)
@@ -424,7 +426,7 @@ def _ovectorvectorpair(ptr, size, n):
     return v
 
 
-def _ivectorint(o):
+def _ivectorint(o: Sequence[int]) -> tuple[Any, ctypes.c_size_t]:
     array = numpy.ascontiguousarray(o, numpy.int32)
     if len(o) and array.ndim != 1:
         msg = "Invalid data for input vector of integers"
@@ -436,7 +438,7 @@ def _ivectorint(o):
     return ct, ctypes.c_size_t(len(o))
 
 
-def _ivectorsize(o):
+def _ivectorsize(o: Sequence[int]) -> tuple[Any, ctypes.c_size_t]:
     array = numpy.ascontiguousarray(o, numpy.uintp)
     if len(o) and array.ndim != 1:
         msg = "Invalid data for input vector of sizes"
@@ -448,7 +450,7 @@ def _ivectorsize(o):
     return ct, ctypes.c_size_t(len(o))
 
 
-def _ivectordouble(o):
+def _ivectordouble(o: Sequence[float]) -> tuple[Any, ctypes.c_size_t]:
     array = numpy.ascontiguousarray(o, numpy.float64)
     if len(o) and array.ndim != 1:
         msg = "Invalid data for input vector of doubles"
@@ -460,7 +462,7 @@ def _ivectordouble(o):
     return ct, ctypes.c_size_t(len(o))
 
 
-def _ivectorpair(o):
+def _ivectorpair(o) -> tuple[Any, ctypes.c_size_t]:
     array = numpy.ascontiguousarray(o, numpy.int32)
     if len(o) and (array.ndim != 2 or array.shape[1] != 2):
         msg = "Invalid data for input vector of pairs"
@@ -933,10 +935,8 @@ class model:
         - `dimTags': vector of pairs of integers
         - `dim': integer
         """
-        api_dimTags_, api_dimTags_n_ = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        api_dimTags_ = ctypes.POINTER(ctypes.c_int)()
+        api_dimTags_n_ = ctypes.c_size_t()
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelGetEntities(
             ctypes.byref(api_dimTags_),
@@ -1040,9 +1040,7 @@ class model:
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
-    def getEntitiesForPhysicalGroup(
-        dim: int, tag: int
-    ) -> NDArray[numpy.int32]:
+    def getEntitiesForPhysicalGroup(dim: int, tag: int):
         """gmsh.model.getEntitiesForPhysicalGroup(dim, tag)
 
         Get the tags of the model entities making up the physical group of
@@ -1310,9 +1308,7 @@ class model:
         return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
     @staticmethod
-    def getAdjacencies(
-        dim: int, tag: int
-    ) -> tuple[NDArray[numpy.int32], NDArray[numpy.int32]]:
+    def getAdjacencies(dim: int, tag: int):
         """gmsh.model.getAdjacencies(dim, tag)
 
         Get the upward and downward adjacencies of the model entity of dimension
@@ -1455,7 +1451,7 @@ class model:
         )
 
     @staticmethod
-    def getDimension():
+    def getDimension() -> int:
         """gmsh.model.getDimension()
 
         Return the geometrical dimension of the current model.
@@ -1469,7 +1465,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def addDiscreteEntity(dim: int, tag: int = -1, boundary=[]):
+    def addDiscreteEntity(dim: int, tag: int = -1, boundary=[]) -> int:
         """gmsh.model.addDiscreteEntity(dim, tag=-1, boundary=[])
 
         Add a discrete model entity (defined by a mesh) of dimension `dim' in the
@@ -1594,7 +1590,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def getPartitions(dim: int, tag: int) -> NDArray[numpy.int32]:
+    def getPartitions(dim: int, tag: int):
         """gmsh.model.getPartitions(dim, tag)
 
         In a partitioned model, return the tags of the partition(s) to which the
@@ -2528,7 +2524,7 @@ class model:
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
         @staticmethod
-        def getLastNodeError() -> NDArray[numpy.uintp]:
+        def getLastNodeError():
             """gmsh.model.mesh.getLastNodeError()
 
             Get the last node tags `nodeTags' where a meshing error occurred. Currently
@@ -2539,10 +2535,8 @@ class model:
             Types:
             - `nodeTags': vector of sizes
             """
-            api_nodeTags_, api_nodeTags_n_ = (
-                ctypes.POINTER(ctypes.c_size_t)(),
-                ctypes.c_size_t(),
-            )
+            api_nodeTags_ = ctypes.POINTER(ctypes.c_size_t)()
+            api_nodeTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelMeshGetLastNodeError(
                 ctypes.byref(api_nodeTags_),
@@ -2672,11 +2666,7 @@ class model:
             *,
             includeBoundary: bool = False,
             returnParametricCoord: bool = True,
-        ) -> tuple[
-            NDArray[numpy.uintp],
-            NDArray[numpy.float64],
-            NDArray[numpy.float64],
-        ]:
+        ):
             """gmsh.model.mesh.getNodes(dim=-1, tag=-1, includeBoundary=False, returnParametricCoord=True)
 
             Get the nodes classified on the entity of dimension `dim' and tag `tag'. If
@@ -2746,11 +2736,7 @@ class model:
             tag: int = -1,
             *,
             returnParametricCoord: bool = True,
-        ) -> tuple[
-            NDArray[numpy.uintp],
-            NDArray[numpy.float64],
-            NDArray[numpy.float64],
-        ]:
+        ):
             """gmsh.model.mesh.getNodesByElementType(elementType, tag=-1, returnParametricCoord=True)
 
             Get the nodes classified on the entity of tag `tag', for all the elements
@@ -2917,9 +2903,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getNodesForPhysicalGroup(
-            dim: int, tag: int
-        ) -> tuple[NDArray[numpy.uintp], NDArray[numpy.float64]]:
+        def getNodesForPhysicalGroup(dim: int, tag: int):
             """gmsh.model.mesh.getNodesForPhysicalGroup(dim, tag)
 
             Get the nodes from all the elements belonging to the physical group of
@@ -6112,7 +6096,9 @@ class model:
         """Built-in CAD kernel functions"""
 
         @staticmethod
-        def addPoint(x, y, z, meshSize=0.0, tag=-1):
+        def addPoint(
+            x: float, y: float, z: float, meshSize: float = 0.0, tag: int = -1
+        ) -> int:
             """gmsh.model.geo.addPoint(x, y, z, meshSize=0., tag=-1)
 
             Add a geometrical point in the built-in CAD representation, at coordinates
@@ -6145,7 +6131,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addLine(startTag, endTag, tag=-1):
+        def addLine(startTag: int, endTag: int, tag: int = -1) -> int:
             """gmsh.model.geo.addLine(startTag, endTag, tag=-1)
 
             Add a straight line segment in the built-in CAD representation, between the
@@ -6173,8 +6159,14 @@ class model:
 
         @staticmethod
         def addCircleArc(
-            startTag, centerTag, endTag, tag=-1, nx=0.0, ny=0.0, nz=0.0
-        ):
+            startTag: int,
+            centerTag: int,
+            endTag: int,
+            tag: int = -1,
+            nx: float = 0.0,
+            ny: float = 0.0,
+            nz: float = 0.0,
+        ) -> int:
             """gmsh.model.geo.addCircleArc(startTag, centerTag, endTag, tag=-1, nx=0., ny=0., nz=0.)
 
             Add a circle arc (strictly smaller than Pi) in the built-in CAD
@@ -6212,15 +6204,15 @@ class model:
 
         @staticmethod
         def addEllipseArc(
-            startTag,
-            centerTag,
-            majorTag,
-            endTag,
-            tag=-1,
-            nx=0.0,
-            ny=0.0,
-            nz=0.0,
-        ):
+            startTag: int,
+            centerTag: int,
+            majorTag: int,
+            endTag: int,
+            tag: int = -1,
+            nx: float = 0.0,
+            ny: float = 0.0,
+            nz: float = 0.0,
+        ) -> int:
             """gmsh.model.geo.addEllipseArc(startTag, centerTag, majorTag, endTag, tag=-1, nx=0., ny=0., nz=0.)
 
             Add an ellipse arc (strictly smaller than Pi) in the built-in CAD
@@ -6259,7 +6251,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addSpline(pointTags, tag=-1):
+        def addSpline(pointTags, tag: int = -1) -> int:
             """gmsh.model.geo.addSpline(pointTags, tag=-1)
 
             Add a spline (Catmull-Rom) curve in the built-in CAD representation, going
@@ -6287,7 +6279,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addBSpline(pointTags, tag=-1):
+        def addBSpline(pointTags, tag: int = -1) -> int:
             """gmsh.model.geo.addBSpline(pointTags, tag=-1)
 
             Add a cubic b-spline curve in the built-in CAD representation, with
@@ -6315,7 +6307,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addBezier(pointTags, tag=-1):
+        def addBezier(pointTags, tag: int = -1) -> int:
             """gmsh.model.geo.addBezier(pointTags, tag=-1)
 
             Add a Bezier curve in the built-in CAD representation, with `pointTags'
@@ -6341,7 +6333,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addPolyline(pointTags, tag=-1):
+        def addPolyline(pointTags, tag: int = -1) -> int:
             """gmsh.model.geo.addPolyline(pointTags, tag=-1)
 
             Add a polyline curve in the built-in CAD representation, going through the
@@ -6368,7 +6360,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def addCompoundSpline(curveTags, numIntervals=5, tag=-1):
+        def addCompoundSpline(
+            curveTags, numIntervals: int = 5, tag: int = -1
+        ) -> int:
             """gmsh.model.geo.addCompoundSpline(curveTags, numIntervals=5, tag=-1)
 
             Add a spline (Catmull-Rom) curve in the built-in CAD representation, going
@@ -6398,7 +6392,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def addCompoundBSpline(curveTags, numIntervals=20, tag=-1):
+        def addCompoundBSpline(
+            curveTags, numIntervals: int = 20, tag: int = -1
+        ) -> int:
             """gmsh.model.geo.addCompoundBSpline(curveTags, numIntervals=20, tag=-1)
 
             Add a b-spline curve in the built-in CAD representation, with control
@@ -6428,7 +6424,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def addCurveLoop(curveTags, tag=-1, reorient=False):
+        def addCurveLoop(
+            curveTags, tag: int = -1, *, reorient: bool = False
+        ) -> int:
             """gmsh.model.geo.addCurveLoop(curveTags, tag=-1, reorient=False)
 
             Add a curve loop (a closed wire) in the built-in CAD representation, formed
@@ -6490,7 +6488,7 @@ class model:
             return _ovectorint(api_tags_, api_tags_n_.value)
 
         @staticmethod
-        def addPlaneSurface(wireTags, tag=-1):
+        def addPlaneSurface(wireTags, tag: int = -1) -> int:
             """gmsh.model.geo.addPlaneSurface(wireTags, tag=-1)
 
             Add a plane surface in the built-in CAD representation, defined by one or
@@ -6518,7 +6516,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def addSurfaceFilling(wireTags, tag=-1, sphereCenterTag=-1):
+        def addSurfaceFilling(
+            wireTags, tag: int = -1, sphereCenterTag: int = -1
+        ) -> int:
             """gmsh.model.geo.addSurfaceFilling(wireTags, tag=-1, sphereCenterTag=-1)
 
             Add a surface in the built-in CAD representation, filling the curve loops
@@ -6548,7 +6548,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addSurfaceLoop(surfaceTags, tag=-1):
+        def addSurfaceLoop(surfaceTags, tag: int = -1) -> int:
             """gmsh.model.geo.addSurfaceLoop(surfaceTags, tag=-1)
 
             Add a surface loop (a closed shell) formed by `surfaceTags' in the built-in
@@ -6574,7 +6574,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addVolume(shellTags, tag=-1):
+        def addVolume(shellTags, tag: int = -1) -> int:
             """gmsh.model.geo.addVolume(shellTags, tag=-1)
 
             Add a volume (a region) in the built-in CAD representation, defined by one
@@ -6602,7 +6602,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def addGeometry(geometry, numbers=[], strings=[], tag=-1):
+        def addGeometry(
+            geometry, numbers=[], strings: Sequence[str] = [], tag: int = -1
+        ) -> int:
             """gmsh.model.geo.addGeometry(geometry, numbers=[], strings=[], tag=-1)
 
             Add a `geometry' in the built-in CAD representation. `geometry' can
@@ -6638,7 +6640,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def addPointOnGeometry(geometryTag, x, y, z=0.0, meshSize=0.0, tag=-1):
+        def addPointOnGeometry(
+            geometryTag, x, y, z=0.0, meshSize=0.0, tag=-1
+        ) -> int:
             """gmsh.model.geo.addPointOnGeometry(geometryTag, x, y, z=0., meshSize=0., tag=-1)
 
             Add a point in the built-in CAD representation, at coordinates (`x', `y',
@@ -11604,7 +11608,7 @@ class parser:
         return _ovectorstring(api_names_, api_names_n_.value)
 
     @staticmethod
-    def setNumber(name: str, value: float) -> None:
+    def setNumber(name: str, value: Sequence[float]) -> None:
         """gmsh.parser.setNumber(name, value)
 
         Set the value of the number variable `name' in the Gmsh parser. Create the
