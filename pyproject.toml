@@ -44,7 +44,7 @@ output-format = "concise"
 select = [
     "ERA",
     "YTT",
-    "ANN401",
+    "ANN",
     "S",
     "BLE",
     "FBT",
@@ -93,17 +93,10 @@ ignore = [
     # To enable
     "E501",
     "ANN001",
-    "ANN002",
-    "ANN003",
-    "ANN201",
-    "ANN202",
-    "ANN204",
     "ANN205",
-    "ANN206",
     "FBT002",
     "B006",
     "D415",
-    # "D200",
     # Not to enable
     "COM812",
     "PLR0913",

@@ -6,7 +6,7 @@ import tmsh
 
 
 class Basics(unittest.TestCase):
-    def test_initialize(self):
+    def test_initialize(self) -> None:
         tmsh.initialize()
         self.assertTrue(tmsh.isInitialized())
         tmsh.finalize()
