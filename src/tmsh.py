@@ -319,20 +319,13 @@ from __future__ import annotations
 import ctypes
 import math
 import signal
-import weakref
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Literal
 
 import gmsh
-import numpy
 
 if TYPE_CHECKING:
     import builtins
     from collections.abc import Sequence
-
-
-if not gmsh.use_numpy:
-    _msg = "tmsh requires numpy support"
-    raise RuntimeError(_msg)
 
 
 def _ostring(s: ctypes.c_char_p) -> str:
@@ -352,34 +345,25 @@ def _ovectorpair(
     return v
 
 
-# TODO: choose between numpy and non-numpy interfaces, then annotate
-#   https://github.com/Rupt/tmsh/issues/12
-
-
-def _ovectorint(ptr: ctypes._Pointer[ctypes.c_int], size: int):
-    if size == 0:
-        gmsh.lib.gmshFree(ptr)
-        return numpy.ndarray((0,), numpy.int32)
-    v = numpy.ctypeslib.as_array(ptr, (size,))
-    weakref.finalize(v, gmsh.lib.gmshFree, ptr)
+def _ovectorint(ptr: ctypes._Pointer[ctypes.c_int], size: int) -> list[int]:
+    v = [ptr[i] for i in range(size)]
+    gmsh.lib.gmshFree(ptr)
     return v
 
 
-def _ovectorsize(ptr: ctypes._Pointer[ctypes.c_size_t], size: int):
-    if size == 0:
-        gmsh.lib.gmshFree(ptr)
-        return numpy.ndarray((0,), numpy.uintp)
-    v = numpy.ctypeslib.as_array(ptr, (size,))
-    weakref.finalize(v, gmsh.lib.gmshFree, ptr)
+def _ovectorsize(
+    ptr: ctypes._Pointer[ctypes.c_size_t], size: int
+) -> list[int]:
+    v = [ptr[i] for i in range(size)]
+    gmsh.lib.gmshFree(ptr)
     return v
 
 
-def _ovectordouble(ptr: ctypes._Pointer[ctypes.c_double], size: int):
-    if size == 0:
-        gmsh.lib.gmshFree(ptr)
-        return numpy.ndarray((0,), numpy.float64)
-    v = numpy.ctypeslib.as_array(ptr, (size,))
-    weakref.finalize(v, gmsh.lib.gmshFree, ptr)
+def _ovectordouble(
+    ptr: ctypes._Pointer[ctypes.c_double], size: int
+) -> list[float]:
+    v = [ptr[i] for i in range(size)]
+    gmsh.lib.gmshFree(ptr)
     return v
 
 
@@ -447,52 +431,29 @@ def _ovectorvectorpair(
     return v
 
 
-def _ivectorint(o: Sequence[int]) -> tuple[Any, ctypes.c_size_t]:
-    array = numpy.ascontiguousarray(o, numpy.int32)
-    if len(o) and array.ndim != 1:
-        msg = "Invalid data for input vector of integers"
-        raise ValueError(msg)
-    ct = array.ctypes
-    # TODO: avoid illegal attribute assignments
-    #   https://github.com/Rupt/tmsh/issues/11
-    ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
-    return ct, ctypes.c_size_t(len(o))
+def _ivectorint(
+    o: Sequence[int],
+) -> tuple[ctypes.Array[ctypes.c_int], ctypes.c_size_t]:
+    return (ctypes.c_int * len(o))(*o), ctypes.c_size_t(len(o))
 
 
-def _ivectorsize(o: Sequence[int]) -> tuple[Any, ctypes.c_size_t]:
-    array = numpy.ascontiguousarray(o, numpy.uintp)
-    if len(o) and array.ndim != 1:
-        msg = "Invalid data for input vector of sizes"
-        raise ValueError(msg)
-    ct = array.ctypes
-    # TODO: avoid illegal attribute assignments
-    #   https://github.com/Rupt/tmsh/issues/11
-    ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
-    return ct, ctypes.c_size_t(len(o))
+def _ivectorsize(
+    o: Sequence[int],
+) -> tuple[ctypes.Array[ctypes.c_size_t], ctypes.c_size_t]:
+    return (ctypes.c_size_t * len(o))(*o), ctypes.c_size_t(len(o))
 
 
-def _ivectordouble(o: Sequence[float]) -> tuple[Any, ctypes.c_size_t]:
-    array = numpy.ascontiguousarray(o, numpy.float64)
-    if len(o) and array.ndim != 1:
-        msg = "Invalid data for input vector of doubles"
-        raise ValueError(msg)
-    ct = array.ctypes
-    # TODO: avoid illegal attribute assignments
-    #   https://github.com/Rupt/tmsh/issues/11
-    ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
-    return ct, ctypes.c_size_t(len(o))
+def _ivectordouble(
+    o: Sequence[float],
+) -> tuple[ctypes.Array[ctypes.c_double], ctypes.c_size_t]:
+    return (ctypes.c_double * len(o))(*o), ctypes.c_size_t(len(o))
 
 
-def _ivectorpair(o) -> tuple[Any, ctypes.c_size_t]:
-    array = numpy.ascontiguousarray(o, numpy.int32)
-    if len(o) and (array.ndim != 2 or array.shape[1] != 2):
-        msg = "Invalid data for input vector of pairs"
-        raise ValueError(msg)
-    ct = array.ctypes
-    # TODO: avoid illegal attribute assignments
-    #   https://github.com/Rupt/tmsh/issues/11
-    ct.array = array  # pyright: ignore [reportAttributeAccessIssue]
-    return ct, ctypes.c_size_t(len(o) * 2)
+def _ivectorpair(
+    o: Sequence[tuple[int, int]],
+) -> tuple[ctypes.Array[ctypes.Array[ctypes.c_int]], ctypes.c_size_t]:
+    pairs = ((ctypes.c_int * 2)(a, b) for a, b in o)
+    return ((ctypes.c_int * 2) * len(o))(*pairs), ctypes.c_size_t(len(o) * 2)
 
 
 def _ivectorstring(
