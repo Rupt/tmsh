@@ -19,4 +19,3 @@ class Tmsh(unittest.TestCase):
         tmsh.clear()
         self.assertEqual(tmsh.model.list(), [""])
         tmsh.finalize()
-

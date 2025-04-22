@@ -98,6 +98,7 @@ ignore = [
     "COM812",
     "PLR0913",
     "PLR2004",
+    "S101",
     "TD002",
 ]
 dummy-variable-rgx = "^_$"
