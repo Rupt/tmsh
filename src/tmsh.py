@@ -746,7 +746,7 @@ class option:
         return _ostring(api_value_)
 
     @staticmethod
-    def setColor(name: str, *, r: int, g: int, b: int, a: int = 255) -> None:
+    def setColor(name: str, r: int, g: int, b: int, a: int = 255) -> None:
         """gmsh.option.setColor(name, r, g, b, a=255)
 
         Set a color option to the RGBA value (`r', `g', `b', `a'), where where `r',
@@ -1297,7 +1297,7 @@ class model:
 
     @staticmethod
     def getBoundary(
-        dimTags,
+        dimTags: Sequence[tuple[int, int]],
         *,
         combined: bool = True,
         oriented: bool = True,
@@ -2134,7 +2134,7 @@ class model:
 
     @staticmethod
     def setVisibility(
-        dimTags: Sequence[tuple[int, int]], value, *, recursive: bool = False
+        dimTags: Sequence[tuple[int, int]], value: int, *, recursive: bool = False
     ) -> None:
         """gmsh.model.setVisibility(dimTags, value, recursive=False)
 
@@ -2185,7 +2185,7 @@ class model:
         return api_value_.value
 
     @staticmethod
-    def setVisibilityPerWindow(value: int, windowIndex: int = 0) -> None:
+    def setVisibilityPerWindow(value: int, *, windowIndex: int = 0) -> None:
         """gmsh.model.setVisibilityPerWindow(value, windowIndex=0)
 
         Set the global visibility of the model per window to `value', where
@@ -2205,11 +2205,11 @@ class model:
     @staticmethod
     def setColor(
         dimTags,
-        *,
         r: int,
         g: int,
         b: int,
         a: int = 255,
+        *,
         recursive: bool = False,
     ) -> None:
         """gmsh.model.setColor(dimTags, r, g, b, a=255, recursive=False)
@@ -11203,7 +11203,7 @@ class view:
 
         @staticmethod
         def setColor(
-            tag: int, name: str, *, r: int, g: int, b: int, a: int = 255
+            tag: int, name: str, r: int, g: int, b: int, a: int = 255
         ) -> None:
             """gmsh.view.option.setColor(tag, name, r, g, b, a=255)
 
