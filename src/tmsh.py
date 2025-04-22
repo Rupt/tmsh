@@ -329,7 +329,6 @@ if TYPE_CHECKING:
     import builtins
     from collections.abc import Sequence
 
-    from numpy.typing import NDArray
 
 if not gmsh.use_numpy:
     _msg = "tmsh requires numpy support"
@@ -348,7 +347,7 @@ def _ostring(s: ctypes.c_char_p) -> str:
 def _ovectorpair(
     ptr: ctypes._Pointer[ctypes.c_int], size: int
 ) -> list[tuple[int, int]]:
-    v = [(ptr[i * 2], ptr[i * 2 + 1]) for i in range(size // 2)]
+    v = [(ptr[i], ptr[i + 1]) for i in range(0, size, 2)]
     gmsh.lib.gmshFree(ptr)
     return v
 
@@ -375,9 +374,7 @@ def _ovectorsize(ptr: ctypes._Pointer[ctypes.c_size_t], size: int):
     return v
 
 
-def _ovectordouble(
-    ptr: ctypes._Pointer[ctypes.c_double], size: int
-) -> NDArray[numpy.float64]:
+def _ovectordouble(ptr: ctypes._Pointer[ctypes.c_double], size: int):
     if size == 0:
         gmsh.lib.gmshFree(ptr)
         return numpy.ndarray((0,), numpy.float64)
@@ -398,7 +395,7 @@ def _ovectorvectorint(
     ptr: ctypes._Pointer[ctypes._Pointer[ctypes.c_int]],
     size: ctypes._Pointer[ctypes.c_size_t],
     n: ctypes.c_size_t,
-):
+) -> list:
     v = [
         _ovectorint(ctypes.pointer(ptr[i].contents), size[i])
         for i in range(n.value)
@@ -412,7 +409,7 @@ def _ovectorvectorsize(
     ptr: ctypes._Pointer[ctypes._Pointer[ctypes.c_size_t]],
     size: ctypes._Pointer[ctypes.c_size_t],
     n: ctypes.c_size_t,
-):
+) -> list:
     v = [
         _ovectorsize(ctypes.pointer(ptr[i].contents), size[i])
         for i in range(n.value)
@@ -426,7 +423,7 @@ def _ovectorvectordouble(
     ptr: ctypes._Pointer[ctypes._Pointer[ctypes.c_double]],
     size: ctypes._Pointer[ctypes.c_size_t],
     n: ctypes.c_size_t,
-) -> list[NDArray[numpy.float64]]:
+) -> list:
     v = [
         _ovectordouble(ctypes.pointer(ptr[i].contents), size[i])
         for i in range(n.value)
@@ -1106,7 +1103,9 @@ class model:
         return _ovectorint(api_tags_, api_tags_n_.value)
 
     @staticmethod
-    def getEntitiesForPhysicalName(name: str):
+    def getEntitiesForPhysicalName(
+        name: str,
+    ) -> builtins.list[tuple[int, int]]:
         """gmsh.model.getEntitiesForPhysicalName(name)
 
         Get the model entities (as a vector (dim, tag) pairs) making up the
@@ -1134,7 +1133,7 @@ class model:
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
-    def getPhysicalGroupsForEntity(dim: int, tag: int) -> NDArray[numpy.int32]:
+    def getPhysicalGroupsForEntity(dim: int, tag: int):
         """gmsh.model.getPhysicalGroupsForEntity(dim, tag)
 
         Get the tags of the physical groups (if any) to which the model entity of
@@ -1656,9 +1655,7 @@ class model:
         return _ovectorint(api_partitions_, api_partitions_n_.value)
 
     @staticmethod
-    def getValue(
-        dim: int, tag: int, parametricCoord
-    ) -> NDArray[numpy.float64]:
+    def getValue(dim: int, tag: int, parametricCoord):
         """gmsh.model.getValue(dim, tag, parametricCoord)
 
         Evaluate the parametrization of the entity of dimension `dim' and tag `tag'
@@ -1699,9 +1696,7 @@ class model:
         return _ovectordouble(api_coord_, api_coord_n_.value)
 
     @staticmethod
-    def getDerivative(
-        dim: int, tag: int, parametricCoord
-    ) -> NDArray[numpy.float64]:
+    def getDerivative(dim: int, tag: int, parametricCoord):
         """gmsh.model.getDerivative(dim, tag, parametricCoord)
 
         Evaluate the derivative of the parametrization of the entity of dimension
@@ -1744,9 +1739,7 @@ class model:
         return _ovectordouble(api_derivatives_, api_derivatives_n_.value)
 
     @staticmethod
-    def getSecondDerivative(
-        dim: int, tag: int, parametricCoord
-    ) -> NDArray[numpy.float64]:
+    def getSecondDerivative(dim: int, tag: int, parametricCoord):
         """gmsh.model.getSecondDerivative(dim, tag, parametricCoord)
 
         Evaluate the second derivative of the parametrization of the entity of
@@ -1892,7 +1885,7 @@ class model:
         )
 
     @staticmethod
-    def getNormal(tag: int, parametricCoord) -> NDArray[numpy.float64]:
+    def getNormal(tag: int, parametricCoord):
         """gmsh.model.getNormal(tag, parametricCoord)
 
         Get the normal to the surface with tag `tag' at the parametric coordinates
@@ -1928,9 +1921,7 @@ class model:
         return _ovectordouble(api_normals_, api_normals_n_.value)
 
     @staticmethod
-    def getParametrization(
-        dim: int, tag: int, coord
-    ) -> NDArray[numpy.float64]:
+    def getParametrization(dim: int, tag: int, coord):
         """gmsh.model.getParametrization(dim, tag, coord)
 
         Get the parametric coordinates `parametricCoord' for the points `coord' on
@@ -1970,9 +1961,7 @@ class model:
         )
 
     @staticmethod
-    def getParametrizationBounds(
-        dim: int, tag: int
-    ) -> tuple[NDArray[numpy.float64], NDArray[numpy.float64]]:
+    def getParametrizationBounds(dim: int, tag: int):
         """gmsh.model.getParametrizationBounds(dim, tag)
 
         Get the `min' and `max' bounds of the parametric coordinates for the entity
@@ -2044,9 +2033,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def getClosestPoint(
-        dim: int, tag: int, coord
-    ) -> tuple[NDArray[numpy.float64], NDArray[numpy.float64]]:
+    def getClosestPoint(dim: int, tag: int, coord):
         """gmsh.model.getClosestPoint(dim, tag, coord)
 
         Get the points `closestCoord' on the entity of dimension `dim' and tag
@@ -2096,7 +2083,7 @@ class model:
     @staticmethod
     def reparametrizeOnSurface(
         dim: int, tag: int, parametricCoord, surfaceTag: int, which: int = 0
-    ) -> NDArray[numpy.float64]:
+    ):
         """gmsh.model.reparametrizeOnSurface(dim, tag, parametricCoord, surfaceTag, which=0)
 
         Reparametrize the boundary entity (point or curve, i.e. with `dim' == 0 or
@@ -2824,9 +2811,7 @@ class model:
             )
 
         @staticmethod
-        def getNode(
-            nodeTag,
-        ) -> tuple[NDArray[numpy.float64], NDArray[numpy.float64], int, int]:
+        def getNode(nodeTag):
             """gmsh.model.mesh.getNode(nodeTag)
 
             Get the coordinates and the parametric coordinates (if any) of the node
@@ -11719,7 +11704,7 @@ class parser:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getNumber(name: str) -> NDArray[numpy.float64]:
+    def getNumber(name: str):
         """gmsh.parser.getNumber(name)
 
         Get the value of the number variable `name' from the Gmsh parser. Return an
@@ -11931,7 +11916,7 @@ class onelab:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getNumber(name: str) -> NDArray[numpy.float64]:
+    def getNumber(name: str):
         """gmsh.onelab.getNumber(name)
 
         Get the value of the number parameter `name' from the ONELAB database.
