@@ -9196,7 +9196,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def chamfer2D(edgeTag1, edgeTag2, distance1, distance2, tag=-1):
+        def chamfer2D(edgeTag1, edgeTag2, distance1, distance2, tag=-1) -> int:
             """gmsh.model.occ.chamfer2D(edgeTag1, edgeTag2, distance1, distance2, tag=-1)
 
             Create a chamfer edge between edges `edgeTag1' and `edgeTag2' with
@@ -9227,7 +9227,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def offsetCurve(curveLoopTag, offset):
+        def offsetCurve(curveLoopTag, offset) -> list[tuple[int, int]]:
             """gmsh.model.occ.offsetCurve(curveLoopTag, offset)
 
             Create an offset curve based on the curve loop `curveLoopTag' with offset
@@ -9256,7 +9256,9 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def getDistance(dim1, tag1, dim2, tag2):
+        def getDistance(
+            dim1, tag1, dim2, tag2
+        ) -> tuple[float, float, float, float, float, float, float]:
             """gmsh.model.occ.getDistance(dim1, tag1, dim2, tag2)
 
             Find the minimal distance between shape with `dim1' and `tag1' and shape
@@ -9320,7 +9322,7 @@ class model:
             tag=-1,
             removeObject=True,
             removeTool=True,
-        ):
+        ) -> tuple[list[tuple[int, int]], list[list[tuple[int, int]]]]:
             """gmsh.model.occ.fuse(objectDimTags, toolDimTags, tag=-1, removeObject=True, removeTool=True)
 
             Compute the boolean union (the fusion) of the entities `objectDimTags' and
@@ -9386,7 +9388,7 @@ class model:
             tag=-1,
             removeObject=True,
             removeTool=True,
-        ):
+        ) -> tuple[list[tuple[int, int]], list[list[tuple[int, int]]]]:
             """gmsh.model.occ.intersect(objectDimTags, toolDimTags, tag=-1, removeObject=True, removeTool=True)
 
             Compute the boolean intersection (the common parts) of the entities
@@ -9452,7 +9454,7 @@ class model:
             tag=-1,
             removeObject=True,
             removeTool=True,
-        ):
+        ) -> tuple[list[tuple[int, int]], list[list[tuple[int, int]]]]:
             """gmsh.model.occ.cut(objectDimTags, toolDimTags, tag=-1, removeObject=True, removeTool=True)
 
             Compute the boolean difference between the entities `objectDimTags' and
@@ -9518,7 +9520,7 @@ class model:
             tag=-1,
             removeObject=True,
             removeTool=True,
-        ):
+        ) -> tuple[list[tuple[int, int]], list[list[tuple[int, int]]]]:
             """gmsh.model.occ.fragment(objectDimTags, toolDimTags, tag=-1, removeObject=True, removeTool=True)
 
             Compute the boolean fragments (general fuse) resulting from the
@@ -9582,7 +9584,7 @@ class model:
             )
 
         @staticmethod
-        def translate(dimTags, dx, dy, dz):
+        def translate(dimTags, dx, dy, dz) -> None:
             """gmsh.model.occ.translate(dimTags, dx, dy, dz)
 
             Translate the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -9608,7 +9610,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def rotate(dimTags, x, y, z, ax, ay, az, angle):
+        def rotate(dimTags, x, y, z, ax, ay, az, angle) -> None:
             """gmsh.model.occ.rotate(dimTags, x, y, z, ax, ay, az, angle)
 
             Rotate the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -9644,7 +9646,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def dilate(dimTags, x, y, z, a, b, c):
+        def dilate(dimTags, x, y, z, a, b, c) -> None:
             """gmsh.model.occ.dilate(dimTags, x, y, z, a, b, c)
 
             Scale the entities `dimTags' (given as a vector of (dim, tag) pairs) in the
@@ -9678,7 +9680,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def mirror(dimTags, a, b, c, d):
+        def mirror(dimTags, a, b, c, d) -> None:
             """gmsh.model.occ.mirror(dimTags, a, b, c, d)
 
             Mirror the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -9707,7 +9709,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def symmetrize(dimTags, a, b, c, d):
+        def symmetrize(dimTags, a, b, c, d) -> None:
             """gmsh.model.occ.symmetrize(dimTags, a, b, c, d)
 
             Mirror the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -9737,7 +9739,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def affineTransform(dimTags, affineTransform):
+        def affineTransform(dimTags, affineTransform) -> None:
             """gmsh.model.occ.affineTransform(dimTags, affineTransform)
 
             Apply a general affine transformation matrix `affineTransform' (16 entries
@@ -9765,7 +9767,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def copy(dimTags):
+        def copy(dimTags) -> list[tuple[int, int]]:
             """gmsh.model.occ.copy(dimTags)
 
             Copy the entities `dimTags' in the OpenCASCADE CAD representation; the new
@@ -9793,7 +9795,7 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def remove(dimTags, recursive=False):
+        def remove(dimTags, recursive=False) -> None:
             """gmsh.model.occ.remove(dimTags, recursive=False)
 
             Remove the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -9817,7 +9819,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def removeAllDuplicates():
+        def removeAllDuplicates() -> None:
             """gmsh.model.occ.removeAllDuplicates()
 
             Remove all duplicate entities in the OpenCASCADE CAD representation
@@ -9838,7 +9840,7 @@ class model:
             fixSmallFaces=True,
             sewFaces=True,
             makeSolids=True,
-        ):
+        ) -> list[tuple[int, int]]:
             """gmsh.model.occ.healShapes(dimTags=[], tolerance=1e-8, fixDegenerated=True, fixSmallEdges=True, fixSmallFaces=True, sewFaces=True, makeSolids=True)
 
             Apply various healing procedures to the entities `dimTags' (given as a
@@ -9880,7 +9882,7 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def convertToNURBS(dimTags):
+        def convertToNURBS(dimTags) -> None:
             """gmsh.model.occ.convertToNURBS(dimTags)
 
             Convert the entities `dimTags' to NURBS.
@@ -9897,7 +9899,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def importShapes(fileName, highestDimOnly=True, format=""):  # noqa: A002
+        def importShapes(
+            fileName, highestDimOnly=True, format=""
+        ) -> list[tuple[int, int]]:  # noqa: A002
             """gmsh.model.occ.importShapes(fileName, highestDimOnly=True, format="")
 
             Import BREP, STEP or IGES shapes from the file `fileName' in the
@@ -9931,7 +9935,9 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def importShapesNativePointer(shape, highestDimOnly=True):
+        def importShapesNativePointer(
+            shape, highestDimOnly=True
+        ) -> list[tuple[int, int]]:
             """gmsh.model.occ.importShapesNativePointer(shape, highestDimOnly=True)
 
             Import an OpenCASCADE `shape' by providing a pointer to a native
@@ -9966,7 +9972,7 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def getEntities(dim: int = -1):
+        def getEntities(dim: int = -1) -> list[tuple[int, int]]:
             """gmsh.model.occ.getEntities(dim=-1)
 
             Get all the OpenCASCADE entities. If `dim' is >= 0, return only the
@@ -9997,7 +10003,7 @@ class model:
         @staticmethod
         def getEntitiesInBoundingBox(
             xmin, ymin, zmin, xmax, ymax, zmax, dim=-1
-        ):
+        ) -> list[tuple[int, int]]:
             """gmsh.model.occ.getEntitiesInBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax, dim=-1)
 
             Get the OpenCASCADE entities in the bounding box defined by the two points
@@ -10266,7 +10272,7 @@ class model:
             return _ovectordouble(api_mat_, api_mat_n_.value)
 
         @staticmethod
-        def getMaxTag(dim):
+        def getMaxTag(dim: int) -> int:
             """gmsh.model.occ.getMaxTag(dim)
 
             Get the maximum tag of entities of dimension `dim' in the OpenCASCADE CAD
@@ -10286,7 +10292,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def setMaxTag(dim, maxTag):
+        def setMaxTag(dim: int, maxTag: int) -> None:
             """gmsh.model.occ.setMaxTag(dim, maxTag)
 
             Set the maximum tag `maxTag' for entities of dimension `dim' in the
@@ -10304,7 +10310,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def synchronize():
+        def synchronize() -> None:
             """gmsh.model.occ.synchronize()
 
             Synchronize the OpenCASCADE CAD representation with the current Gmsh model.
@@ -10323,7 +10329,7 @@ class model:
             """OpenCASCADE CAD kernel meshing constraints"""
 
             @staticmethod
-            def setSize(dimTags, size):
+            def setSize(dimTags, size: float) -> None:
                 """gmsh.model.occ.mesh.setSize(dimTags, size)
 
                 Set a mesh size constraint on the entities `dimTags' (given as a vector of
@@ -10350,7 +10356,7 @@ class view:
     """Post-processing view functions"""
 
     @staticmethod
-    def add(name, tag=-1):
+    def add(name: str, *, tag: int = -1) -> int:
         """gmsh.view.add(name, tag=-1)
 
         Add a new post-processing view, with name `name'. If `tag' is positive use
@@ -10374,7 +10380,7 @@ class view:
         return api_result_
 
     @staticmethod
-    def remove(tag):
+    def remove(tag) -> None:
         """gmsh.view.remove(tag)
 
         Remove the view with tag `tag'.
@@ -10444,7 +10450,7 @@ class view:
         time=0.0,
         numComponents=-1,
         partition=0,
-    ):
+    ) -> None:
         """gmsh.view.addModelData(tag, step, modelName, dataType, tags, data, time=0., numComponents=-1, partition=0)
 
         Add model-based post-processing data to the view with tag `tag'.
@@ -10503,7 +10509,7 @@ class view:
         time=0.0,
         numComponents=-1,
         partition=0,
-    ):
+    ) -> None:
         """gmsh.view.addHomogeneousModelData(tag, step, modelName, dataType, tags, data, time=0., numComponents=-1, partition=0)
 
         Add homogeneous model-based post-processing data to the view with tag
@@ -10654,7 +10660,7 @@ class view:
         )
 
     @staticmethod
-    def addListData(tag: int, dataType, numEle, data):
+    def addListData(tag: int, dataType, numEle, data) -> None:
         """gmsh.view.addListData(tag, dataType, numEle, data)
 
         Add list-based post-processing data to the view with tag `tag'. List-based
@@ -10740,7 +10746,7 @@ class view:
         )
 
     @staticmethod
-    def addListDataString(tag: int, coord, data, style=[]):
+    def addListDataString(tag: int, coord, data, style=[]) -> None:
         """gmsh.view.addListDataString(tag, coord, data, style=[])
 
         Add a string to a list-based post-processing view with tag `tag'. If
@@ -10839,7 +10845,7 @@ class view:
         dGeo=0,
         coefGeo=[],
         expGeo=[],
-    ):
+    ) -> None:
         """gmsh.view.setInterpolationMatrices(tag, type, d, coef, exp, dGeo=0, coefGeo=[], expGeo=[])
 
         Set interpolation matrices for the element family `type' ("Line",
@@ -10888,7 +10894,9 @@ class view:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def addAlias(refTag, copyOptions=False, tag=-1):
+    def addAlias(
+        refTag: int, *, copyOptions: bool = False, tag: int = -1
+    ) -> int:
         """gmsh.view.addAlias(refTag, copyOptions=False, tag=-1)
 
         Add a post-processing view as an `alias' of the reference view with tag
@@ -10915,7 +10923,7 @@ class view:
         return api_result_
 
     @staticmethod
-    def combine(what, how, remove=True, copyOptions=True):
+    def combine(what, how, remove=True, copyOptions=True) -> None:
         """gmsh.view.combine(what, how, remove=True, copyOptions=True)
 
         Combine elements (if `what' == "elements") or steps (if `what' == "steps")
@@ -11027,7 +11035,7 @@ class view:
         )
 
     @staticmethod
-    def write(tag: int, fileName, append=False):
+    def write(tag: int, fileName, append=False) -> None:
         """gmsh.view.write(tag, fileName, append=False)
 
         Write the view to a file `fileName'. The export format is determined by the
@@ -11049,7 +11057,7 @@ class view:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setVisibilityPerWindow(tag: int, value, windowIndex=0):
+    def setVisibilityPerWindow(tag: int, value, windowIndex=0) -> None:
         """gmsh.view.setVisibilityPerWindow(tag, value, windowIndex=0)
 
         Set the global visibility of the view `tag' per window to `value', where
@@ -11074,7 +11082,7 @@ class view:
         """View option handling functions"""
 
         @staticmethod
-        def setNumber(tag: int, name: str, value):
+        def setNumber(tag: int, name: str, value) -> None:
             """gmsh.view.option.setNumber(tag, name, value)
 
             Set the numerical option `name' to value `value' for the view with tag
@@ -11096,7 +11104,7 @@ class view:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getNumber(tag: int, name):
+        def getNumber(tag: int, name) -> float:
             """gmsh.view.option.getNumber(tag, name)
 
             Get the `value' of the numerical option `name' for the view with tag `tag'.
@@ -11121,7 +11129,7 @@ class view:
             return api_value_.value
 
         @staticmethod
-        def setString(tag: int, name: str, value):
+        def setString(tag: int, name: str, value) -> None:
             """gmsh.view.option.setString(tag, name, value)
 
             Set the string option `name' to value `value' for the view with tag `tag'.
@@ -11303,7 +11311,7 @@ class plugin:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def run(name: str):
+    def run(name: str) -> int:
         """gmsh.plugin.run(name)
 
         Run the plugin `name'. Return the tag of the created view (if any). Plugins
@@ -11451,7 +11459,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def isAvailable():
+    def isAvailable() -> int:
         """gmsh.fltk.isAvailable()
 
         Check if the user interface is available (e.g. to detect if it has been
@@ -11569,7 +11577,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setCurrentWindow(windowIndex=0) -> None:
+    def setCurrentWindow(windowIndex: int = 0) -> None:
         """gmsh.fltk.setCurrentWindow(windowIndex=0)
 
         Set the current window by speficying its index (starting at 0) in the list
@@ -11587,7 +11595,7 @@ class fltk:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setStatusMessage(message, graphics=False) -> None:
+    def setStatusMessage(message: str, *, graphics: bool = False) -> None:
         """gmsh.fltk.setStatusMessage(message, graphics=False)
 
         Set a status message in the current window. If `graphics' is set, display
