@@ -2567,7 +2567,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def removeElements(dim: int, tag: int, elementTags=[]) -> None:
+        def removeElements(
+            dim: int, tag: int, elementTags: Sequence[int] = []
+        ) -> None:
             """gmsh.model.mesh.removeElements(dim, tag, elementTags=[])
 
             Remove the elements with tags `elementTags' from the entity of dimension
@@ -2971,7 +2973,11 @@ class model:
 
         @staticmethod
         def addNodes(
-            dim: int, tag: int, nodeTags, coord, parametricCoord=[]
+            dim: int,
+            tag: int,
+            nodeTags: Sequence[int],
+            coord: Sequence[float],
+            parametricCoord: Sequence[float] = [],
         ) -> None:
             """gmsh.model.mesh.addNodes(dim, tag, nodeTags, coord, parametricCoord=[])
 
@@ -3568,7 +3574,11 @@ class model:
 
         @staticmethod
         def addElements(
-            dim: int, tag: int, elementTypes, elementTags, nodeTags
+            dim: int,
+            tag: int,
+            elementTypes: Sequence[int],
+            elementTags: Sequence[Sequence[int]],
+            nodeTags: Sequence[Sequence[int]],
         ) -> None:
             """gmsh.model.mesh.addElements(dim, tag, elementTypes, elementTags, nodeTags)
 
@@ -3616,7 +3626,10 @@ class model:
 
         @staticmethod
         def addElementsByType(
-            tag: int, elementType, elementTags, nodeTags
+            tag: int,
+            elementType: int,
+            elementTags: Sequence[int],
+            nodeTags: Sequence[int],
         ) -> None:
             """gmsh.model.mesh.addElementsByType(tag, elementType, elementTags, nodeTags)
 
@@ -4005,7 +4018,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def getEdges(nodeTags) -> tuple[list[int], list[int]]:
+        def getEdges(nodeTags: Sequence[int]) -> tuple[list[int], list[int]]:
             """gmsh.model.mesh.getEdges(nodeTags)
 
             Get the global unique mesh edge identifiers `edgeTags' and orientations
@@ -4052,7 +4065,9 @@ class model:
             )
 
         @staticmethod
-        def getFaces(faceType, nodeTags) -> tuple[list[int], list[int]]:
+        def getFaces(
+            faceType: int, nodeTags: Sequence[int]
+        ) -> tuple[list[int], list[int]]:
             """gmsh.model.mesh.getFaces(faceType, nodeTags)
 
             Get the global unique mesh face identifiers `faceTags' and orientations
@@ -4211,7 +4226,9 @@ class model:
             )
 
         @staticmethod
-        def addEdges(edgeTags, edgeNodes) -> None:
+        def addEdges(
+            edgeTags: Sequence[int], edgeNodes: Sequence[int]
+        ) -> None:
             """gmsh.model.mesh.addEdges(edgeTags, edgeNodes)
 
             Add mesh edges defined by their global unique identifiers `edgeTags' and
@@ -4235,7 +4252,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def addFaces(faceType, faceTags, faceNodes) -> None:
+        def addFaces(
+            faceType: int, faceTags: Sequence[int], faceNodes: Sequence[int]
+        ) -> None:
             """gmsh.model.mesh.addFaces(faceType, faceTags, faceNodes)
 
             Add mesh faces of type `faceType' defined by their global unique
@@ -5161,7 +5180,9 @@ class model:
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
         @staticmethod
-        def reorderElements(elementType, tag, ordering) -> None:
+        def reorderElements(
+            elementType: int, tag: int, ordering: Sequence[int]
+        ) -> None:
             """gmsh.model.mesh.reorderElements(elementType, tag, ordering)
 
             Reorder the elements of type `elementType' classified on the entity of tag
@@ -5186,7 +5207,7 @@ class model:
 
         @staticmethod
         def computeRenumbering(
-            method="RCMK", elementTags=[]
+            method: str = "RCMK", elementTags: Sequence[int] = []
         ) -> tuple[list[int], list[int]]:
             """gmsh.model.mesh.computeRenumbering(method="RCMK", elementTags=[])
 
@@ -5234,7 +5255,9 @@ class model:
             )
 
         @staticmethod
-        def renumberNodes(oldTags=[], newTags=[]) -> None:
+        def renumberNodes(
+            oldTags: Sequence[int] = [], newTags: Sequence[int] = []
+        ) -> None:
             """gmsh.model.mesh.renumberNodes(oldTags=[], newTags=[])
 
             Renumber the node tags. If no explicit renumbering is provided through the
@@ -5260,7 +5283,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def renumberElements(oldTags=[], newTags=[]) -> None:
+        def renumberElements(
+            oldTags: Sequence[int] = [], newTags: Sequence[int] = []
+        ) -> None:
             """gmsh.model.mesh.renumberElements(oldTags=[], newTags=[])
 
             Renumber the element tags in a continuous sequence. If no explicit
@@ -5617,7 +5642,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setVisibility(elementTags, value) -> None:
+        def setVisibility(elementTags: Sequence[int], value: int) -> None:
             """gmsh.model.mesh.setVisibility(elementTags, value)
 
             Set the visibility of the elements of tags `elementTags' to `value'.
@@ -5638,7 +5663,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getVisibility(elementTags) -> list[int]:
+        def getVisibility(elementTags: Sequence[int]) -> list[int]:
             """gmsh.model.mesh.getVisibility(elementTags)
 
             Get the visibility of the elements of tags `elementTags'.
@@ -5754,10 +5779,11 @@ class model:
 
         @staticmethod
         def addHomologyRequest(
-            type="Homology",  # noqa: A002
-            domainTags=[],
-            subdomainTags=[],
-            dims=[],
+            *,
+            type: str = "Homology",  # noqa: A002
+            domainTags: Sequence[int] = [],
+            subdomainTags: Sequence[int] = [],
+            dims: Sequence[int] = [],
         ) -> None:
             """gmsh.model.mesh.addHomologyRequest(type="Homology", domainTags=[], subdomainTags=[], dims=[])
 
@@ -6312,6 +6338,7 @@ class model:
             centerTag: int,
             majorTag: int,
             endTag: int,
+            *,
             tag: int = -1,
             nx: float = 0.0,
             ny: float = 0.0,
@@ -6355,7 +6382,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addSpline(pointTags, tag: int = -1) -> int:
+        def addSpline(pointTags: Sequence[int], *, tag: int = -1) -> int:
             """gmsh.model.geo.addSpline(pointTags, tag=-1)
 
             Add a spline (Catmull-Rom) curve in the built-in CAD representation, going
@@ -6383,7 +6410,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addBSpline(pointTags, tag: int = -1) -> int:
+        def addBSpline(pointTags: Sequence[int], *, tag: int = -1) -> int:
             """gmsh.model.geo.addBSpline(pointTags, tag=-1)
 
             Add a cubic b-spline curve in the built-in CAD representation, with
@@ -6411,7 +6438,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addBezier(pointTags, tag: int = -1) -> int:
+        def addBezier(pointTags: Sequence[int], *, tag: int = -1) -> int:
             """gmsh.model.geo.addBezier(pointTags, tag=-1)
 
             Add a Bezier curve in the built-in CAD representation, with `pointTags'
@@ -6437,7 +6464,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addPolyline(pointTags, tag: int = -1) -> int:
+        def addPolyline(pointTags: Sequence[int], *, tag: int = -1) -> int:
             """gmsh.model.geo.addPolyline(pointTags, tag=-1)
 
             Add a polyline curve in the built-in CAD representation, going through the
@@ -6465,7 +6492,7 @@ class model:
 
         @staticmethod
         def addCompoundSpline(
-            curveTags, numIntervals: int = 5, tag: int = -1
+            curveTags: Sequence[int], numIntervals: int = 5, tag: int = -1
         ) -> int:
             """gmsh.model.geo.addCompoundSpline(curveTags, numIntervals=5, tag=-1)
 
@@ -6497,7 +6524,7 @@ class model:
 
         @staticmethod
         def addCompoundBSpline(
-            curveTags, numIntervals: int = 20, tag: int = -1
+            curveTags: Sequence[int], numIntervals: int = 20, tag: int = -1
         ) -> int:
             """gmsh.model.geo.addCompoundBSpline(curveTags, numIntervals=20, tag=-1)
 
@@ -6529,7 +6556,7 @@ class model:
 
         @staticmethod
         def addCurveLoop(
-            curveTags, tag: int = -1, *, reorient: bool = False
+            curveTags: Sequence[int], tag: int = -1, *, reorient: bool = False
         ) -> int:
             """gmsh.model.geo.addCurveLoop(curveTags, tag=-1, reorient=False)
 
@@ -6562,7 +6589,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addCurveLoops(curveTags) -> list[int]:
+        def addCurveLoops(curveTags: Sequence[int]) -> list[int]:
             """gmsh.model.geo.addCurveLoops(curveTags)
 
             Add curve loops in the built-in CAD representation based on the curves
@@ -6590,7 +6617,7 @@ class model:
             return _ovectorint(api_tags_, api_tags_n_.value)
 
         @staticmethod
-        def addPlaneSurface(wireTags, tag: int = -1) -> int:
+        def addPlaneSurface(wireTags: Sequence[int], tag: int = -1) -> int:
             """gmsh.model.geo.addPlaneSurface(wireTags, tag=-1)
 
             Add a plane surface in the built-in CAD representation, defined by one or
@@ -6619,7 +6646,10 @@ class model:
 
         @staticmethod
         def addSurfaceFilling(
-            wireTags, tag: int = -1, sphereCenterTag: int = -1
+            wireTags: Sequence[int],
+            *,
+            tag: int = -1,
+            sphereCenterTag: int = -1,
         ) -> int:
             """gmsh.model.geo.addSurfaceFilling(wireTags, tag=-1, sphereCenterTag=-1)
 
@@ -6650,7 +6680,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def addSurfaceLoop(surfaceTags, tag: int = -1) -> int:
+        def addSurfaceLoop(
+            surfaceTags: Sequence[int], *, tag: int = -1
+        ) -> int:
             """gmsh.model.geo.addSurfaceLoop(surfaceTags, tag=-1)
 
             Add a surface loop (a closed shell) formed by `surfaceTags' in the built-in
@@ -6676,7 +6708,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addVolume(shellTags, tag: int = -1) -> int:
+        def addVolume(shellTags: Sequence[int], *, tag: int = -1) -> int:
             """gmsh.model.geo.addVolume(shellTags, tag=-1)
 
             Add a volume (a region) in the built-in CAD representation, defined by one
@@ -6705,7 +6737,11 @@ class model:
 
         @staticmethod
         def addGeometry(
-            geometry, numbers=[], strings: Sequence[str] = [], tag: int = -1
+            geometry: str,
+            numbers: Sequence[float] = [],
+            strings: Sequence[str] = [],
+            *,
+            tag: int = -1,
         ) -> int:
             """gmsh.model.geo.addGeometry(geometry, numbers=[], strings=[], tag=-1)
 
@@ -7273,7 +7309,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def splitCurve(tag: int, pointTags) -> list[int]:
+        def splitCurve(tag: int, pointTags: Sequence[int]) -> list[int]:
             """gmsh.model.geo.splitCurve(tag, pointTags)
 
             Split the curve of tag `tag' in the built-in CAD representation, on the
@@ -7471,7 +7507,10 @@ class model:
 
             @staticmethod
             def setTransfiniteSurface(
-                tag: int, arrangement="Left", cornerTags=[]
+                tag: int,
+                *,
+                arrangement: str = "Left",
+                cornerTags: Sequence[int] = [],
             ) -> None:
                 """gmsh.model.geo.mesh.setTransfiniteSurface(tag, arrangement="Left", cornerTags=[])
 
@@ -7501,7 +7540,9 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setTransfiniteVolume(tag: int, cornerTags=[]) -> None:
+            def setTransfiniteVolume(
+                tag: int, *, cornerTags: Sequence[int] = []
+            ) -> None:
                 """gmsh.model.geo.mesh.setTransfiniteVolume(tag, cornerTags=[])
 
                 Set a transfinite meshing constraint on the surface `tag' in the built-in
@@ -8009,7 +8050,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addBezier(pointTags, *, tag: int = -1) -> int:
+        def addBezier(pointTags: Sequence[int], *, tag: int = -1) -> int:
             """gmsh.model.occ.addBezier(pointTags, tag=-1)
 
             Add a Bezier curve in the OpenCASCADE CAD representation, with `pointTags'
@@ -8036,7 +8077,10 @@ class model:
 
         @staticmethod
         def addWire(
-            curveTags, *, tag: int = -1, checkClosed: bool = False
+            curveTags: Sequence[int],
+            *,
+            tag: int = -1,
+            checkClosed: bool = False,
         ) -> int:
             """gmsh.model.occ.addWire(curveTags, tag=-1, checkClosed=False)
 
@@ -8508,7 +8552,7 @@ class model:
         def addTrimmedSurface(
             surfaceTag: int,
             *,
-            wireTags=[],
+            wireTags: Sequence[int] = [],
             wire3D: bool = False,
             tag: int = -1,
         ) -> int:
@@ -8546,7 +8590,7 @@ class model:
 
         @staticmethod
         def addSurfaceLoop(
-            surfaceTags, *, tag=-1, sewing: bool = False
+            surfaceTags: Sequence[int], *, tag: int = -1, sewing: bool = False
         ) -> int:
             """gmsh.model.occ.addSurfaceLoop(surfaceTags, tag=-1, sewing=False)
 
@@ -8577,7 +8621,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addVolume(shellTags, tag=-1) -> int:
+        def addVolume(shellTags: Sequence[int], *, tag: int = -1) -> int:
             """gmsh.model.occ.addVolume(shellTags, tag=-1)
 
             Add a volume (a region) in the OpenCASCADE CAD representation, defined by
@@ -8864,7 +8908,7 @@ class model:
 
         @staticmethod
         def addThruSections(
-            wireTags,
+            wireTags: Sequence[int],
             *,
             tag: int = -1,
             makeSolid: bool = True,
@@ -8926,7 +8970,11 @@ class model:
 
         @staticmethod
         def addThickSolid(
-            volumeTag, excludeSurfaceTags, offset, tag=-1
+            volumeTag: int,
+            excludeSurfaceTags: Sequence[int],
+            offset: float,
+            *,
+            tag: int = -1,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.addThickSolid(volumeTag, excludeSurfaceTags, offset, tag=-1)
 
@@ -9140,7 +9188,7 @@ class model:
         def fillet(
             volumeTags: Sequence[int],
             curveTags: Sequence[int],
-            radii,
+            radii: Sequence[float],
             *,
             removeVolume: bool = True,
         ) -> list[tuple[int, int]]:
@@ -9186,10 +9234,10 @@ class model:
 
         @staticmethod
         def chamfer(
-            volumeTags,
-            curveTags,
-            surfaceTags,
-            distances,
+            volumeTags: Sequence[int],
+            curveTags: Sequence[int],
+            surfaceTags: Sequence[int],
+            distances: Sequence[float],
             *,
             removeVolume: bool = True,
         ) -> list[tuple[int, int]]:
@@ -9241,7 +9289,10 @@ class model:
 
         @staticmethod
         def defeature(
-            volumeTags, surfaceTags, *, removeVolume: bool = True
+            volumeTags: Sequence[int],
+            surfaceTags: Sequence[int],
+            *,
+            removeVolume: bool = True,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.defeature(volumeTags, surfaceTags, removeVolume=True)
 
@@ -9426,8 +9477,8 @@ class model:
 
         @staticmethod
         def fuse(
-            objectDimTags,
-            toolDimTags,
+            objectDimTags: Sequence[tuple[int, int]],
+            toolDimTags: Sequence[tuple[int, int]],
             *,
             tag: int = -1,
             removeObject: bool = True,
