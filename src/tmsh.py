@@ -7179,10 +7179,8 @@ class model:
             - `curveTags': vector of integers
             """
             api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
-            api_curveTags_, api_curveTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_curveTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_curveTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelGeoSplitCurve(
                 ctypes.c_int(tag),
@@ -7197,7 +7195,7 @@ class model:
             return _ovectorint(api_curveTags_, api_curveTags_n_.value)
 
         @staticmethod
-        def getMaxTag(dim):
+        def getMaxTag(dim) -> int:
             """gmsh.model.geo.getMaxTag(dim)
 
             Get the maximum tag of entities of dimension `dim' in the built-in CAD
@@ -7217,7 +7215,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def setMaxTag(dim, maxTag):
+        def setMaxTag(dim, maxTag) -> None:
             """gmsh.model.geo.setMaxTag(dim, maxTag)
 
             Set the maximum tag `maxTag' for entities of dimension `dim' in the built-
@@ -7235,7 +7233,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def addPhysicalGroup(dim, tags, tag=-1, name=""):
+        def addPhysicalGroup(
+            dim: int, tags: Sequence[int], tag: int = -1, name: str = ""
+        ) -> int:
             """gmsh.model.geo.addPhysicalGroup(dim, tags, tag=-1, name="")
 
             Add a physical group of dimension `dim', grouping the entities with tags
@@ -7266,7 +7266,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def removePhysicalGroups(dimTags=[]):
+        def removePhysicalGroups(dimTags=[]) -> None:
             """gmsh.model.geo.removePhysicalGroups(dimTags=[])
 
             Remove the physical groups `dimTags' (given as a vector of (dim, tag)
@@ -7285,7 +7285,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def synchronize():
+        def synchronize() -> None:
             """gmsh.model.geo.synchronize()
 
             Synchronize the built-in CAD representation with the current Gmsh model.
@@ -7304,7 +7304,7 @@ class model:
             """Built-in CAD kernel meshing constraints"""
 
             @staticmethod
-            def setSize(dimTags, size):
+            def setSize(dimTags, size: float) -> None:
                 """gmsh.model.geo.mesh.setSize(dimTags, size)
 
                 Set a mesh size constraint on the entities `dimTags' (given as a vector of
@@ -7329,7 +7329,7 @@ class model:
             @staticmethod
             def setTransfiniteCurve(
                 tag, nPoints, meshType="Progression", coef=1.0
-            ):
+            ) -> None:
                 """gmsh.model.geo.mesh.setTransfiniteCurve(tag, nPoints, meshType="Progression", coef=1.)
 
                 Set a transfinite meshing constraint on the curve `tag' in the built-in CAD
@@ -7358,7 +7358,7 @@ class model:
             @staticmethod
             def setTransfiniteSurface(
                 tag: int, arrangement="Left", cornerTags=[]
-            ):
+            ) -> None:
                 """gmsh.model.geo.mesh.setTransfiniteSurface(tag, arrangement="Left", cornerTags=[])
 
                 Set a transfinite meshing constraint on the surface `tag' in the built-in
@@ -7387,7 +7387,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setTransfiniteVolume(tag: int, cornerTags=[]):
+            def setTransfiniteVolume(tag: int, cornerTags=[]) -> None:
                 """gmsh.model.geo.mesh.setTransfiniteVolume(tag, cornerTags=[])
 
                 Set a transfinite meshing constraint on the surface `tag' in the built-in
@@ -7410,7 +7410,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setRecombine(dim: int, tag: int, angle=45.0):
+            def setRecombine(dim: int, tag: int, angle: float = 45.0) -> None:
                 """gmsh.model.geo.mesh.setRecombine(dim, tag, angle=45.)
 
                 Set a recombination meshing constraint on the entity of dimension `dim' and
@@ -7435,7 +7435,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setSmoothing(dim: int, tag: int, val):
+            def setSmoothing(dim: int, tag: int, val: int) -> None:
                 """gmsh.model.geo.mesh.setSmoothing(dim, tag, val)
 
                 Set a smoothing meshing constraint on the entity of dimension `dim' and tag
@@ -7458,7 +7458,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setReverse(dim: int, tag: int, val=True):
+            def setReverse(dim: int, tag: int, *, val: bool = True) -> None:
                 """gmsh.model.geo.mesh.setReverse(dim, tag, val=True)
 
                 Set a reverse meshing constraint on the entity of dimension `dim' and tag
@@ -7483,7 +7483,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setAlgorithm(dim: int, tag: int, val):
+            def setAlgorithm(dim: int, tag: int, val: int) -> None:
                 """gmsh.model.geo.mesh.setAlgorithm(dim, tag, val)
 
                 Set the meshing algorithm on the entity of dimension `dim' and tag `tag' in
@@ -7506,7 +7506,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def setSizeFromBoundary(dim: int, tag: int, val):
+            def setSizeFromBoundary(dim: int, tag: int, val: int):
                 """gmsh.model.geo.mesh.setSizeFromBoundary(dim, tag, val)
 
                 Force the mesh size to be extended from the boundary, or not, for the
@@ -7532,7 +7532,14 @@ class model:
         """OpenCASCADE CAD kernel functions"""
 
         @staticmethod
-        def addPoint(x, y, z, meshSize=0.0, tag=-1):
+        def addPoint(
+            x: float,
+            y: float,
+            z: float,
+            *,
+            meshSize: float = 0.0,
+            tag: int = -1,
+        ) -> int:
             """gmsh.model.occ.addPoint(x, y, z, meshSize=0., tag=-1)
 
             Add a geometrical point in the OpenCASCADE CAD representation, at
@@ -7565,7 +7572,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addLine(startTag, endTag, tag=-1):
+        def addLine(startTag: int, endTag: int, *, tag: int = -1) -> int:
             """gmsh.model.occ.addLine(startTag, endTag, tag=-1)
 
             Add a straight line segment in the OpenCASCADE CAD representation, between
@@ -7592,7 +7599,14 @@ class model:
             return api_result_
 
         @staticmethod
-        def addCircleArc(startTag, middleTag, endTag, tag=-1, center=True):
+        def addCircleArc(
+            startTag: int,
+            middleTag: int,
+            endTag: int,
+            *,
+            tag: int = -1,
+            center: bool = True,
+        ) -> int:
             """gmsh.model.occ.addCircleArc(startTag, middleTag, endTag, tag=-1, center=True)
 
             Add a circle arc in the OpenCASCADE CAD representation, between the two
@@ -7626,16 +7640,17 @@ class model:
 
         @staticmethod
         def addCircle(
-            x,
-            y,
-            z,
-            r,
-            tag=-1,
-            angle1=0.0,
-            angle2=2 * math.pi,
-            zAxis=[],
-            xAxis=[],
-        ):
+            x: float,
+            y: float,
+            z: float,
+            r: float,
+            *,
+            tag: int = -1,
+            angle1: float = 0.0,
+            angle2: float = 2 * math.pi,
+            zAxis: Sequence[float] = [],
+            xAxis: Sequence[float] = [],
+        ) -> int:
             """gmsh.model.occ.addCircle(x, y, z, r, tag=-1, angle1=0., angle2=2*pi, zAxis=[], xAxis=[])
 
             Add a circle of center (`x', `y', `z') and radius `r' in the OpenCASCADE
@@ -7681,7 +7696,14 @@ class model:
             return api_result_
 
         @staticmethod
-        def addEllipseArc(startTag, centerTag, majorTag, endTag, tag=-1):
+        def addEllipseArc(
+            startTag: int,
+            centerTag: int,
+            majorTag: int,
+            endTag: int,
+            *,
+            tag: int = -1,
+        ) -> int:
             """gmsh.model.occ.addEllipseArc(startTag, centerTag, majorTag, endTag, tag=-1)
 
             Add an ellipse arc in the OpenCASCADE CAD representation, between the two
@@ -7720,6 +7742,7 @@ class model:
             z,
             r1,
             r2,
+            *,
             tag=-1,
             angle1=0.0,
             angle2=2 * math.pi,
@@ -7774,7 +7797,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addSpline(pointTags, tag=-1, tangents=[]):
+        def addSpline(pointTags, *, tag: int = -1, tangents=[]) -> int:
             """gmsh.model.occ.addSpline(pointTags, tag=-1, tangents=[])
 
             Add a spline (C2 b-spline) curve in the OpenCASCADE CAD representation,
@@ -7812,12 +7835,13 @@ class model:
         @staticmethod
         def addBSpline(
             pointTags,
-            tag=-1,
-            degree=3,
-            weights=[],
-            knots=[],
-            multiplicities=[],
-        ):
+            *,
+            tag: int = -1,
+            degree: int = 3,
+            weights: Sequence[float] = [],
+            knots: Sequence[float] = [],
+            multiplicities: Sequence[int] = [],
+        ) -> int:
             """gmsh.model.occ.addBSpline(pointTags, tag=-1, degree=3, weights=[], knots=[], multiplicities=[])
 
             Add a b-spline curve of degree `degree' in the OpenCASCADE CAD
@@ -7862,7 +7886,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addBezier(pointTags, tag=-1):
+        def addBezier(pointTags, *, tag: int = -1) -> int:
             """gmsh.model.occ.addBezier(pointTags, tag=-1)
 
             Add a Bezier curve in the OpenCASCADE CAD representation, with `pointTags'
@@ -7888,7 +7912,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def addWire(curveTags, tag=-1, checkClosed=False):
+        def addWire(
+            curveTags, *, tag: int = -1, checkClosed: bool = False
+        ) -> int:
             """gmsh.model.occ.addWire(curveTags, tag=-1, checkClosed=False)
 
             Add a wire (open or closed) in the OpenCASCADE CAD representation, formed
@@ -7918,7 +7944,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addCurveLoop(curveTags, tag=-1):
+        def addCurveLoop(curveTags, *, tag: int = -1) -> int:
             """gmsh.model.occ.addCurveLoop(curveTags, tag=-1)
 
             Add a curve loop (a closed wire) in the OpenCASCADE CAD representation,
@@ -7950,7 +7976,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def addRectangle(x, y, z, dx, dy, tag=-1, roundedRadius=0.0):
+        def addRectangle(
+            x, y, z, dx, dy, *, tag: int = -1, roundedRadius: float = 0.0
+        ):
             """gmsh.model.occ.addRectangle(x, y, z, dx, dy, tag=-1, roundedRadius=0.)
 
             Add a rectangle in the OpenCASCADE CAD representation, with lower left
