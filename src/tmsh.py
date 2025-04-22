@@ -6779,7 +6779,13 @@ class model:
 
         @staticmethod
         def addPointOnGeometry(
-            geometryTag, x, y, z=0.0, meshSize=0.0, tag=-1
+            geometryTag: int,
+            x: float,
+            y: float,
+            z=0.0,
+            *,
+            meshSize: float = 0.0,
+            tag: int = -1,
         ) -> int:
             """gmsh.model.geo.addPointOnGeometry(geometryTag, x, y, z=0., meshSize=0., tag=-1)
 
@@ -7084,7 +7090,9 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def translate(dimTags: Sequence[tuple[int, int]], dx, dy, dz) -> None:
+        def translate(
+            dimTags: Sequence[tuple[int, int]], dx: float, dy: float, dz: float
+        ) -> None:
             """gmsh.model.geo.translate(dimTags, dx, dy, dz)
 
             Translate the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -7111,7 +7119,14 @@ class model:
 
         @staticmethod
         def rotate(
-            dimTags: Sequence[tuple[int, int]], x, y, z, ax, ay, az, angle
+            dimTags: Sequence[tuple[int, int]],
+            x: float,
+            y: float,
+            z: float,
+            ax: float,
+            ay: float,
+            az: float,
+            angle: float,
         ) -> None:
             """gmsh.model.geo.rotate(dimTags, x, y, z, ax, ay, az, angle)
 
@@ -7149,7 +7164,13 @@ class model:
 
         @staticmethod
         def dilate(
-            dimTags: Sequence[tuple[int, int]], x, y, z, a, b, c
+            dimTags: Sequence[tuple[int, int]],
+            x: float,
+            y: float,
+            z: float,
+            a: float,
+            b: float,
+            c: float,
         ) -> None:
             """gmsh.model.geo.dilate(dimTags, x, y, z, a, b, c)
 
@@ -7184,7 +7205,13 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def mirror(dimTags: Sequence[tuple[int, int]], a, b, c, d) -> None:
+        def mirror(
+            dimTags: Sequence[tuple[int, int]],
+            a: float,
+            b: float,
+            c: float,
+            d: float,
+        ) -> None:
             """gmsh.model.geo.mirror(dimTags, a, b, c, d)
 
             Mirror the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -7213,7 +7240,13 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def symmetrize(dimTags: Sequence[tuple[int, int]], a, b, c, d) -> None:
+        def symmetrize(
+            dimTags: Sequence[tuple[int, int]],
+            a: float,
+            b: float,
+            c: float,
+            d: float,
+        ) -> None:
             """gmsh.model.geo.symmetrize(dimTags, a, b, c, d)
 
             Mirror the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -7341,7 +7374,7 @@ class model:
             return _ovectorint(api_curveTags_, api_curveTags_n_.value)
 
         @staticmethod
-        def getMaxTag(dim) -> int:
+        def getMaxTag(dim: int) -> int:
             """gmsh.model.geo.getMaxTag(dim)
 
             Get the maximum tag of entities of dimension `dim' in the built-in CAD
@@ -7361,7 +7394,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def setMaxTag(dim, maxTag) -> None:
+        def setMaxTag(dim: int, maxTag: int) -> None:
             """gmsh.model.geo.setMaxTag(dim, maxTag)
 
             Set the maximum tag `maxTag' for entities of dimension `dim' in the built-
@@ -7478,7 +7511,11 @@ class model:
 
             @staticmethod
             def setTransfiniteCurve(
-                tag, nPoints, meshType="Progression", coef=1.0
+                tag: int,
+                nPoints: int,
+                *,
+                meshType: str = "Progression",
+                coef: float = 1.0,
             ) -> None:
                 """gmsh.model.geo.mesh.setTransfiniteCurve(tag, nPoints, meshType="Progression", coef=1.)
 
@@ -8196,8 +8233,8 @@ class model:
             ry: float,
             *,
             tag: int = -1,
-            zAxis=[],
-            xAxis=[],
+            zAxis: tuple[float, float, float] | None = None,
+            xAxis: tuple[float, float, float] | None = None,
         ) -> int:
             """gmsh.model.occ.addDisk(xc, yc, zc, rx, ry, tag=-1, zAxis=[], xAxis=[])
 
@@ -8221,8 +8258,12 @@ class model:
             - `zAxis': vector of doubles
             - `xAxis': vector of doubles
             """
-            api_zAxis_, api_zAxis_n_ = _ivectordouble(zAxis)
-            api_xAxis_, api_xAxis_n_ = _ivectordouble(xAxis)
+            api_zAxis_, api_zAxis_n_ = _ivectordouble(
+                () if zAxis is None else zAxis
+            )
+            api_xAxis_, api_xAxis_n_ = _ivectordouble(
+                () if xAxis is None else xAxis
+            )
             ierr = ctypes.c_int()
             api_result_ = gmsh.lib.gmshModelOccAddDisk(
                 ctypes.c_double(xc),
@@ -8650,14 +8691,15 @@ class model:
 
         @staticmethod
         def addSphere(
-            xc,
-            yc,
-            zc,
-            radius,
-            tag=-1,
-            angle1=-math.pi / 2,
-            angle2=math.pi / 2,
-            angle3=2 * math.pi,
+            xc: float,
+            yc: float,
+            zc: float,
+            radius: float,
+            *,
+            tag: int = -1,
+            angle1: float = -math.pi / 2,
+            angle2: float = math.pi / 2,
+            angle3: float = 2 * math.pi,
         ) -> int:
             """gmsh.model.occ.addSphere(xc, yc, zc, radius, tag=-1, angle1=-pi/2, angle2=pi/2, angle3=2*pi)
 
@@ -8697,7 +8739,16 @@ class model:
             return api_result_
 
         @staticmethod
-        def addBox(x, y, z, dx, dy, dz, tag=-1) -> int:
+        def addBox(
+            x: float,
+            y: float,
+            z: float,
+            dx: float,
+            dy: float,
+            dz: float,
+            *,
+            tag: int = -1,
+        ) -> int:
             """gmsh.model.occ.addBox(x, y, z, dx, dy, dz, tag=-1)
 
             Add a parallelepipedic box in the OpenCASCADE CAD representation, defined
@@ -8733,7 +8784,16 @@ class model:
 
         @staticmethod
         def addCylinder(
-            x, y, z, dx, dy, dz, r, tag=-1, angle=2 * math.pi
+            x: float,
+            y: float,
+            z: float,
+            dx: float,
+            dy: float,
+            dz: float,
+            r: float,
+            *,
+            tag: int = -1,
+            angle: float = 2 * math.pi,
         ) -> int:
             """gmsh.model.occ.addCylinder(x, y, z, dx, dy, dz, r, tag=-1, angle=2*pi)
 
@@ -8776,7 +8836,17 @@ class model:
 
         @staticmethod
         def addCone(
-            x, y, z, dx, dy, dz, r1, r2, tag=-1, angle=2 * math.pi
+            x: float,
+            y: float,
+            z: float,
+            dx: float,
+            dy: float,
+            dz: float,
+            r1: float,
+            r2: float,
+            *,
+            tag: int = -1,
+            angle: float = 2 * math.pi,
         ) -> int:
             """gmsh.model.occ.addCone(x, y, z, dx, dy, dz, r1, r2, tag=-1, angle=2*pi)
 
@@ -8820,7 +8890,18 @@ class model:
             return api_result_
 
         @staticmethod
-        def addWedge(x, y, z, dx, dy, dz, tag=-1, ltx=0.0, zAxis=[]) -> int:
+        def addWedge(
+            x: float,
+            y: float,
+            z: float,
+            dx: float,
+            dy: float,
+            dz: float,
+            *,
+            tag: int = -1,
+            ltx: float = 0.0,
+            zAxis: tuple[float, float, float] | None = None,
+        ) -> int:
             """gmsh.model.occ.addWedge(x, y, z, dx, dy, dz, tag=-1, ltx=0., zAxis=[])
 
             Add a right angular wedge in the OpenCASCADE CAD representation, defined by
@@ -8844,7 +8925,9 @@ class model:
             - `ltx': double
             - `zAxis': vector of doubles
             """
-            api_zAxis_, api_zAxis_n_ = _ivectordouble(zAxis)
+            api_zAxis_, api_zAxis_n_ = _ivectordouble(
+                () if zAxis is None else zAxis
+            )
             ierr = ctypes.c_int()
             api_result_ = gmsh.lib.gmshModelOccAddWedge(
                 ctypes.c_double(x),
@@ -8865,7 +8948,15 @@ class model:
 
         @staticmethod
         def addTorus(
-            x, y, z, r1, r2, tag=-1, angle=2 * math.pi, zAxis=[]
+            x: float,
+            y: float,
+            z: float,
+            r1: float,
+            r2: float,
+            *,
+            tag: int = -1,
+            angle: float = 2 * math.pi,
+            zAxis: tuple[float, float, float] | None = None,
         ) -> int:
             """gmsh.model.occ.addTorus(x, y, z, r1, r2, tag=-1, angle=2*pi, zAxis=[])
 
@@ -8888,7 +8979,9 @@ class model:
             - `angle': double
             - `zAxis': vector of doubles
             """
-            api_zAxis_, api_zAxis_n_ = _ivectordouble(zAxis)
+            api_zAxis_, api_zAxis_n_ = _ivectordouble(
+                () if zAxis is None else zAxis
+            )
             ierr = ctypes.c_int()
             api_result_ = gmsh.lib.gmshModelOccAddTorus(
                 ctypes.c_double(x),
@@ -9017,12 +9110,12 @@ class model:
         @staticmethod
         def extrude(
             dimTags: Sequence[tuple[int, int]],
-            dx,
-            dy,
-            dz,
+            dx: float,
+            dy: float,
+            dz: float,
             *,
-            numElements=[],
-            heights=[],
+            numElements: Sequence[int] = [],
+            heights: Sequence[float] = [],
             recombine: bool = False,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.extrude(dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False)
@@ -9075,16 +9168,16 @@ class model:
         @staticmethod
         def revolve(
             dimTags: Sequence[tuple[int, int]],
-            x,
-            y,
-            z,
-            ax,
-            ay,
-            az,
-            angle,
+            x: float,
+            y: float,
+            z: float,
+            ax: float,
+            ay: float,
+            az: float,
+            angle: float,
             *,
-            numElements=[],
-            heights=[],
+            numElements: Sequence[int] = [],
+            heights: Sequence[float] = [],
             recombine: bool = False,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.revolve(dimTags, x, y, z, ax, ay, az, angle, numElements=[], heights=[], recombine=False)
@@ -9147,7 +9240,10 @@ class model:
 
         @staticmethod
         def addPipe(
-            dimTags: Sequence[tuple[int, int]], wireTag, trihedron=""
+            dimTags: Sequence[tuple[int, int]],
+            wireTag: int,
+            *,
+            trihedron: str = "",
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.addPipe(dimTags, wireTag, trihedron="")
 
@@ -9328,7 +9424,9 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def fillet2D(edgeTag1, edgeTag2, radius, tag=-1) -> int:
+        def fillet2D(
+            edgeTag1: int, edgeTag2: int, radius: float, *, tag: int = -1
+        ) -> int:
             """gmsh.model.occ.fillet2D(edgeTag1, edgeTag2, radius, tag=-1)
 
             Create a fillet edge between edges `edgeTag1' and `edgeTag2' with radius
@@ -9356,7 +9454,14 @@ class model:
             return api_result_
 
         @staticmethod
-        def chamfer2D(edgeTag1, edgeTag2, distance1, distance2, tag=-1) -> int:
+        def chamfer2D(
+            edgeTag1: int,
+            edgeTag2: int,
+            distance1: float,
+            distance2: float,
+            *,
+            tag: int = -1,
+        ) -> int:
             """gmsh.model.occ.chamfer2D(edgeTag1, edgeTag2, distance1, distance2, tag=-1)
 
             Create a chamfer edge between edges `edgeTag1' and `edgeTag2' with
@@ -9387,7 +9492,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def offsetCurve(curveLoopTag, offset) -> list[tuple[int, int]]:
+        def offsetCurve(
+            curveLoopTag: int, offset: float
+        ) -> list[tuple[int, int]]:
             """gmsh.model.occ.offsetCurve(curveLoopTag, offset)
 
             Create an offset curve based on the curve loop `curveLoopTag' with offset
@@ -9417,7 +9524,7 @@ class model:
 
         @staticmethod
         def getDistance(
-            dim1, tag1, dim2, tag2
+            dim1: int, tag1: int, dim2: int, tag2: int
         ) -> tuple[float, float, float, float, float, float, float]:
             """gmsh.model.occ.getDistance(dim1, tag1, dim2, tag2)
 
@@ -9748,7 +9855,9 @@ class model:
             )
 
         @staticmethod
-        def translate(dimTags: Sequence[tuple[int, int]], dx, dy, dz) -> None:
+        def translate(
+            dimTags: Sequence[tuple[int, int]], dx: float, dy: float, dz: float
+        ) -> None:
             """gmsh.model.occ.translate(dimTags, dx, dy, dz)
 
             Translate the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -9775,7 +9884,14 @@ class model:
 
         @staticmethod
         def rotate(
-            dimTags: Sequence[tuple[int, int]], x, y, z, ax, ay, az, angle
+            dimTags: Sequence[tuple[int, int]],
+            x: float,
+            y: float,
+            z: float,
+            ax: float,
+            ay: float,
+            az: float,
+            angle: float,
         ) -> None:
             """gmsh.model.occ.rotate(dimTags, x, y, z, ax, ay, az, angle)
 
@@ -9813,7 +9929,13 @@ class model:
 
         @staticmethod
         def dilate(
-            dimTags: Sequence[tuple[int, int]], x, y, z, a, b, c
+            dimTags: Sequence[tuple[int, int]],
+            x: float,
+            y: float,
+            z: float,
+            a: float,
+            b: float,
+            c: float,
         ) -> None:
             """gmsh.model.occ.dilate(dimTags, x, y, z, a, b, c)
 
@@ -9848,7 +9970,13 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def mirror(dimTags: Sequence[tuple[int, int]], a, b, c, d) -> None:
+        def mirror(
+            dimTags: Sequence[tuple[int, int]],
+            a: float,
+            b: float,
+            c: float,
+            d: float,
+        ) -> None:
             """gmsh.model.occ.mirror(dimTags, a, b, c, d)
 
             Mirror the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -9877,7 +10005,13 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def symmetrize(dimTags: Sequence[tuple[int, int]], a, b, c, d) -> None:
+        def symmetrize(
+            dimTags: Sequence[tuple[int, int]],
+            a: float,
+            b: float,
+            c: float,
+            d: float,
+        ) -> None:
             """gmsh.model.occ.symmetrize(dimTags, a, b, c, d)
 
             Mirror the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -9908,7 +10042,8 @@ class model:
 
         @staticmethod
         def affineTransform(
-            dimTags: Sequence[tuple[int, int]], affineTransform
+            dimTags: Sequence[tuple[int, int]],
+            affineTransform: Sequence[float],
         ) -> None:
             """gmsh.model.occ.affineTransform(dimTags, affineTransform)
 
@@ -10112,7 +10247,7 @@ class model:
 
         @staticmethod
         def importShapesNativePointer(
-            shape, *, highestDimOnly: bool = True
+            shape: int, *, highestDimOnly: bool = True
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.importShapesNativePointer(shape, highestDimOnly=True)
 
@@ -10278,7 +10413,9 @@ class model:
             )
 
         @staticmethod
-        def getCurveLoops(surfaceTag) -> tuple[list[int], list[list[int]]]:
+        def getCurveLoops(
+            surfaceTag: int,
+        ) -> tuple[list[int], list[list[int]]]:
             """gmsh.model.occ.getCurveLoops(surfaceTag)
 
             Get the tags `curveLoopTags' of the curve loops making up the surface of
@@ -10321,7 +10458,9 @@ class model:
             )
 
         @staticmethod
-        def getSurfaceLoops(volumeTag) -> tuple[list[int], list[list[int]]]:
+        def getSurfaceLoops(
+            volumeTag: int,
+        ) -> tuple[list[int], list[list[int]]]:
             """gmsh.model.occ.getSurfaceLoops(volumeTag)
 
             Get the tags `surfaceLoopTags' of the surface loops making up the volume of
@@ -10796,7 +10935,7 @@ class view:
 
     @staticmethod
     def getHomogeneousModelData(
-        tag: int, step
+        tag: int, step: int
     ) -> tuple[str, list[int], list[float], float, int]:
         """gmsh.view.getHomogeneousModelData(tag, step)
 
