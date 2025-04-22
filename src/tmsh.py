@@ -7977,7 +7977,14 @@ class model:
 
         @staticmethod
         def addRectangle(
-            x, y, z, dx, dy, *, tag: int = -1, roundedRadius: float = 0.0
+            x: float,
+            y: float,
+            z: float,
+            dx: float,
+            dy: float,
+            *,
+            tag: int = -1,
+            roundedRadius: float = 0.0,
         ):
             """gmsh.model.occ.addRectangle(x, y, z, dx, dy, tag=-1, roundedRadius=0.)
 
@@ -8014,7 +8021,17 @@ class model:
             return api_result_
 
         @staticmethod
-        def addDisk(xc, yc, zc, rx, ry, tag=-1, zAxis=[], xAxis=[]):
+        def addDisk(
+            xc: float,
+            yc: float,
+            zc: float,
+            rx: float,
+            ry: float,
+            *,
+            tag: int = -1,
+            zAxis=[],
+            xAxis=[],
+        ) -> int:
             """gmsh.model.occ.addDisk(xc, yc, zc, rx, ry, tag=-1, zAxis=[], xAxis=[])
 
             Add a disk in the OpenCASCADE CAD representation, with center (`xc', `yc',
@@ -8058,7 +8075,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addPlaneSurface(wireTags, tag=-1):
+        def addPlaneSurface(wireTags, *, tag: int = -1) -> int:
             """gmsh.model.occ.addPlaneSurface(wireTags, tag=-1)
 
             Add a plane surface in the OpenCASCADE CAD representation, defined by one
@@ -8087,20 +8104,21 @@ class model:
 
         @staticmethod
         def addSurfaceFilling(
-            wireTag,
-            tag=-1,
-            pointTags=[],
-            degree=2,
-            numPointsOnCurves=15,
-            numIter=2,
-            anisotropic=False,
-            tol2d=0.00001,
-            tol3d=0.0001,
-            tolAng=0.01,
-            tolCurv=0.1,
-            maxDegree=8,
-            maxSegments=9,
-        ):
+            wireTag: int,
+            *,
+            tag: int = -1,
+            pointTags: Sequence[int] = [],
+            degree: int = 2,
+            numPointsOnCurves: int = 15,
+            numIter: int = 2,
+            anisotropic: bool = False,
+            tol2d: float = 0.00001,
+            tol3d: float = 0.0001,
+            tolAng: float = 0.01,
+            tolCurv: float = 0.1,
+            maxDegree: int = 8,
+            maxSegments: int = 9,
+        ) -> int:
             """gmsh.model.occ.addSurfaceFilling(wireTag, tag=-1, pointTags=[], degree=2, numPointsOnCurves=15, numIter=2, anisotropic=False, tol2d=0.00001, tol3d=0.0001, tolAng=0.01, tolCurv=0.1, maxDegree=8, maxSegments=9)
 
             Add a surface in the OpenCASCADE CAD representation, filling the curve loop
@@ -8163,7 +8181,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def addBSplineFilling(wireTag, tag=-1, type=""):  # noqa: A002
+        def addBSplineFilling(
+            wireTag: int, *, tag: int = -1, type: str = ""
+        ) -> int:  # noqa: A002
             """gmsh.model.occ.addBSplineFilling(wireTag, tag=-1, type="")
 
             Add a BSpline surface in the OpenCASCADE CAD representation, filling the
@@ -8193,7 +8213,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def addBezierFilling(wireTag, tag=-1, type=""):  # noqa: A002
+        def addBezierFilling(
+            wireTag: int, *, tag: int = -1, type: str = ""
+        ) -> int:  # noqa: A002
             """gmsh.model.occ.addBezierFilling(wireTag, tag=-1, type="")
 
             Add a Bezier surface in the OpenCASCADE CAD representation, filling the
