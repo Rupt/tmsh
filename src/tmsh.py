@@ -495,8 +495,8 @@ def _iargcargv(o: Sequence[str]) -> tuple[c_int, Array[c_char_p]]:
 
 
 def initialize(
-    *,
     argv: Sequence[str] = (),
+    *,
     readConfigFiles: bool = True,
     run: bool = False,
     interruptible: bool = True,
