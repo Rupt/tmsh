@@ -1530,7 +1530,9 @@ class model:
         return api_result_
 
     @staticmethod
-    def removeEntities(dimTags, *, recursive: bool = False) -> None:
+    def removeEntities(
+        dimTags: Sequence[tuple[int, int]], *, recursive: bool = False
+    ) -> None:
         """gmsh.model.removeEntities(dimTags, recursive=False)
 
         Remove the entities `dimTags' (given as a vector of (dim, tag) pairs) of
@@ -2131,7 +2133,9 @@ class model:
         )
 
     @staticmethod
-    def setVisibility(dimTags, value, *, recursive: bool = False) -> None:
+    def setVisibility(
+        dimTags: Sequence[tuple[int, int]], value, *, recursive: bool = False
+    ) -> None:
         """gmsh.model.setVisibility(dimTags, value, recursive=False)
 
         Set the visibility of the model entities `dimTags' (given as a vector of
@@ -4598,7 +4602,7 @@ class model:
             )
 
         @staticmethod
-        def setSize(dimTags, size) -> None:
+        def setSize(dimTags: Sequence[tuple[int, int]], size) -> None:
             """gmsh.model.mesh.setSize(dimTags, size)
 
             Set a mesh size constraint on the model entities `dimTags', given as a
@@ -5058,7 +5062,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def removeEmbedded(dimTags, dim=-1) -> None:
+        def removeEmbedded(dimTags: Sequence[tuple[int, int]], dim=-1) -> None:
             """gmsh.model.mesh.removeEmbedded(dimTags, dim=-1)
 
             Remove embedded entities from the model entities `dimTags', given as a
@@ -6979,7 +6983,7 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def translate(dimTags, dx, dy, dz) -> None:
+        def translate(dimTags: Sequence[tuple[int, int]], dx, dy, dz) -> None:
             """gmsh.model.geo.translate(dimTags, dx, dy, dz)
 
             Translate the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -7005,7 +7009,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def rotate(dimTags, x, y, z, ax, ay, az, angle) -> None:
+        def rotate(
+            dimTags: Sequence[tuple[int, int]], x, y, z, ax, ay, az, angle
+        ) -> None:
             """gmsh.model.geo.rotate(dimTags, x, y, z, ax, ay, az, angle)
 
             Rotate the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -7041,7 +7047,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def dilate(dimTags, x, y, z, a, b, c) -> None:
+        def dilate(
+            dimTags: Sequence[tuple[int, int]], x, y, z, a, b, c
+        ) -> None:
             """gmsh.model.geo.dilate(dimTags, x, y, z, a, b, c)
 
             Scale the entities `dimTags' (given as a vector of (dim, tag) pairs) in the
@@ -7075,7 +7083,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def mirror(dimTags, a, b, c, d) -> None:
+        def mirror(dimTags: Sequence[tuple[int, int]], a, b, c, d) -> None:
             """gmsh.model.geo.mirror(dimTags, a, b, c, d)
 
             Mirror the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -7104,7 +7112,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def symmetrize(dimTags, a, b, c, d) -> None:
+        def symmetrize(dimTags: Sequence[tuple[int, int]], a, b, c, d) -> None:
             """gmsh.model.geo.symmetrize(dimTags, a, b, c, d)
 
             Mirror the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -7162,7 +7170,9 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def remove(dimTags, recursive=False) -> None:
+        def remove(
+            dimTags: Sequence[tuple[int, int]], recursive=False
+        ) -> None:
             """gmsh.model.geo.remove(dimTags, recursive=False)
 
             Remove the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -7339,7 +7349,9 @@ class model:
             """Built-in CAD kernel meshing constraints"""
 
             @staticmethod
-            def setSize(dimTags, size: float) -> None:
+            def setSize(
+                dimTags: Sequence[tuple[int, int]], size: float
+            ) -> None:
                 """gmsh.model.geo.mesh.setSize(dimTags, size)
 
                 Set a mesh size constraint on the entities `dimTags' (given as a vector of
@@ -9000,7 +9012,9 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def addPipe(dimTags, wireTag, trihedron="") -> list[tuple[int, int]]:
+        def addPipe(
+            dimTags: Sequence[tuple[int, int]], wireTag, trihedron=""
+        ) -> list[tuple[int, int]]:
             """gmsh.model.occ.addPipe(dimTags, wireTag, trihedron="")
 
             Add a pipe in the OpenCASCADE CAD representation, by extruding the entities
@@ -9584,7 +9598,7 @@ class model:
             )
 
         @staticmethod
-        def translate(dimTags, dx, dy, dz) -> None:
+        def translate(dimTags: Sequence[tuple[int, int]], dx, dy, dz) -> None:
             """gmsh.model.occ.translate(dimTags, dx, dy, dz)
 
             Translate the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -9610,7 +9624,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def rotate(dimTags, x, y, z, ax, ay, az, angle) -> None:
+        def rotate(
+            dimTags: Sequence[tuple[int, int]], x, y, z, ax, ay, az, angle
+        ) -> None:
             """gmsh.model.occ.rotate(dimTags, x, y, z, ax, ay, az, angle)
 
             Rotate the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -9646,7 +9662,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def dilate(dimTags, x, y, z, a, b, c) -> None:
+        def dilate(
+            dimTags: Sequence[tuple[int, int]], x, y, z, a, b, c
+        ) -> None:
             """gmsh.model.occ.dilate(dimTags, x, y, z, a, b, c)
 
             Scale the entities `dimTags' (given as a vector of (dim, tag) pairs) in the
@@ -9680,7 +9698,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def mirror(dimTags, a, b, c, d) -> None:
+        def mirror(dimTags: Sequence[tuple[int, int]], a, b, c, d) -> None:
             """gmsh.model.occ.mirror(dimTags, a, b, c, d)
 
             Mirror the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -9709,7 +9727,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def symmetrize(dimTags, a, b, c, d) -> None:
+        def symmetrize(dimTags: Sequence[tuple[int, int]], a, b, c, d) -> None:
             """gmsh.model.occ.symmetrize(dimTags, a, b, c, d)
 
             Mirror the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -9739,7 +9757,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def affineTransform(dimTags, affineTransform) -> None:
+        def affineTransform(
+            dimTags: Sequence[tuple[int, int]], affineTransform
+        ) -> None:
             """gmsh.model.occ.affineTransform(dimTags, affineTransform)
 
             Apply a general affine transformation matrix `affineTransform' (16 entries
@@ -9795,7 +9815,9 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def remove(dimTags, recursive=False) -> None:
+        def remove(
+            dimTags: Sequence[tuple[int, int]], recursive=False
+        ) -> None:
             """gmsh.model.occ.remove(dimTags, recursive=False)
 
             Remove the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -10332,7 +10354,9 @@ class model:
             """OpenCASCADE CAD kernel meshing constraints"""
 
             @staticmethod
-            def setSize(dimTags, size: float) -> None:
+            def setSize(
+                dimTags: Sequence[tuple[int, int]], size: float
+            ) -> None:
                 """gmsh.model.occ.mesh.setSize(dimTags, size)
 
                 Set a mesh size constraint on the entities `dimTags' (given as a vector of
