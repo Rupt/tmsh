@@ -1163,7 +1163,7 @@ class model:
         return _ovectorint(api_physicalTags_, api_physicalTags_n_.value)
 
     @staticmethod
-    def addPhysicalGroup(dim, tags, tag=-1, name="") -> int:
+    def addPhysicalGroup(dim: int, tags: Sequence[int], *, tag: int=-1, name: str="") -> int:
         """gmsh.model.addPhysicalGroup(dim, tags, tag=-1, name="")
 
         Add a physical group of dimension `dim', grouping the model entities with
@@ -1194,7 +1194,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def removePhysicalGroups(dimTags=[]) -> None:
+    def removePhysicalGroups(dimTags: Sequence[tuple[int, int]]=[]) -> None:
         """gmsh.model.removePhysicalGroups(dimTags=[])
 
         Remove the physical groups `dimTags' (given as a vector of (dim, tag)
@@ -1392,6 +1392,7 @@ class model:
         xmax: float,
         ymax: float,
         zmax: float,
+        *,
         dim: int = -1,
     ) -> builtins.list[tuple[int, int]]:
         """gmsh.model.getEntitiesInBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax, dim=-1)
@@ -1500,7 +1501,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def addDiscreteEntity(dim: int, tag: int = -1, boundary=[]) -> int:
+    def addDiscreteEntity(dim: int, tag: int = -1, boundary: Sequence[int]=[]) -> int:
         """gmsh.model.addDiscreteEntity(dim, tag=-1, boundary=[])
 
         Add a discrete model entity (defined by a mesh) of dimension `dim' in the
@@ -2410,7 +2411,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def partition(numPart: int, *, elementTags=[], partitions=[]) -> None:
+        def partition(numPart: int, *, elementTags: Sequence[int]=[], partitions: Sequence[int]=[]) -> None:
             """gmsh.model.mesh.partition(numPart, elementTags=[], partitions=[])
 
             Partition the mesh of the current model into `numPart' partitions.
@@ -2453,7 +2454,7 @@ class model:
             method: str = "",
             force: bool = False,
             niter: int = 1,
-            dimTags=[],
+            dimTags: Sequence[tuple[int, int]]=[],
         ) -> None:
             """gmsh.model.mesh.optimize(method="", force=False, niter=1, dimTags=[])
 
@@ -2577,7 +2578,7 @@ class model:
             return _ovectorsize(api_nodeTags_, api_nodeTags_n_.value)
 
         @staticmethod
-        def clear(dimTags=[]) -> None:
+        def clear(dimTags: Sequence[tuple[int, int]]=[]) -> None:
             """gmsh.model.mesh.clear(dimTags=[])
 
             Clear the mesh, i.e. delete all the nodes and elements, for the entities
@@ -2624,7 +2625,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def reverse(dimTags=[]) -> None:
+        def reverse(dimTags: Sequence[tuple[int, int]]=[]) -> None:
             """gmsh.model.mesh.reverse(dimTags=[])
 
             Reverse the orientation of the elements in the entities `dimTags', given as
@@ -2643,7 +2644,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def reverseElements(elementTags) -> None:
+        def reverseElements(elementTags: Sequence[int]) -> None:
             """gmsh.model.mesh.reverseElements(elementTags)
 
             Reverse the orientation of the elements with tags `elementTags'.
@@ -2660,7 +2661,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def affineTransform(affineTransform, dimTags=[]) -> None:
+        def affineTransform(affineTransform: Sequence[float], dimTags: Sequence[tuple[int, int]]=[]) -> None:
             """gmsh.model.mesh.affineTransform(affineTransform, dimTags=[])
 
             Apply the affine transformation `affineTransform' (16 entries of a 4x4
@@ -2690,8 +2691,8 @@ class model:
 
         @staticmethod
         def getNodes(
-            dim=-1,
-            tag=-1,
+            dim: int=-1,
+            tag: int=-1,
             *,
             includeBoundary: bool = False,
             returnParametricCoord: bool = True,
@@ -2762,8 +2763,8 @@ class model:
         @staticmethod
         def getNodesByElementType(
             elementType: int,
-            tag: int = -1,
             *,
+            tag: int = -1,
             returnParametricCoord: bool = True,
         ):
             """gmsh.model.mesh.getNodesByElementType(elementType, tag=-1, returnParametricCoord=True)
@@ -2817,7 +2818,7 @@ class model:
             )
 
         @staticmethod
-        def getNode(nodeTag):
+        def getNode(nodeTag: int):
             """gmsh.model.mesh.getNode(nodeTag)
 
             Get the coordinates and the parametric coordinates (if any) of the node
@@ -2868,7 +2869,7 @@ class model:
             )
 
         @staticmethod
-        def setNode(nodeTag, coord, parametricCoord) -> None:
+        def setNode(nodeTag: int, coord: Sequence[float], parametricCoord: Sequence[float]) -> None:
             """gmsh.model.mesh.setNode(nodeTag, coord, parametricCoord)
 
             Set the coordinates and the parametric coordinates (if any) of the node
@@ -2898,7 +2899,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def rebuildNodeCache(onlyIfNecessary=True) -> None:
+        def rebuildNodeCache(*, onlyIfNecessary: bool=True) -> None:
             """gmsh.model.mesh.rebuildNodeCache(onlyIfNecessary=True)
 
             Rebuild the node cache.
@@ -2914,7 +2915,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def rebuildElementCache(onlyIfNecessary=True) -> None:
+        def rebuildElementCache(*, onlyIfNecessary: bool=True) -> None:
             """gmsh.model.mesh.rebuildElementCache(onlyIfNecessary=True)
 
             Rebuild the element cache.
@@ -3136,7 +3137,7 @@ class model:
             )
 
         @staticmethod
-        def getElement(elementTag):
+        def getElement(elementTag: int):
             """gmsh.model.mesh.getElement(elementTag)
 
             Get the type and node tags of the element with tag `tag', as well as the
@@ -3181,7 +3182,7 @@ class model:
             )
 
         @staticmethod
-        def getElementByCoordinates(x, y, z, dim=-1, strict=False):
+        def getElementByCoordinates(x: float, y: float, z: float, *, dim: int=-1, strict: bool=False):
             """gmsh.model.mesh.getElementByCoordinates(x, y, z, dim=-1, strict=False)
 
             Search the mesh for an element located at coordinates (`x', `y', `z'). This
@@ -3243,7 +3244,7 @@ class model:
             )
 
         @staticmethod
-        def getElementsByCoordinates(x, y, z, dim=-1, strict=False):
+        def getElementsByCoordinates(x: float, y: float, z: float, *, dim: int=-1, strict: bool=False):
             """gmsh.model.mesh.getElementsByCoordinates(x, y, z, dim=-1, strict=False)
 
             Search the mesh for element(s) located at coordinates (`x', `y', `z'). This
@@ -3284,7 +3285,7 @@ class model:
 
         @staticmethod
         def getLocalCoordinatesInElement(
-            elementTag, x, y, z
+            elementTag: int, x: float, y: float, z: float
         ) -> tuple[float, float, float]:
             """gmsh.model.mesh.getLocalCoordinatesInElement(elementTag, x, y, z)
 
@@ -3384,7 +3385,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def getElementProperties(elementType):
+        def getElementProperties(elementType: int):
             """gmsh.model.mesh.getElementProperties(elementType)
 
             Get the properties of an element of type `elementType': its name
@@ -3439,7 +3440,7 @@ class model:
             )
 
         @staticmethod
-        def getElementsByType(elementType, tag=-1, task=0, numTasks=1):
+        def getElementsByType(elementType: int, *, tag: int=-1, task: int=0, numTasks: int=1):
             """gmsh.model.mesh.getElementsByType(elementType, tag=-1, task=0, numTasks=1)
 
             Get the elements of type `elementType' classified on the entity of tag
@@ -3511,7 +3512,7 @@ class model:
 
         @staticmethod
         def getElementQualities(
-            elementTags, qualityName="minSICN", task=0, numTasks=1
+            elementTags: Sequence[int], *, qualityName: str="minSICN", task: int=0, numTasks: int=1
         ):
             """gmsh.model.mesh.getElementQualities(elementTags, qualityName="minSICN", task=0, numTasks=1)
 
@@ -3563,7 +3564,7 @@ class model:
         @staticmethod
         def addElements(
             dim: int, tag: int, elementTypes, elementTags, nodeTags
-        ):
+        ) -> None:
             """gmsh.model.mesh.addElements(dim, tag, elementTypes, elementTags, nodeTags)
 
             Add elements classified on the entity of dimension `dim' and tag `tag'.
@@ -3609,7 +3610,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def addElementsByType(tag: int, elementType, elementTags, nodeTags):
+        def addElementsByType(tag: int, elementType, elementTags, nodeTags) -> None:
             """gmsh.model.mesh.addElementsByType(tag, elementType, elementTags, nodeTags)
 
             Add elements of type `elementType' classified on the entity of tag `tag'.
