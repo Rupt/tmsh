@@ -353,19 +353,19 @@ def _ovectorpair(ptr: _Pointer[c_int], size: int) -> list[tuple[int, int]]:
 
 
 def _ovectorint(ptr: _Pointer[c_int], size: int) -> list[int]:
-    v = [ptr[i] for i in range(size)]
+    v = ptr[:size]
     gmsh.lib.gmshFree(ptr)
     return v
 
 
 def _ovectorsize(ptr: _Pointer[c_size_t], size: int) -> list[int]:
-    v = [ptr[i] for i in range(size)]
+    v = ptr[:size]
     gmsh.lib.gmshFree(ptr)
     return v
 
 
 def _ovectordouble(ptr: _Pointer[c_double], size: int) -> list[float]:
-    v = [ptr[i] for i in range(size)]
+    v = ptr[:size]
     gmsh.lib.gmshFree(ptr)
     return v
 
@@ -464,9 +464,7 @@ def _ivectorvectorsize(
     parrays = [_ivectorsize(o) for o in os]
     sizes = (ctypes.c_size_t * n)(*(a[1] for a in parrays))
     arrays = (ctypes.POINTER(ctypes.c_size_t) * n)(
-        # TODO: patch erroneous type casts
-        #   https://github.com/Rupt/tmsh/issues/13
-        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_size_t)) for a in parrays)  # pyright: ignore [reportArgumentType]
+        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_size_t)) for a in parrays)
     )
     # TODO: avoid illegal attribute assignments
     #   https://github.com/Rupt/tmsh/issues/11
@@ -482,9 +480,7 @@ def _ivectorvectordouble(
     parrays = [_ivectordouble(o) for o in os]
     sizes = (ctypes.c_size_t * n)(*(a[1] for a in parrays))
     arrays = (ctypes.POINTER(ctypes.c_double) * n)(
-        # TODO: patch erroneous type casts
-        #   https://github.com/Rupt/tmsh/issues/13
-        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_double)) for a in parrays)  # pyright: ignore [reportArgumentType]
+        *(ctypes.cast(a[0], ctypes.POINTER(ctypes.c_double)) for a in parrays)
     )
     # TODO: avoid illegal attribute assignments
     #   https://github.com/Rupt/tmsh/issues/11

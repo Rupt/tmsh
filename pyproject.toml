@@ -136,6 +136,7 @@ line-ending = "lf"
 include = ["src", "tests"]
 typeCheckingMode = "standard"
 useLibraryCodeForTypes = false
+reportUnnecessaryTypeIgnoreComment = true
 
 [tool.mypy]
 files = ["src/*.py", "tests/*.py"]
