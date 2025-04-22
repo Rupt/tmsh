@@ -5307,7 +5307,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getPeriodic(dim, tags):
+        def getPeriodic(dim: int, tags: Sequence[int]) -> list[int]:
             """gmsh.model.mesh.getPeriodic(dim, tags)
 
             Get master entities `tagsMaster' for the entities of dimension `dim' and
@@ -6754,15 +6754,15 @@ class model:
 
         @staticmethod
         def extrude(
-            dimTags,
-            dx,
-            dy,
-            dz,
+            dimTags: Sequence[tuple[int, int]],
+            dx: float,
+            dy: float,
+            dz: float,
             *,
-            numElements=[],
-            heights=[],
+            numElements: Sequence[int] = [],
+            heights: Sequence[float] = [],
             recombine: bool = False,
-        ):
+        ) -> list[tuple[int, int]]:
             """gmsh.model.geo.extrude(dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False)
 
             Extrude the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -6812,19 +6812,19 @@ class model:
 
         @staticmethod
         def revolve(
-            dimTags,
-            x,
-            y,
-            z,
+            dimTags: Sequence[tuple[int, int]],
+            x: float,
+            y: float,
+            z: float,
+            ax: float,
+            ay: float,
+            az: float,
+            angle: float,
             *,
-            ax,
-            ay,
-            az,
-            angle,
-            numElements=[],
-            heights=[],
+            numElements: Sequence[int] = [],
+            heights: Sequence[float] = [],
             recombine: bool = False,
-        ):
+        ) -> list[tuple[int, int]]:
             """gmsh.model.geo.revolve(dimTags, x, y, z, ax, ay, az, angle, numElements=[], heights=[], recombine=False)
 
             Extrude the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -6884,22 +6884,22 @@ class model:
 
         @staticmethod
         def twist(
-            dimTags,
-            x,
-            y,
-            z,
-            dx,
-            dy,
-            dz,
+            dimTags: Sequence[tuple[int, int]],
+            x: float,
+            y: float,
+            z: float,
+            dx: float,
+            dy: float,
+            dz: float,
+            ax: float,
+            ay: float,
+            az: float,
+            angle: float,
             *,
-            ax,
-            ay,
-            az,
-            angle,
-            numElements=[],
-            heights=[],
+            numElements: Sequence[int] = [],
+            heights: Sequence[float] = [],
             recombine: bool = False,
-        ):
+        ) -> list[tuple[int, int]]:
             """gmsh.model.geo.twist(dimTags, x, y, z, dx, dy, dz, ax, ay, az, angle, numElements=[], heights=[], recombine=False)
 
             Extrude the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -6966,14 +6966,14 @@ class model:
 
         @staticmethod
         def extrudeBoundaryLayer(
-            dimTags,
+            dimTags: Sequence[tuple[int, int]],
             *,
-            numElements=[1],
-            heights=[],
+            numElements: Sequence[int] = [1],
+            heights: Sequence[float] = [],
             recombine: bool = False,
             second: bool = False,
             viewIndex: int = -1,
-        ):
+        ) -> list[tuple[int, int]]:
             """gmsh.model.geo.extrudeBoundaryLayer(dimTags, numElements=[1], heights=[], recombine=False, second=False, viewIndex=-1)
 
             Extrude the entities `dimTags' (given as a vector of (dim, tag) pairs) in
@@ -7833,9 +7833,9 @@ class model:
             tag: int = -1,
             angle1: float = 0.0,
             angle2: float = 2 * math.pi,
-            zAxis=[],
-            xAxis=[],
-        ):
+            zAxis: tuple[float, float, float] | None = None,
+            xAxis: tuple[float, float, float] | None = None,
+        ) -> int:
             """gmsh.model.occ.addEllipse(x, y, z, r1, r2, tag=-1, angle1=0., angle2=2*pi, zAxis=[], xAxis=[])
 
             Add an ellipse of center (`x', `y', `z') and radii `r1' and `r2' (with `r1'
@@ -7861,8 +7861,12 @@ class model:
             - `zAxis': vector of doubles
             - `xAxis': vector of doubles
             """
-            api_zAxis_, api_zAxis_n_ = _ivectordouble(zAxis)
-            api_xAxis_, api_xAxis_n_ = _ivectordouble(xAxis)
+            api_zAxis_, api_zAxis_n_ = _ivectordouble(
+                () if zAxis is None else zAxis
+            )
+            api_xAxis_, api_xAxis_n_ = _ivectordouble(
+                () if xAxis is None else xAxis
+            )
             ierr = ctypes.c_int()
             api_result_ = gmsh.lib.gmshModelOccAddEllipse(
                 ctypes.c_double(x),
@@ -8077,7 +8081,7 @@ class model:
             *,
             tag: int = -1,
             roundedRadius: float = 0.0,
-        ):
+        ) -> int:
             """gmsh.model.occ.addRectangle(x, y, z, dx, dy, tag=-1, roundedRadius=0.)
 
             Add a rectangle in the OpenCASCADE CAD representation, with lower left
@@ -11025,19 +11029,20 @@ class view:
 
     @staticmethod
     def probe(
-        tag,
-        x,
-        y,
-        z,
-        step=-1,
-        numComp=-1,
-        gradient=False,
-        distanceMax=0.0,
-        xElemCoord=[],
-        yElemCoord=[],
-        zElemCoord=[],
-        dim=-1,
-    ):
+        tag: int,
+        x: float,
+        y: float,
+        z: float,
+        *,
+        step: int = -1,
+        numComp: int = -1,
+        gradient: bool = False,
+        distanceMax: float = 0.0,
+        xElemCoord: Sequence[float] = [],
+        yElemCoord: Sequence[float] = [],
+        zElemCoord: Sequence[float] = [],
+        dim: int = -1,
+    ) -> tuple[list[float], float]:
         """gmsh.view.probe(tag, x, y, z, step=-1, numComp=-1, gradient=False, distanceMax=0., xElemCoord=[], yElemCoord=[], zElemCoord=[], dim=-1)
 
         Probe the view `tag' for its `values' at point (`x', `y', `z'). If no match
