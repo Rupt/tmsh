@@ -353,6 +353,10 @@ def _ovectorpair(
     return v
 
 
+# TODO: choose between numpy and non-numpy interfaces, then annotate
+#   https://github.com/Rupt/tmsh/issues/12
+
+
 def _ovectorint(ptr: ctypes._Pointer[ctypes.c_int], size: int):
     if size == 0:
         gmsh.lib.gmshFree(ptr)
@@ -7769,15 +7773,15 @@ class model:
 
         @staticmethod
         def addEllipse(
-            x,
-            y,
-            z,
-            r1,
-            r2,
+            x: float,
+            y: float,
+            z: float,
+            r1: float,
+            r2: float,
             *,
-            tag=-1,
-            angle1=0.0,
-            angle2=2 * math.pi,
+            tag: int = -1,
+            angle1: float = 0.0,
+            angle2: float = 2 * math.pi,
             zAxis=[],
             xAxis=[],
         ):
@@ -7829,7 +7833,12 @@ class model:
             return api_result_
 
         @staticmethod
-        def addSpline(pointTags, *, tag: int = -1, tangents=[]) -> int:
+        def addSpline(
+            pointTags: Sequence[int],
+            *,
+            tag: int = -1,
+            tangents: Sequence[float] = [],
+        ) -> int:
             """gmsh.model.occ.addSpline(pointTags, tag=-1, tangents=[])
 
             Add a spline (C2 b-spline) curve in the OpenCASCADE CAD representation,
@@ -7866,7 +7875,7 @@ class model:
 
         @staticmethod
         def addBSpline(
-            pointTags,
+            pointTags: Sequence[int],
             *,
             tag: int = -1,
             degree: int = 3,
@@ -7976,7 +7985,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addCurveLoop(curveTags, *, tag: int = -1) -> int:
+        def addCurveLoop(curveTags: Sequence[int], *, tag: int = -1) -> int:
             """gmsh.model.occ.addCurveLoop(curveTags, tag=-1)
 
             Add a curve loop (a closed wire) in the OpenCASCADE CAD representation,
@@ -8107,7 +8116,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addPlaneSurface(wireTags, *, tag: int = -1) -> int:
+        def addPlaneSurface(wireTags: Sequence[int], *, tag: int = -1) -> int:
             """gmsh.model.occ.addPlaneSurface(wireTags, tag=-1)
 
             Add a plane surface in the OpenCASCADE CAD representation, defined by one
@@ -8139,7 +8148,7 @@ class model:
             wireTag: int,
             *,
             tag: int = -1,
-            pointTags: Sequence[int] = [],
+            pointTags: Sequence[int] = (),
             degree: int = 2,
             numPointsOnCurves: int = 15,
             numIter: int = 2,
@@ -8284,19 +8293,20 @@ class model:
 
         @staticmethod
         def addBSplineSurface(
-            pointTags,
-            numPointsU,
-            tag=-1,
-            degreeU=3,
-            degreeV=3,
-            weights=[],
-            knotsU=[],
-            knotsV=[],
-            multiplicitiesU=[],
-            multiplicitiesV=[],
-            wireTags=[],
-            wire3D=False,
-        ):
+            pointTags: Sequence[int],
+            numPointsU: int,
+            *,
+            tag: int = -1,
+            degreeU: int = 3,
+            degreeV: int = 3,
+            weights: Sequence[float] = [],
+            knotsU: Sequence[float] = [],
+            knotsV: Sequence[float] = [],
+            multiplicitiesU: Sequence[int] = [],
+            multiplicitiesV: Sequence[int] = [],
+            wireTags: Sequence[int] = [],
+            wire3D: bool = False,
+        ) -> int:
             """gmsh.model.occ.addBSplineSurface(pointTags, numPointsU, tag=-1, degreeU=3, degreeV=3, weights=[], knotsU=[], knotsV=[], multiplicitiesU=[], multiplicitiesV=[], wireTags=[], wire3D=False)
 
             Add a b-spline surface of degree `degreeU' x `degreeV' in the OpenCASCADE
@@ -8367,8 +8377,13 @@ class model:
 
         @staticmethod
         def addBezierSurface(
-            pointTags, numPointsU, tag=-1, wireTags=[], wire3D=False
-        ):
+            pointTags: Sequence[int],
+            numPointsU: int,
+            *,
+            tag: int = -1,
+            wireTags: Sequence[int] = [],
+            wire3D: bool = False,
+        ) -> int:
             """gmsh.model.occ.addBezierSurface(pointTags, numPointsU, tag=-1, wireTags=[], wire3D=False)
 
             Add a Bezier surface in the OpenCASCADE CAD representation, with
