@@ -2168,7 +2168,7 @@ class model:
 
     @staticmethod
     def setColor(
-        dimTags,
+        dimTags: Sequence[tuple[int, int]],
         r: int,
         g: int,
         b: int,
@@ -4099,7 +4099,7 @@ class model:
             )
 
         @staticmethod
-        def createEdges(dimTags=[]) -> None:
+        def createEdges(dimTags: Sequence[tuple[int, int]] = []) -> None:
             """gmsh.model.mesh.createEdges(dimTags=[])
 
             Create unique mesh edges for the entities `dimTags', given as a vector of
@@ -4117,7 +4117,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def createFaces(dimTags=[]) -> None:
+        def createFaces(dimTags: Sequence[tuple[int, int]] = []) -> None:
             """gmsh.model.mesh.createFaces(dimTags=[])
 
             Create unique mesh faces for the entities `dimTags', given as a vector of
@@ -4659,7 +4659,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getSizes(dimTags) -> list[float]:
+        def getSizes(dimTags: Sequence[tuple[int, int]]) -> list[float]:
             """gmsh.model.mesh.getSizes(dimTags)
 
             Get the mesh size constraints (if any) associated with the model entities
@@ -5056,7 +5056,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def removeConstraints(dimTags=[]) -> None:
+        def removeConstraints(dimTags: Sequence[tuple[int, int]] = []) -> None:
             """gmsh.model.mesh.removeConstraints(dimTags=[])
 
             Remove all meshing constraints from the model entities `dimTags', given as
@@ -5525,7 +5525,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getDuplicateNodes(dimTags=[]) -> list[int]:
+        def getDuplicateNodes(
+            dimTags: Sequence[tuple[int, int]] = [],
+        ) -> list[int]:
             """gmsh.model.mesh.getDuplicateNodes(dimTags=[])
 
             Get the `tags' of any duplicate nodes in the mesh of the entities
@@ -5556,7 +5558,9 @@ class model:
             return _ovectorsize(api_tags_, api_tags_n_.value)
 
         @staticmethod
-        def removeDuplicateNodes(dimTags=[]) -> None:
+        def removeDuplicateNodes(
+            dimTags: Sequence[tuple[int, int]] = [],
+        ) -> None:
             """gmsh.model.mesh.removeDuplicateNodes(dimTags=[])
 
             Remove duplicate nodes in the mesh of the entities `dimTags', given as a
@@ -5574,7 +5578,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def removeDuplicateElements(dimTags=[]) -> None:
+        def removeDuplicateElements(
+            dimTags: Sequence[tuple[int, int]] = [],
+        ) -> None:
             """gmsh.model.mesh.removeDuplicateElements(dimTags=[])
 
             Remove duplicate elements (defined by the same nodes, in the same entity)
@@ -7201,7 +7207,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def copy(dimTags) -> list[tuple[int, int]]:
+        def copy(dimTags: Sequence[tuple[int, int]]) -> list[tuple[int, int]]:
             """gmsh.model.geo.copy(dimTags)
 
             Copy the entities `dimTags' (given as a vector of (dim, tag) pairs) in the
@@ -7370,7 +7376,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def removePhysicalGroups(dimTags=[]) -> None:
+        def removePhysicalGroups(
+            dimTags: Sequence[tuple[int, int]] = [],
+        ) -> None:
             """gmsh.model.geo.removePhysicalGroups(dimTags=[])
 
             Remove the physical groups `dimTags' (given as a vector of (dim, tag)
@@ -8960,7 +8968,7 @@ class model:
 
         @staticmethod
         def extrude(
-            dimTags,
+            dimTags: Sequence[tuple[int, int]],
             dx,
             dy,
             dz,
@@ -9018,7 +9026,7 @@ class model:
 
         @staticmethod
         def revolve(
-            dimTags,
+            dimTags: Sequence[tuple[int, int]],
             x,
             y,
             z,
@@ -9130,7 +9138,11 @@ class model:
 
         @staticmethod
         def fillet(
-            volumeTags, curveTags, radii, *, removeVolume: bool = True
+            volumeTags: Sequence[int],
+            curveTags: Sequence[int],
+            radii,
+            *,
+            removeVolume: bool = True,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.fillet(volumeTags, curveTags, radii, removeVolume=True)
 
@@ -9481,8 +9493,8 @@ class model:
 
         @staticmethod
         def intersect(
-            objectDimTags,
-            toolDimTags,
+            objectDimTags: Sequence[tuple[int, int]],
+            toolDimTags: Sequence[tuple[int, int]],
             *,
             tag: int = -1,
             removeObject: bool = True,
@@ -9548,8 +9560,8 @@ class model:
 
         @staticmethod
         def cut(
-            objectDimTags,
-            toolDimTags,
+            objectDimTags: Sequence[tuple[int, int]],
+            toolDimTags: Sequence[tuple[int, int]],
             *,
             tag: int = -1,
             removeObject: bool = True,
@@ -9874,7 +9886,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def copy(dimTags) -> list[tuple[int, int]]:
+        def copy(dimTags: Sequence[tuple[int, int]]) -> list[tuple[int, int]]:
             """gmsh.model.occ.copy(dimTags)
 
             Copy the entities `dimTags' in the OpenCASCADE CAD representation; the new
@@ -9992,7 +10004,7 @@ class model:
             return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
         @staticmethod
-        def convertToNURBS(dimTags) -> None:
+        def convertToNURBS(dimTags: Sequence[tuple[int, int]]) -> None:
             """gmsh.model.occ.convertToNURBS(dimTags)
 
             Convert the entities `dimTags' to NURBS.
@@ -10115,7 +10127,14 @@ class model:
 
         @staticmethod
         def getEntitiesInBoundingBox(
-            xmin, ymin, zmin, xmax, ymax, zmax, dim=-1
+            xmin: float,
+            ymin: float,
+            zmin: float,
+            xmax: float,
+            ymax: float,
+            zmax: float,
+            *,
+            dim: int = -1,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.getEntitiesInBoundingBox(xmin, ymin, zmin, xmax, ymax, zmax, dim=-1)
 
@@ -10556,15 +10575,16 @@ class view:
 
     @staticmethod
     def addModelData(
-        tag,
-        step,
-        modelName,
-        dataType,
-        tags,
-        data,
-        time=0.0,
-        numComponents=-1,
-        partition=0,
+        tag: int,
+        step: int,
+        modelName: str,
+        dataType: str,
+        tags: Sequence[int],
+        data: Sequence[Sequence[float]],
+        *,
+        time: float = 0.0,
+        numComponents: int = -1,
+        partition: int = 0,
     ) -> None:
         """gmsh.view.addModelData(tag, step, modelName, dataType, tags, data, time=0., numComponents=-1, partition=0)
 
@@ -10615,15 +10635,16 @@ class view:
 
     @staticmethod
     def addHomogeneousModelData(
-        tag,
-        step,
-        modelName,
-        dataType,
-        tags,
-        data,
-        time=0.0,
-        numComponents=-1,
-        partition=0,
+        tag: int,
+        step: int,
+        modelName: str,
+        dataType: str,
+        tags: Sequence[int],
+        data: Sequence[float],
+        *,
+        time: float = 0.0,
+        numComponents: int = -1,
+        partition: int = 0,
     ) -> None:
         """gmsh.view.addHomogeneousModelData(tag, step, modelName, dataType, tags, data, time=0., numComponents=-1, partition=0)
 
@@ -10666,7 +10687,7 @@ class view:
 
     @staticmethod
     def getModelData(
-        tag: int, step
+        tag: int, step: int
     ) -> tuple[str, list[int], list[list[float]], float, int]:
         """gmsh.view.getModelData(tag, step)
 
@@ -10779,7 +10800,9 @@ class view:
         )
 
     @staticmethod
-    def addListData(tag: int, dataType, numEle, data) -> None:
+    def addListData(
+        tag: int, dataType: str, numEle: int, data: Sequence[float]
+    ) -> None:
         """gmsh.view.addListData(tag, dataType, numEle, data)
 
         Add list-based post-processing data to the view with tag `tag'. List-based
@@ -10867,7 +10890,13 @@ class view:
         )
 
     @staticmethod
-    def addListDataString(tag: int, coord, data, style=[]) -> None:
+    def addListDataString(
+        tag: int,
+        coord: Sequence[float],
+        data: Sequence[str],
+        *,
+        style: Sequence[str] = [],
+    ) -> None:
         """gmsh.view.addListDataString(tag, coord, data, style=[])
 
         Add a string to a list-based post-processing view with tag `tag'. If
@@ -10909,7 +10938,7 @@ class view:
 
     @staticmethod
     def getListDataStrings(
-        tag: int, dim
+        tag: int, dim: int
     ) -> tuple[list[float], list[str], list[str]]:
         """gmsh.view.getListDataStrings(tag, dim)
 
@@ -10960,14 +10989,15 @@ class view:
 
     @staticmethod
     def setInterpolationMatrices(
-        tag,
-        type,  # noqa: A002
-        d,
-        coef,
-        exp,
-        dGeo=0,
-        coefGeo=[],
-        expGeo=[],
+        tag: int,
+        type: str,  # noqa: A002
+        d: int,
+        coef: Sequence[float],
+        exp: Sequence[float],
+        *,
+        dGeo: int = 0,
+        coefGeo: Sequence[float] = [],
+        expGeo: Sequence[float] = [],
     ) -> None:
         """gmsh.view.setInterpolationMatrices(tag, type, d, coef, exp, dGeo=0, coefGeo=[], expGeo=[])
 
@@ -11183,7 +11213,9 @@ class view:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setVisibilityPerWindow(tag: int, value, windowIndex=0) -> None:
+    def setVisibilityPerWindow(
+        tag: int, value: int, *, windowIndex: int = 0
+    ) -> None:
         """gmsh.view.setVisibilityPerWindow(tag, value, windowIndex=0)
 
         Set the global visibility of the view `tag' per window to `value', where
@@ -11208,7 +11240,7 @@ class view:
         """View option handling functions"""
 
         @staticmethod
-        def setNumber(tag: int, name: str, value) -> None:
+        def setNumber(tag: int, name: str, value: float) -> None:
             """gmsh.view.option.setNumber(tag, name, value)
 
             Set the numerical option `name' to value `value' for the view with tag
@@ -11230,7 +11262,7 @@ class view:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getNumber(tag: int, name) -> float:
+        def getNumber(tag: int, name: str) -> float:
             """gmsh.view.option.getNumber(tag, name)
 
             Get the `value' of the numerical option `name' for the view with tag `tag'.
@@ -11255,7 +11287,7 @@ class view:
             return api_value_.value
 
         @staticmethod
-        def setString(tag: int, name: str, value) -> None:
+        def setString(tag: int, name: str, value: str) -> None:
             """gmsh.view.option.setString(tag, name, value)
 
             Set the string option `name' to value `value' for the view with tag `tag'.
@@ -11682,7 +11714,7 @@ class fltk:
         return (api_result_, _ovectorint(api_viewTags_, api_viewTags_n_.value))
 
     @staticmethod
-    def splitCurrentWindow(how="v", ratio=0.5) -> None:
+    def splitCurrentWindow(how: str = "v", ratio: float = 0.5) -> None:
         """gmsh.fltk.splitCurrentWindow(how="v", ratio=0.5)
 
         Split the current window horizontally (if `how' == "h") or vertically (if
@@ -12032,7 +12064,7 @@ class onelab:
         return _ovectorstring(api_names_, api_names_n_.value)
 
     @staticmethod
-    def setNumber(name, value) -> None:
+    def setNumber(name: str, value: Sequence[float]) -> None:
         """gmsh.onelab.setNumber(name, value)
 
         Set the value of the number parameter `name' in the ONELAB database. Create
@@ -12055,7 +12087,7 @@ class onelab:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def setString(name, value) -> None:
+    def setString(name: str, value: Sequence[str]) -> None:
         """gmsh.onelab.setString(name, value)
 
         Set the value of the string parameter `name' in the ONELAB database. Create
