@@ -1601,7 +1601,9 @@ class model:
         return _ovectorint(api_partitions_, api_partitions_n_.value)
 
     @staticmethod
-    def getValue(dim: int, tag: int, parametricCoord) -> builtins.list[float]:
+    def getValue(
+        dim: int, tag: int, parametricCoord: Sequence[float]
+    ) -> builtins.list[float]:
         """gmsh.model.getValue(dim, tag, parametricCoord)
 
         Evaluate the parametrization of the entity of dimension `dim' and tag `tag'
@@ -1643,7 +1645,7 @@ class model:
 
     @staticmethod
     def getDerivative(
-        dim: int, tag: int, parametricCoord
+        dim: int, tag: int, parametricCoord: Sequence[float]
     ) -> builtins.list[float]:
         """gmsh.model.getDerivative(dim, tag, parametricCoord)
 
@@ -1688,7 +1690,7 @@ class model:
 
     @staticmethod
     def getSecondDerivative(
-        dim: int, tag: int, parametricCoord
+        dim: int, tag: int, parametricCoord: Sequence[float]
     ) -> builtins.list[float]:
         """gmsh.model.getSecondDerivative(dim, tag, parametricCoord)
 
@@ -1735,7 +1737,7 @@ class model:
 
     @staticmethod
     def getCurvature(
-        dim: int, tag: int, parametricCoord
+        dim: int, tag: int, parametricCoord: Sequence[float]
     ) -> builtins.list[float]:
         """gmsh.model.getCurvature(dim, tag, parametricCoord)
 
@@ -1776,7 +1778,7 @@ class model:
 
     @staticmethod
     def getPrincipalCurvatures(
-        tag: int, parametricCoord
+        tag: int, parametricCoord: Sequence[float]
     ) -> tuple[
         builtins.list[float],
         builtins.list[float],
@@ -1844,7 +1846,9 @@ class model:
         )
 
     @staticmethod
-    def getNormal(tag: int, parametricCoord) -> builtins.list[float]:
+    def getNormal(
+        tag: int, parametricCoord: Sequence[float]
+    ) -> builtins.list[float]:
         """gmsh.model.getNormal(tag, parametricCoord)
 
         Get the normal to the surface with tag `tag' at the parametric coordinates
@@ -2047,7 +2051,12 @@ class model:
 
     @staticmethod
     def reparametrizeOnSurface(
-        dim: int, tag: int, parametricCoord, surfaceTag: int, which: int = 0
+        dim: int,
+        tag: int,
+        parametricCoord: Sequence[float],
+        surfaceTag: int,
+        *,
+        which: int = 0,
     ) -> builtins.list[float]:
         """gmsh.model.reparametrizeOnSurface(dim, tag, parametricCoord, surfaceTag, which=0)
 
@@ -4466,7 +4475,7 @@ class model:
 
         @staticmethod
         def getBarycenters(
-            elementType, tag, fast, primary, task=0, numTasks=1
+            elementType:int, tag:int, *, fast:bool, primary:bool, task:int=0, numTasks:int=1
         ) -> list[float]:
             """gmsh.model.mesh.getBarycenters(elementType, tag, fast, primary, task=0, numTasks=1)
 
@@ -4711,7 +4720,10 @@ class model:
 
         @staticmethod
         def setSizeAtParametricPoints(
-            dim: int, tag: int, parametricCoord, sizes
+            dim: int,
+            tag: int,
+            parametricCoord: Sequence[float],
+            sizes: Sequence[float],
         ) -> None:
             """gmsh.model.mesh.setSizeAtParametricPoints(dim, tag, parametricCoord, sizes)
 
@@ -4759,6 +4771,8 @@ class model:
             Types:
             - `callback':
             """
+            # TODO: tidy this global mutation?
+            #   https://github.com/Rupt/tmsh/issues/14
             gmsh.api_callback_type_ = ctypes.CFUNCTYPE(
                 ctypes.c_double,
                 ctypes.c_int,
@@ -4990,7 +5004,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setAlgorithm(dim: int, tag: int, val) -> None:
+        def setAlgorithm(dim: int, tag: int, val:int) -> None:
             """gmsh.model.mesh.setAlgorithm(dim, tag, val)
 
             Set the meshing algorithm on the model entity of dimension `dim' and tag
@@ -5036,7 +5050,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setCompound(dim, tags) -> None:
+        def setCompound(dim:int, tags:Sequence[int]) -> None:
             """gmsh.model.mesh.setCompound(dim, tags)
 
             Set a compound meshing constraint on the model entities of dimension `dim'
@@ -5056,7 +5070,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setOutwardOrientation(tag) -> None:
+        def setOutwardOrientation(tag:int) -> None:
             """gmsh.model.mesh.setOutwardOrientation(tag)
 
             Set meshing constraints on the bounding surfaces of the volume of tag `tag'
@@ -5094,7 +5108,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def embed(dim, tags, inDim, inTag) -> None:
+        def embed(dim:int, tags:Sequence[int], inDim:int, inTag:int) -> None:
             """gmsh.model.mesh.embed(dim, tags, inDim, inTag)
 
             Embed the model entities of dimension `dim' and tags `tags' in the
@@ -5127,7 +5141,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def removeEmbedded(dimTags: Sequence[tuple[int, int]], dim=-1) -> None:
+        def removeEmbedded(dimTags: Sequence[tuple[int, int]], *, dim:int=-1) -> None:
             """gmsh.model.mesh.removeEmbedded(dimTags, dim=-1)
 
             Remove embedded entities from the model entities `dimTags', given as a
@@ -5312,7 +5326,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setPeriodic(dim, tags, tagsMaster, affineTransform) -> None:
+        def setPeriodic(dim:int, tags:Sequence[int], tagsMaster:Sequence[int], affineTransform:Sequence[float]) -> None:
             """gmsh.model.mesh.setPeriodic(dim, tags, tagsMaster, affineTransform)
 
             Set the meshes of the entities of dimension `dim' and tag `tags' as
@@ -5444,7 +5458,7 @@ class model:
 
         @staticmethod
         def getPeriodicKeys(
-            elementType, functionSpaceType, tag, *, returnCoord: bool = True
+            elementType:int, functionSpaceType:str, tag:int, *, returnCoord: bool = True
         ) -> tuple[
             int,
             list[int],
@@ -5693,7 +5707,7 @@ class model:
 
         @staticmethod
         def classifySurfaces(
-            angle,
+            angle:float,
             *,
             boundary: bool = True,
             forReparametrization: bool = False,
@@ -5890,7 +5904,7 @@ class model:
             return _ovectorint(api_viewTags_, api_viewTags_n_.value)
 
         @staticmethod
-        def triangulate(coord) -> list[int]:
+        def triangulate(coord: Sequence[float]) -> list[int]:
             """gmsh.model.mesh.triangulate(coord)
 
             Triangulate the points given in the `coord' vector as pairs of u, v
@@ -5921,7 +5935,7 @@ class model:
             return _ovectorsize(api_tri_, api_tri_n_.value)
 
         @staticmethod
-        def tetrahedralize(coord) -> list[int]:
+        def tetrahedralize(coord:Sequence[float]) -> list[int]:
             """gmsh.model.mesh.tetrahedralize(coord)
 
             Tetrahedralize the points given in the `coord' vector as x, y, z
@@ -6045,7 +6059,7 @@ class model:
                 return _ostring(api_fileType_)
 
             @staticmethod
-            def setNumber(tag: int, option: str, value) -> None:
+            def setNumber(tag: int, option: str, value: float) -> None:
                 """gmsh.model.mesh.field.setNumber(tag, option, value)
 
                 Set the numerical option `option' to value `value' for field `tag'.
@@ -6782,7 +6796,7 @@ class model:
             geometryTag: int,
             x: float,
             y: float,
-            z=0.0,
+            z:float=0.0,
             *,
             meshSize: float = 0.0,
             tag: int = -1,
