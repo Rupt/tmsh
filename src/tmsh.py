@@ -326,7 +326,15 @@ import gmsh
 if TYPE_CHECKING:
     import builtins
     from collections.abc import Sequence
-    from ctypes import Array, _Pointer
+    from ctypes import (
+        Array,
+        _Pointer,
+        c_char,
+        c_char_p,
+        c_double,
+        c_int,
+        c_size_t,
+    )
 
 
 def _ostring(s: ctypes.c_char_p) -> str:
@@ -338,43 +346,39 @@ def _ostring(s: ctypes.c_char_p) -> str:
     return sp
 
 
-def _ovectorpair(
-    ptr: _Pointer[ctypes.c_int], size: int
-) -> list[tuple[int, int]]:
+def _ovectorpair(ptr: _Pointer[c_int], size: int) -> list[tuple[int, int]]:
     v = [(ptr[i], ptr[i + 1]) for i in range(0, size, 2)]
     gmsh.lib.gmshFree(ptr)
     return v
 
 
-def _ovectorint(ptr: _Pointer[ctypes.c_int], size: int) -> list[int]:
+def _ovectorint(ptr: _Pointer[c_int], size: int) -> list[int]:
     v = [ptr[i] for i in range(size)]
     gmsh.lib.gmshFree(ptr)
     return v
 
 
-def _ovectorsize(ptr: _Pointer[ctypes.c_size_t], size: int) -> list[int]:
+def _ovectorsize(ptr: _Pointer[c_size_t], size: int) -> list[int]:
     v = [ptr[i] for i in range(size)]
     gmsh.lib.gmshFree(ptr)
     return v
 
 
-def _ovectordouble(ptr: _Pointer[ctypes.c_double], size: int) -> list[float]:
+def _ovectordouble(ptr: _Pointer[c_double], size: int) -> list[float]:
     v = [ptr[i] for i in range(size)]
     gmsh.lib.gmshFree(ptr)
     return v
 
 
-def _ovectorstring(
-    ptr: _Pointer[_Pointer[ctypes.c_char]], size: int
-) -> list[str]:
+def _ovectorstring(ptr: _Pointer[_Pointer[c_char]], size: int) -> list[str]:
     v = [_ostring(ctypes.cast(ptr[i], ctypes.c_char_p)) for i in range(size)]
     gmsh.lib.gmshFree(ptr)
     return v
 
 
 def _ovectorvectorint(
-    ptr: _Pointer[_Pointer[ctypes.c_int]],
-    size: _Pointer[ctypes.c_size_t],
+    ptr: _Pointer[_Pointer[c_int]],
+    size: _Pointer[c_size_t],
     n: ctypes.c_size_t,
 ) -> list:
     v = [
@@ -387,8 +391,8 @@ def _ovectorvectorint(
 
 
 def _ovectorvectorsize(
-    ptr: _Pointer[_Pointer[ctypes.c_size_t]],
-    size: _Pointer[ctypes.c_size_t],
+    ptr: _Pointer[_Pointer[c_size_t]],
+    size: _Pointer[c_size_t],
     n: ctypes.c_size_t,
 ) -> list:
     v = [
@@ -401,8 +405,8 @@ def _ovectorvectorsize(
 
 
 def _ovectorvectordouble(
-    ptr: _Pointer[_Pointer[ctypes.c_double]],
-    size: _Pointer[ctypes.c_size_t],
+    ptr: _Pointer[_Pointer[c_double]],
+    size: _Pointer[c_size_t],
     n: ctypes.c_size_t,
 ) -> list:
     v = [
@@ -415,8 +419,8 @@ def _ovectorvectordouble(
 
 
 def _ovectorvectorpair(
-    ptr: _Pointer[_Pointer[ctypes.c_int]],
-    size: _Pointer[ctypes.c_size_t],
+    ptr: _Pointer[_Pointer[c_int]],
+    size: _Pointer[c_size_t],
     n: ctypes.c_size_t,
 ) -> list[list[tuple[int, int]]]:
     v = [
@@ -428,44 +432,34 @@ def _ovectorvectorpair(
     return v
 
 
-def _ivectorint(
-    o: Sequence[int],
-) -> tuple[Array[ctypes.c_int], ctypes.c_size_t]:
+def _ivectorint(o: Sequence[int]) -> tuple[Array[c_int], c_size_t]:
     return (ctypes.c_int * len(o))(*o), ctypes.c_size_t(len(o))
 
 
-def _ivectorsize(
-    o: Sequence[int],
-) -> tuple[Array[ctypes.c_size_t], ctypes.c_size_t]:
+def _ivectorsize(o: Sequence[int]) -> tuple[Array[c_size_t], c_size_t]:
     return (ctypes.c_size_t * len(o))(*o), ctypes.c_size_t(len(o))
 
 
-def _ivectordouble(
-    o: Sequence[float],
-) -> tuple[Array[ctypes.c_double], ctypes.c_size_t]:
+def _ivectordouble(o: Sequence[float]) -> tuple[Array[c_double], c_size_t]:
     return (ctypes.c_double * len(o))(*o), ctypes.c_size_t(len(o))
 
 
 def _ivectorpair(
     o: Sequence[tuple[int, int]],
-) -> tuple[Array[Array[ctypes.c_int]], ctypes.c_size_t]:
+) -> tuple[Array[Array[c_int]], c_size_t]:
     pairs = ((ctypes.c_int * 2)(a, b) for a, b in o)
     return ((ctypes.c_int * 2) * len(o))(*pairs), ctypes.c_size_t(len(o) * 2)
 
 
-def _ivectorstring(
-    o: Sequence[str],
-) -> tuple[Array[ctypes.c_char_p], ctypes.c_size_t]:
-    return (ctypes.c_char_p * len(o))(
-        *(s.encode() for s in o)
-    ), ctypes.c_size_t(len(o))
+def _ivectorstring(o: Sequence[str]) -> tuple[Array[c_char_p], c_size_t]:
+    array = (ctypes.c_char_p * len(o))(*(s.encode() for s in o))
+    size = ctypes.c_size_t(len(o))
+    return array, size
 
 
 def _ivectorvectorsize(
     os: Sequence[Sequence[int]],
-) -> tuple[
-    Array[_Pointer[ctypes.c_size_t]], Array[ctypes.c_size_t], ctypes.c_size_t
-]:
+) -> tuple[Array[_Pointer[c_size_t]], Array[c_size_t], ctypes.c_size_t]:
     n = len(os)
     parrays = [_ivectorsize(o) for o in os]
     sizes = (ctypes.c_size_t * n)(*(a[1] for a in parrays))
@@ -483,9 +477,7 @@ def _ivectorvectorsize(
 
 def _ivectorvectordouble(
     os: Sequence[Sequence[float]],
-) -> tuple[
-    Array[_Pointer[ctypes.c_double]], Array[ctypes.c_size_t], ctypes.c_size_t
-]:
+) -> tuple[Array[_Pointer[c_double]], Array[c_size_t], ctypes.c_size_t]:
     n = len(os)
     parrays = [_ivectordouble(o) for o in os]
     sizes = (ctypes.c_size_t * n)(*(a[1] for a in parrays))
@@ -501,12 +493,10 @@ def _ivectorvectordouble(
     return arrays, sizes, size
 
 
-def _iargcargv(
-    o: Sequence[str],
-) -> tuple[ctypes.c_int, Array[ctypes.c_char_p]]:
-    return ctypes.c_int(len(o)), (ctypes.c_char_p * len(o))(
-        *(s.encode() for s in o)
-    )
+def _iargcargv(o: Sequence[str]) -> tuple[c_int, Array[c_char_p]]:
+    argc = ctypes.c_int(len(o))
+    argv = (ctypes.c_char_p * len(o))(*(s.encode() for s in o))
+    return argc, argv
 
 
 def initialize(
