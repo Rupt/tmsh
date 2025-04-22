@@ -93,7 +93,6 @@ ignore = [
     # To enable
     "E501",
     "ANN001",
-    "FBT002",
     "B006",
     "D415",
     # Not to enable

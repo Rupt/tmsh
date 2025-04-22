@@ -4262,7 +4262,11 @@ class model:
 
         @staticmethod
         def getKeys(
-            elementType, functionSpaceType, tag=-1, returnCoord=True
+            elementType: int,
+            functionSpaceType: str,
+            *,
+            tag: int = -1,
+            returnCoord: bool = True,
         ) -> tuple[list[int], list[int], list[float]]:
             """gmsh.model.mesh.getKeys(elementType, functionSpaceType, tag=-1, returnCoord=True)
 
@@ -4321,7 +4325,10 @@ class model:
 
         @staticmethod
         def getKeysForElement(
-            elementTag, functionSpaceType, returnCoord=True
+            elementTag: int,
+            functionSpaceType: str,
+            *,
+            returnCoord: bool = True,
         ) -> tuple[list[int], list[int], list[float]]:
             """gmsh.model.mesh.getKeysForElement(elementTag, functionSpaceType, returnCoord=True)
 
@@ -4486,7 +4493,12 @@ class model:
 
         @staticmethod
         def getElementEdgeNodes(
-            elementType, tag=-1, primary=False, task=0, numTasks=1
+            elementType: int,
+            *,
+            tag: int = -1,
+            primary: bool = False,
+            task: int = 0,
+            numTasks: int = 1,
         ) -> list[int]:
             """gmsh.model.mesh.getElementEdgeNodes(elementType, tag=-1, primary=False, task=0, numTasks=1)
 
@@ -4530,7 +4542,13 @@ class model:
 
         @staticmethod
         def getElementFaceNodes(
-            elementType, faceType, tag=-1, primary=False, task=0, numTasks=1
+            elementType: int,
+            faceType: int,
+            *,
+            tag: int = -1,
+            primary: bool = False,
+            task: int = 0,
+            numTasks: int = 1,
         ) -> list[int]:
             """gmsh.model.mesh.getElementFaceNodes(elementType, faceType, tag=-1, primary=False, task=0, numTasks=1)
 
@@ -4928,7 +4946,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setReverse(dim: int, tag: int, val=True) -> None:
+        def setReverse(dim: int, tag: int, val: bool = True) -> None:  # noqa: FBT001 FBT002
             """gmsh.model.mesh.setReverse(dim, tag, val=True)
 
             Set a reverse meshing constraint on the model entity of dimension `dim' and
@@ -5340,7 +5358,7 @@ class model:
 
         @staticmethod
         def getPeriodicNodes(
-            dim: int, tag: int, includeHighOrderNodes=False
+            dim: int, tag: int, *, includeHighOrderNodes: bool = False
         ) -> tuple[int, list[int], list[int], list[float]]:
             """gmsh.model.mesh.getPeriodicNodes(dim, tag, includeHighOrderNodes=False)
 
@@ -5401,7 +5419,7 @@ class model:
 
         @staticmethod
         def getPeriodicKeys(
-            elementType, functionSpaceType, tag, returnCoord=True
+            elementType, functionSpaceType, tag, *, returnCoord: bool = True
         ) -> tuple[
             int,
             list[int],
@@ -5645,10 +5663,11 @@ class model:
         @staticmethod
         def classifySurfaces(
             angle,
-            boundary=True,
-            forReparametrization=False,
-            curveAngle=math.pi,
-            exportDiscrete=True,
+            *,
+            boundary: bool = True,
+            forReparametrization: bool = False,
+            curveAngle: float = math.pi,
+            exportDiscrete: bool = True,
         ) -> None:
             """gmsh.model.mesh.classifySurfaces(angle, boundary=True, forReparametrization=False, curveAngle=pi, exportDiscrete=True)
 
@@ -5681,7 +5700,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def createGeometry(dimTags=[]) -> None:
+        def createGeometry(dimTags: Sequence[tuple[int, int]] = ()) -> None:
             """gmsh.model.mesh.createGeometry(dimTags=[])
 
             Create a geometry for the discrete entities `dimTags' (given as a vector of
@@ -7211,7 +7230,7 @@ class model:
 
         @staticmethod
         def remove(
-            dimTags: Sequence[tuple[int, int]], recursive=False
+            dimTags: Sequence[tuple[int, int]], *, recursive: bool = False
         ) -> None:
             """gmsh.model.geo.remove(dimTags, recursive=False)
 
@@ -8479,7 +8498,11 @@ class model:
 
         @staticmethod
         def addTrimmedSurface(
-            surfaceTag, wireTags=[], wire3D=False, tag=-1
+            surfaceTag: int,
+            *,
+            wireTags=[],
+            wire3D: bool = False,
+            tag: int = -1,
         ) -> int:
             """gmsh.model.occ.addTrimmedSurface(surfaceTag, wireTags=[], wire3D=False, tag=-1)
 
@@ -8514,7 +8537,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def addSurfaceLoop(surfaceTags, tag=-1, sewing=False) -> int:
+        def addSurfaceLoop(
+            surfaceTags, *, tag=-1, sewing: bool = False
+        ) -> int:
             """gmsh.model.occ.addSurfaceLoop(surfaceTags, tag=-1, sewing=False)
 
             Add a surface loop (a closed shell) in the OpenCASCADE CAD representation,
@@ -8832,13 +8857,14 @@ class model:
         @staticmethod
         def addThruSections(
             wireTags,
-            tag=-1,
-            makeSolid=True,
-            makeRuled=False,
-            maxDegree=-1,
-            continuity="",
-            parametrization="",
-            smoothing=False,
+            *,
+            tag: int = -1,
+            makeSolid: bool = True,
+            makeRuled: bool = False,
+            maxDegree: int = -1,
+            continuity: str = "",
+            parametrization: str = "",
+            smoothing: bool = False,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.addThruSections(wireTags, tag=-1, makeSolid=True, makeRuled=False, maxDegree=-1, continuity="", parametrization="", smoothing=False)
 
@@ -8934,7 +8960,14 @@ class model:
 
         @staticmethod
         def extrude(
-            dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False
+            dimTags,
+            dx,
+            dy,
+            dz,
+            *,
+            numElements=[],
+            heights=[],
+            recombine: bool = False,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.extrude(dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False)
 
@@ -8993,9 +9026,10 @@ class model:
             ay,
             az,
             angle,
+            *,
             numElements=[],
             heights=[],
-            recombine=False,
+            recombine: bool = False,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.revolve(dimTags, x, y, z, ax, ay, az, angle, numElements=[], heights=[], recombine=False)
 
@@ -9096,7 +9130,7 @@ class model:
 
         @staticmethod
         def fillet(
-            volumeTags, curveTags, radii, removeVolume=True
+            volumeTags, curveTags, radii, *, removeVolume: bool = True
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.fillet(volumeTags, curveTags, radii, removeVolume=True)
 
@@ -9140,7 +9174,12 @@ class model:
 
         @staticmethod
         def chamfer(
-            volumeTags, curveTags, surfaceTags, distances, removeVolume=True
+            volumeTags,
+            curveTags,
+            surfaceTags,
+            distances,
+            *,
+            removeVolume: bool = True,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.chamfer(volumeTags, curveTags, surfaceTags, distances, removeVolume=True)
 
@@ -9190,7 +9229,7 @@ class model:
 
         @staticmethod
         def defeature(
-            volumeTags, surfaceTags, removeVolume=True
+            volumeTags, surfaceTags, *, removeVolume: bool = True
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.defeature(volumeTags, surfaceTags, removeVolume=True)
 
@@ -9377,9 +9416,10 @@ class model:
         def fuse(
             objectDimTags,
             toolDimTags,
-            tag=-1,
-            removeObject=True,
-            removeTool=True,
+            *,
+            tag: int = -1,
+            removeObject: bool = True,
+            removeTool: bool = True,
         ) -> tuple[list[tuple[int, int]], list[list[tuple[int, int]]]]:
             """gmsh.model.occ.fuse(objectDimTags, toolDimTags, tag=-1, removeObject=True, removeTool=True)
 
@@ -9443,9 +9483,10 @@ class model:
         def intersect(
             objectDimTags,
             toolDimTags,
-            tag=-1,
-            removeObject=True,
-            removeTool=True,
+            *,
+            tag: int = -1,
+            removeObject: bool = True,
+            removeTool: bool = True,
         ) -> tuple[list[tuple[int, int]], list[list[tuple[int, int]]]]:
             """gmsh.model.occ.intersect(objectDimTags, toolDimTags, tag=-1, removeObject=True, removeTool=True)
 
@@ -9509,9 +9550,10 @@ class model:
         def cut(
             objectDimTags,
             toolDimTags,
-            tag=-1,
-            removeObject=True,
-            removeTool=True,
+            *,
+            tag: int = -1,
+            removeObject: bool = True,
+            removeTool: bool = True,
         ) -> tuple[list[tuple[int, int]], list[list[tuple[int, int]]]]:
             """gmsh.model.occ.cut(objectDimTags, toolDimTags, tag=-1, removeObject=True, removeTool=True)
 
@@ -9573,11 +9615,12 @@ class model:
 
         @staticmethod
         def fragment(
-            objectDimTags,
-            toolDimTags,
-            tag=-1,
-            removeObject=True,
-            removeTool=True,
+            objectDimTags: Sequence[tuple[int, int]],
+            toolDimTags: Sequence[tuple[int, int]],
+            *,
+            tag: int = -1,
+            removeObject: bool = True,
+            removeTool: bool = True,
         ) -> tuple[list[tuple[int, int]], list[list[tuple[int, int]]]]:
             """gmsh.model.occ.fragment(objectDimTags, toolDimTags, tag=-1, removeObject=True, removeTool=True)
 
@@ -9860,7 +9903,7 @@ class model:
 
         @staticmethod
         def remove(
-            dimTags: Sequence[tuple[int, int]], recursive=False
+            dimTags: Sequence[tuple[int, int]], *, recursive: bool = False
         ) -> None:
             """gmsh.model.occ.remove(dimTags, recursive=False)
 
@@ -9899,13 +9942,14 @@ class model:
 
         @staticmethod
         def healShapes(
-            dimTags=[],
-            tolerance=1e-8,
-            fixDegenerated=True,
-            fixSmallEdges=True,
-            fixSmallFaces=True,
-            sewFaces=True,
-            makeSolids=True,
+            dimTags: Sequence[tuple[int, int]] = (),
+            *,
+            tolerance: float = 1e-8,
+            fixDegenerated: bool = True,
+            fixSmallEdges: bool = True,
+            fixSmallFaces: bool = True,
+            sewFaces: bool = True,
+            makeSolids: bool = True,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.healShapes(dimTags=[], tolerance=1e-8, fixDegenerated=True, fixSmallEdges=True, fixSmallFaces=True, sewFaces=True, makeSolids=True)
 
@@ -10005,7 +10049,7 @@ class model:
 
         @staticmethod
         def importShapesNativePointer(
-            shape, highestDimOnly=True
+            shape, *, highestDimOnly: bool = True
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.importShapesNativePointer(shape, highestDimOnly=True)
 
@@ -10770,7 +10814,7 @@ class view:
 
     @staticmethod
     def getListData(
-        tag: int, returnAdaptive=False
+        tag: int, *, returnAdaptive: bool = False
     ) -> tuple[list[str], list[int], list[list[float]]]:
         """gmsh.view.getListData(tag, returnAdaptive=False)
 
@@ -11002,7 +11046,9 @@ class view:
         return api_result_
 
     @staticmethod
-    def combine(what, how, remove=True, copyOptions=True) -> None:
+    def combine(
+        what: str, how: str, *, remove: bool = True, copyOptions: bool = True
+    ) -> None:
         """gmsh.view.combine(what, how, remove=True, copyOptions=True)
 
         Combine elements (if `what' == "elements") or steps (if `what' == "steps")
@@ -11115,7 +11161,7 @@ class view:
         )
 
     @staticmethod
-    def write(tag: int, fileName, append=False) -> None:
+    def write(tag: int, fileName: str, *, append: bool = False) -> None:
         """gmsh.view.write(tag, fileName, append=False)
 
         Write the view to a file `fileName'. The export format is determined by the
