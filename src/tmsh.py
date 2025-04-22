@@ -622,7 +622,7 @@ class option:
 
     @staticmethod
     def getNumber(name: str) -> float:
-        """Get the `value' of a numerical option.
+        """Return the `value' of a numerical option.
 
         `name' is of the form "Category.Option" or "Category[num].Option".
         Available categories and options are listed in the "Gmsh options"
@@ -660,18 +660,12 @@ class option:
 
     @staticmethod
     def getString(name: str) -> str:
-        """gmsh.option.getString(name)
+        """Return the `value' of a string option.
 
-        Get the `value' of a string option. `name' is of the form "Category.Option"
-        or "Category[num].Option". Available categories and options are listed in
-        the "Gmsh options" chapter of the Gmsh reference manual
+        `name' is of the form "Category.Option" or "Category[num].Option".
+        Available categories and options are listed in the "Gmsh options"
+        chapter of the Gmsh reference manual
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
-
-        Return `value'.
-
-        Types:
-        - `name': string
-        - `value': string
         """
         api_value_ = ctypes.c_char_p()
         ierr = ctypes.c_int()
@@ -686,21 +680,14 @@ class option:
 
     @staticmethod
     def setColor(name: str, r: int, g: int, b: int, a: int = 255) -> None:
-        """gmsh.option.setColor(name, r, g, b, a=255)
+        """Set a color option to the RGBA value (`r', `g', `b', `a').
 
-        Set a color option to the RGBA value (`r', `g', `b', `a'), where where `r',
-        `g', `b' and `a' should be integers between 0 and 255. `name' is of the
-        form "Category.Color.Option" or "Category[num].Color.Option". Available
-        categories and options are listed in the "Gmsh options" chapter of the Gmsh
-        reference manual (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
-        For conciseness "Color." can be ommitted in `name'.
-
-        Types:
-        - `name': string
-        - `r': integer
-        - `g': integer
-        - `b': integer
-        - `a': integer
+        `r', `g', `b' and `a' should be integers between 0 and 255. `name' is
+        of the form "Category.Color.Option" or "Category[num].Color.Option".
+        Available categories and options are listed in the "Gmsh options"
+        chapter of the Gmsh reference manual
+        (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
+        For conciseness, "Color." can be omitted in `name'.
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshOptionSetColor(
@@ -716,22 +703,13 @@ class option:
 
     @staticmethod
     def getColor(name: str) -> tuple[int, int, int, int]:
-        """gmsh.option.getColor(name)
+        """Return the `r', `g', `b', `a' value of a color option.
 
-        Get the `r', `g', `b', `a' value of a color option. `name' is of the form
-        "Category.Color.Option" or "Category[num].Color.Option". Available
-        categories and options are listed in the "Gmsh options" chapter of the Gmsh
-        reference manual (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
-        For conciseness "Color." can be ommitted in `name'.
-
-        Return `r', `g', `b', `a'.
-
-        Types:
-        - `name': string
-        - `r': integer
-        - `g': integer
-        - `b': integer
-        - `a': integer
+        `name' is of the form "Category.Color.Option" or
+        "Category[num].Color.Option". Available categories and options are
+        listed in the "Gmsh options" chapter of the Gmsh reference manual
+        (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
+        For conciseness "Color." can be omitted in `name'.
         """
         api_r_ = ctypes.c_int()
         api_g_ = ctypes.c_int()
@@ -752,10 +730,7 @@ class option:
 
     @staticmethod
     def restoreDefaults() -> None:
-        """gmsh.option.restoreDefaults()
-
-        Restore all options to default settings.
-        """
+        """Restore all options to default settings."""
         ierr = ctypes.c_int()
         gmsh.lib.gmshOptionRestoreDefaults(ctypes.byref(ierr))
         if ierr.value != 0:
@@ -767,13 +742,7 @@ class model:
 
     @staticmethod
     def add(name: str) -> None:
-        """gmsh.model.add(name)
-
-        Add a new model, with name `name', and set it as the current model.
-
-        Types:
-        - `name': string
-        """
+        """Add a new model with name `name' and set it as the current model."""
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelAdd(
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
@@ -783,10 +752,7 @@ class model:
 
     @staticmethod
     def remove() -> None:
-        """gmsh.model.remove()
-
-        Remove the current model.
-        """
+        """Remove the current model."""
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelRemove(ctypes.byref(ierr))
         if ierr.value != 0:
@@ -794,15 +760,7 @@ class model:
 
     @staticmethod
     def list() -> builtins.list[str]:
-        """gmsh.model.list()
-
-        List the names of all models.
-
-        Return `names'.
-
-        Types:
-        - `names': vector of strings
-        """
+        """Return a list of the names of all models."""
         api_names_, api_names_n_ = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
@@ -819,15 +777,7 @@ class model:
 
     @staticmethod
     def getCurrent() -> str:
-        """gmsh.model.getCurrent()
-
-        Get the name of the current model.
-
-        Return `name'.
-
-        Types:
-        - `name': string
-        """
+        """Return the name of the current model."""
         api_name_ = ctypes.c_char_p()
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelGetCurrent(
@@ -839,13 +789,10 @@ class model:
 
     @staticmethod
     def setCurrent(name: str) -> None:
-        """gmsh.model.setCurrent(name)
+        """Set the current model to the model with name `name'.
 
-        Set the current model to the model with name `name'. If several models have
-        the same name, select the one that was added first.
-
-        Types:
-        - `name': string
+        If several models have the same name, select the one that was added
+        first.
         """
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelSetCurrent(
@@ -856,15 +803,9 @@ class model:
 
     @staticmethod
     def getFileName() -> str:
-        """gmsh.model.getFileName()
+        """Return the file name (if any) associated with the current model.
 
-        Get the file name (if any) associated with the current model. A file name
-        is associated when a model is read from a file on disk.
-
-        Return `fileName'.
-
-        Types:
-        - `fileName': string
+        A file name is associated when a model is read from a file on disk.
         """
         api_fileName_ = ctypes.c_char_p()
         ierr = ctypes.c_int()
@@ -877,13 +818,7 @@ class model:
 
     @staticmethod
     def setFileName(fileName: str) -> None:
-        """gmsh.model.setFileName(fileName)
-
-        Set the file name associated with the current model.
-
-        Types:
-        - `fileName': string
-        """
+        """Set the file name associated with the current model."""
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelSetFileName(
             ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr)
@@ -893,19 +828,13 @@ class model:
 
     @staticmethod
     def getEntities(dim: int = -1) -> builtins.list[tuple[int, int]]:
-        """gmsh.model.getEntities(dim=-1)
+        """Return the (dim, tag) pairs of all entities in the current model.
 
-        Get all the entities in the current model. A model entity is represented by
-        two integers: its dimension (dim == 0, 1, 2 or 3) and its tag (its unique,
-        strictly positive identifier). If `dim' is >= 0, return only the entities
-        of the specified dimension (e.g. points if `dim' == 0). The entities are
-        returned as a vector of (dim, tag) pairs.
-
-        Return `dimTags'.
-
-        Types:
-        - `dimTags': vector of pairs of integers
-        - `dim': integer
+        A model entity is represented by two integers: its dimension
+        (dim == 0, 1, 2 or 3) and its tag (its unique, strictly positive
+        identifier). If `dim' is >= 0, return only the entities of the
+        specified dimension (e.g. points if `dim' == 0). The entities are
+        returned as a collection of (dim, tag) pairs.
         """
         api_dimTags_ = ctypes.POINTER(ctypes.c_int)()
         api_dimTags_n_ = ctypes.c_size_t()
@@ -922,15 +851,7 @@ class model:
 
     @staticmethod
     def setEntityName(dim: int, tag: int, name: str) -> None:
-        """gmsh.model.setEntityName(dim, tag, name)
-
-        Set the name of the entity of dimension `dim' and tag `tag'.
-
-        Types:
-        - `dim': integer
-        - `tag': integer
-        - `name': string
-        """
+        """Set the name of the entity of dimension `dim' and tag `tag'."""
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelSetEntityName(
             ctypes.c_int(dim),
@@ -943,17 +864,7 @@ class model:
 
     @staticmethod
     def getEntityName(dim: int, tag: int) -> str:
-        """gmsh.model.getEntityName(dim, tag)
-
-        Get the name of the entity of dimension `dim' and tag `tag'.
-
-        Return `name'.
-
-        Types:
-        - `dim': integer
-        - `tag': integer
-        - `name': string
-        """
+        """Return the name of the entity of dimension `dim' and tag `tag'."""
         api_name_ = ctypes.c_char_p()
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelGetEntityName(
@@ -968,13 +879,7 @@ class model:
 
     @staticmethod
     def removeEntityName(name: str) -> None:
-        """gmsh.model.removeEntityName(name)
-
-        Remove the entity name `name' from the current model.
-
-        Types:
-        - `name': string
-        """
+        """Remove the entity name `name' from the current model."""
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelRemoveEntityName(
             ctypes.c_char_p(name.encode()), ctypes.byref(ierr)

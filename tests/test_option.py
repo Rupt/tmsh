@@ -38,4 +38,3 @@ class Option(unittest.TestCase):
         assert tmsh.option.getString(name) != default
         tmsh.option.restoreDefaults()
         self.assertEqual(tmsh.option.getString(name), default)
-
