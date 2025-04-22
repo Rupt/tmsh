@@ -92,7 +92,6 @@ select = [
 ignore = [
     # To enable
     "E501",
-    "B006",
     "D415",
     # Not to enable
     "COM812",
