@@ -6471,10 +6471,8 @@ class model:
             - `tags': vector of integers
             """
             api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
-            api_tags_, api_tags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_tags_ = ctypes.POINTER(ctypes.c_int)()
+            api_tags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelGeoAddCurveLoops(
                 api_curveTags_,
@@ -6702,10 +6700,8 @@ class model:
             - `recombine': boolean
             """
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             api_numElements_, api_numElements_n_ = _ivectorint(numElements)
             api_heights_, api_heights_n_ = _ivectordouble(heights)
             ierr = ctypes.c_int()
@@ -6771,10 +6767,8 @@ class model:
             - `recombine': boolean
             """
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             api_numElements_, api_numElements_n_ = _ivectorint(numElements)
             api_heights_, api_heights_n_ = _ivectordouble(heights)
             ierr = ctypes.c_int()
@@ -6851,10 +6845,8 @@ class model:
             - `recombine': boolean
             """
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             api_numElements_, api_numElements_n_ = _ivectorint(numElements)
             api_heights_, api_heights_n_ = _ivectordouble(heights)
             ierr = ctypes.c_int()
@@ -6918,10 +6910,8 @@ class model:
             - `viewIndex': integer
             """
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             api_numElements_, api_numElements_n_ = _ivectorint(numElements)
             api_heights_, api_heights_n_ = _ivectordouble(heights)
             ierr = ctypes.c_int()
@@ -7112,10 +7102,8 @@ class model:
             - `outDimTags': vector of pairs of integers
             """
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelGeoCopy(
                 api_dimTags_,
@@ -8705,10 +8693,8 @@ class model:
             - `smoothing': boolean
             """
             api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccAddThruSections(
                 api_wireTags_,
@@ -8751,10 +8737,8 @@ class model:
             api_excludeSurfaceTags_, api_excludeSurfaceTags_n_ = _ivectorint(
                 excludeSurfaceTags
             )
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccAddThickSolid(
                 ctypes.c_int(volumeTag),
@@ -8797,10 +8781,8 @@ class model:
             - `recombine': boolean
             """
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             api_numElements_, api_numElements_n_ = _ivectorint(numElements)
             api_heights_, api_heights_n_ = _ivectordouble(heights)
             ierr = ctypes.c_int()
@@ -8867,10 +8849,8 @@ class model:
             - `recombine': boolean
             """
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             api_numElements_, api_numElements_n_ = _ivectorint(numElements)
             api_heights_, api_heights_n_ = _ivectordouble(heights)
             ierr = ctypes.c_int()
@@ -8918,10 +8898,8 @@ class model:
             - `trihedron': string
             """
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccAddPipe(
                 api_dimTags_,
@@ -8959,10 +8937,8 @@ class model:
             api_volumeTags_, api_volumeTags_n_ = _ivectorint(volumeTags)
             api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
             api_radii_, api_radii_n_ = _ivectordouble(radii)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccFillet(
                 api_volumeTags_,
@@ -9009,10 +8985,8 @@ class model:
             api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
             api_surfaceTags_, api_surfaceTags_n_ = _ivectorint(surfaceTags)
             api_distances_, api_distances_n_ = _ivectordouble(distances)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccChamfer(
                 api_volumeTags_,
@@ -9050,10 +9024,8 @@ class model:
             """
             api_volumeTags_, api_volumeTags_n_ = _ivectorint(volumeTags)
             api_surfaceTags_, api_surfaceTags_n_ = _ivectorint(surfaceTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccDefeature(
                 api_volumeTags_,
@@ -9143,10 +9115,8 @@ class model:
             - `offset': double
             - `outDimTags': vector of pairs of integers
             """
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccOffsetCurve(
                 ctypes.c_int(curveLoopTag),
@@ -9249,10 +9219,8 @@ class model:
                 objectDimTags
             )
             api_toolDimTags_, api_toolDimTags_n_ = _ivectorpair(toolDimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             api_outDimTagsMap_, api_outDimTagsMap_n_, api_outDimTagsMap_nn_ = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_int))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
@@ -9317,10 +9285,8 @@ class model:
                 objectDimTags
             )
             api_toolDimTags_, api_toolDimTags_n_ = _ivectorpair(toolDimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             api_outDimTagsMap_, api_outDimTagsMap_n_, api_outDimTagsMap_nn_ = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_int))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
@@ -9385,10 +9351,8 @@ class model:
                 objectDimTags
             )
             api_toolDimTags_, api_toolDimTags_n_ = _ivectorpair(toolDimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             api_outDimTagsMap_, api_outDimTagsMap_n_, api_outDimTagsMap_nn_ = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_int))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
@@ -9457,10 +9421,8 @@ class model:
                 objectDimTags
             )
             api_toolDimTags_, api_toolDimTags_n_ = _ivectorpair(toolDimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             api_outDimTagsMap_, api_outDimTagsMap_n_, api_outDimTagsMap_nn_ = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_int))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
@@ -9690,10 +9652,8 @@ class model:
             - `outDimTags': vector of pairs of integers
             """
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccCopy(
                 api_dimTags_,
@@ -9772,10 +9732,8 @@ class model:
             - `sewFaces': boolean
             - `makeSolids': boolean
             """
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccHealShapes(
@@ -9831,10 +9789,8 @@ class model:
             - `highestDimOnly': boolean
             - `format': string
             """
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccImportShapes(
                 ctypes.c_char_p(fileName.encode()),
@@ -9869,10 +9825,8 @@ class model:
             - `outDimTags': vector of pairs of integers
             - `highestDimOnly': boolean
             """
-            api_outDimTags_, api_outDimTags_n_ = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+            api_outDimTags_n_ = ctypes.c_size_t()
             ierr = ctypes.c_int()
             gmsh.lib.gmshModelOccImportShapesNativePointer(
                 ctypes.c_void_p(shape),
