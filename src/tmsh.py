@@ -6675,7 +6675,14 @@ class model:
 
         @staticmethod
         def extrude(
-            dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False
+            dimTags,
+            dx,
+            dy,
+            dz,
+            *,
+            numElements=[],
+            heights=[],
+            recombine: bool = False,
         ):
             """gmsh.model.geo.extrude(dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False)
 
@@ -6730,13 +6737,14 @@ class model:
             x,
             y,
             z,
+            *,
             ax,
             ay,
             az,
             angle,
             numElements=[],
             heights=[],
-            recombine=False,
+            recombine: bool = False,
         ):
             """gmsh.model.geo.revolve(dimTags, x, y, z, ax, ay, az, angle, numElements=[], heights=[], recombine=False)
 
@@ -6804,13 +6812,14 @@ class model:
             dx,
             dy,
             dz,
+            *,
             ax,
             ay,
             az,
             angle,
             numElements=[],
             heights=[],
-            recombine=False,
+            recombine: bool = False,
         ):
             """gmsh.model.geo.twist(dimTags, x, y, z, dx, dy, dz, ax, ay, az, angle, numElements=[], heights=[], recombine=False)
 
@@ -6879,11 +6888,12 @@ class model:
         @staticmethod
         def extrudeBoundaryLayer(
             dimTags,
+            *,
             numElements=[1],
             heights=[],
-            recombine=False,
-            second=False,
-            viewIndex=-1,
+            recombine: bool = False,
+            second: bool = False,
+            viewIndex: int = -1,
         ):
             """gmsh.model.geo.extrudeBoundaryLayer(dimTags, numElements=[1], heights=[], recombine=False, second=False, viewIndex=-1)
 
