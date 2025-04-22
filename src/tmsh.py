@@ -9900,8 +9900,11 @@ class model:
 
         @staticmethod
         def importShapes(
-            fileName, highestDimOnly=True, format=""
-        ) -> list[tuple[int, int]]:  # noqa: A002
+            fileName: str,
+            *,
+            highestDimOnly: bool = True,
+            format: str = "",  # noqa: A002
+        ) -> list[tuple[int, int]]:
             """gmsh.model.occ.importShapes(fileName, highestDimOnly=True, format="")
 
             Import BREP, STEP or IGES shapes from the file `fileName' in the
