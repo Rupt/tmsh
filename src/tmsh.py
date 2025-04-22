@@ -347,6 +347,8 @@ def _ostring(s: ctypes.c_char_p) -> str:
 
 
 def _ovectorpair(ptr: _Pointer[c_int], size: int) -> list[tuple[int, int]]:
+    # TODO: explain why this function supports odd size
+    #   https://github.com/Rupt/tmsh/issues/15
     v = [(ptr[i * 2], ptr[i * 2 + 1]) for i in range(size // 2)]
     gmsh.lib.gmshFree(ptr)
     return v
