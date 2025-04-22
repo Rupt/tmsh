@@ -347,7 +347,7 @@ def _ostring(s: ctypes.c_char_p) -> str:
 
 
 def _ovectorpair(ptr: _Pointer[c_int], size: int) -> list[tuple[int, int]]:
-    v = list(zip(ptr[:size:2], ptr[1:size:2], strict=True))
+    v = [(ptr[i * 2], ptr[i * 2 + 1]) for i in range(size // 2)]
     gmsh.lib.gmshFree(ptr)
     return v
 
