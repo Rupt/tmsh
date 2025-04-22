@@ -347,7 +347,7 @@ def _ostring(s: ctypes.c_char_p) -> str:
 
 
 def _ovectorpair(ptr: _Pointer[c_int], size: int) -> list[tuple[int, int]]:
-    v = [(ptr[i], ptr[i + 1]) for i in range(0, size, 2)]
+    v = list(zip(ptr[:size:2], ptr[1:size:2], strict=True))
     gmsh.lib.gmshFree(ptr)
     return v
 
@@ -380,7 +380,7 @@ def _ovectorvectorint(
     ptr: _Pointer[_Pointer[c_int]],
     size: _Pointer[c_size_t],
     n: ctypes.c_size_t,
-) -> list:
+) -> list[list[int]]:
     v = [
         _ovectorint(ctypes.pointer(ptr[i].contents), size[i])
         for i in range(n.value)
@@ -394,7 +394,7 @@ def _ovectorvectorsize(
     ptr: _Pointer[_Pointer[c_size_t]],
     size: _Pointer[c_size_t],
     n: ctypes.c_size_t,
-) -> list:
+) -> list[list[int]]:
     v = [
         _ovectorsize(ctypes.pointer(ptr[i].contents), size[i])
         for i in range(n.value)
@@ -408,7 +408,7 @@ def _ovectorvectordouble(
     ptr: _Pointer[_Pointer[c_double]],
     size: _Pointer[c_size_t],
     n: ctypes.c_size_t,
-) -> list:
+) -> list[list[float]]:
     v = [
         _ovectordouble(ctypes.pointer(ptr[i].contents), size[i])
         for i in range(n.value)
@@ -423,10 +423,7 @@ def _ovectorvectorpair(
     size: _Pointer[c_size_t],
     n: ctypes.c_size_t,
 ) -> list[list[tuple[int, int]]]:
-    v = [
-        _ovectorpair(ctypes.pointer(ptr[i].contents), size[i])
-        for i in range(n.value)
-    ]
+    v = [_ovectorpair(ptr[i], size[i]) for i in range(n.value)]
     gmsh.lib.gmshFree(size)
     gmsh.lib.gmshFree(ptr)
     return v
@@ -1013,7 +1010,7 @@ class model:
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
-    def getEntitiesForPhysicalGroup(dim: int, tag: int):
+    def getEntitiesForPhysicalGroup(dim: int, tag: int) -> builtins.list[int]:
         """gmsh.model.getEntitiesForPhysicalGroup(dim, tag)
 
         Get the tags of the model entities making up the physical group of
@@ -1073,7 +1070,7 @@ class model:
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
-    def getPhysicalGroupsForEntity(dim: int, tag: int):
+    def getPhysicalGroupsForEntity(dim: int, tag: int) -> builtins.list[int]:
         """gmsh.model.getPhysicalGroupsForEntity(dim, tag)
 
         Get the tags of the physical groups (if any) to which the model entity of
@@ -1244,7 +1241,7 @@ class model:
         combined: bool = True,
         oriented: bool = True,
         recursive: bool = False,
-    ):
+    ) -> builtins.list[tuple[int, int]]:
         """gmsh.model.getBoundary(dimTags, combined=True, oriented=True, recursive=False)
 
         Get the boundary of the model entities `dimTags', given as a vector of
@@ -1285,7 +1282,9 @@ class model:
         return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
     @staticmethod
-    def getAdjacencies(dim: int, tag: int):
+    def getAdjacencies(
+        dim: int, tag: int
+    ) -> tuple[builtins.list[int], builtins.list[int]]:
         """gmsh.model.getAdjacencies(dim, tag)
 
         Get the upward and downward adjacencies of the model entity of dimension
@@ -1572,7 +1571,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def getPartitions(dim: int, tag: int):
+    def getPartitions(dim: int, tag: int) -> builtins.list[int]:
         """gmsh.model.getPartitions(dim, tag)
 
         In a partitioned model, return the tags of the partition(s) to which the
@@ -1602,7 +1601,7 @@ class model:
         return _ovectorint(api_partitions_, api_partitions_n_.value)
 
     @staticmethod
-    def getValue(dim: int, tag: int, parametricCoord):
+    def getValue(dim: int, tag: int, parametricCoord) -> builtins.list[float]:
         """gmsh.model.getValue(dim, tag, parametricCoord)
 
         Evaluate the parametrization of the entity of dimension `dim' and tag `tag'
@@ -1643,7 +1642,9 @@ class model:
         return _ovectordouble(api_coord_, api_coord_n_.value)
 
     @staticmethod
-    def getDerivative(dim: int, tag: int, parametricCoord):
+    def getDerivative(
+        dim: int, tag: int, parametricCoord
+    ) -> builtins.list[float]:
         """gmsh.model.getDerivative(dim, tag, parametricCoord)
 
         Evaluate the derivative of the parametrization of the entity of dimension
@@ -1686,7 +1687,9 @@ class model:
         return _ovectordouble(api_derivatives_, api_derivatives_n_.value)
 
     @staticmethod
-    def getSecondDerivative(dim: int, tag: int, parametricCoord):
+    def getSecondDerivative(
+        dim: int, tag: int, parametricCoord
+    ) -> builtins.list[float]:
         """gmsh.model.getSecondDerivative(dim, tag, parametricCoord)
 
         Evaluate the second derivative of the parametrization of the entity of
@@ -1731,7 +1734,9 @@ class model:
         return _ovectordouble(api_derivatives_, api_derivatives_n_.value)
 
     @staticmethod
-    def getCurvature(dim: int, tag: int, parametricCoord):
+    def getCurvature(
+        dim: int, tag: int, parametricCoord
+    ) -> builtins.list[float]:
         """gmsh.model.getCurvature(dim, tag, parametricCoord)
 
         Evaluate the (maximum) curvature of the entity of dimension `dim' and tag
@@ -1770,7 +1775,14 @@ class model:
         return _ovectordouble(api_curvatures_, api_curvatures_n_.value)
 
     @staticmethod
-    def getPrincipalCurvatures(tag: int, parametricCoord):
+    def getPrincipalCurvatures(
+        tag: int, parametricCoord
+    ) -> tuple[
+        builtins.list[float],
+        builtins.list[float],
+        builtins.list[float],
+        builtins.list[float],
+    ]:
         """gmsh.model.getPrincipalCurvatures(tag, parametricCoord)
 
         Evaluate the principal curvatures of the surface with tag `tag' at the
@@ -1832,7 +1844,7 @@ class model:
         )
 
     @staticmethod
-    def getNormal(tag: int, parametricCoord):
+    def getNormal(tag: int, parametricCoord) -> builtins.list[float]:
         """gmsh.model.getNormal(tag, parametricCoord)
 
         Get the normal to the surface with tag `tag' at the parametric coordinates
@@ -1868,7 +1880,7 @@ class model:
         return _ovectordouble(api_normals_, api_normals_n_.value)
 
     @staticmethod
-    def getParametrization(dim: int, tag: int, coord):
+    def getParametrization(dim: int, tag: int, coord) -> builtins.list[float]:
         """gmsh.model.getParametrization(dim, tag, coord)
 
         Get the parametric coordinates `parametricCoord' for the points `coord' on
@@ -1908,7 +1920,9 @@ class model:
         )
 
     @staticmethod
-    def getParametrizationBounds(dim: int, tag: int):
+    def getParametrizationBounds(
+        dim: int, tag: int
+    ) -> tuple[builtins.list[float], builtins.list[float]]:
         """gmsh.model.getParametrizationBounds(dim, tag)
 
         Get the `min' and `max' bounds of the parametric coordinates for the entity
@@ -1982,7 +1996,9 @@ class model:
         return api_result_
 
     @staticmethod
-    def getClosestPoint(dim: int, tag: int, coord):
+    def getClosestPoint(
+        dim: int, tag: int, coord
+    ) -> tuple[builtins.list[float], builtins.list[float]]:
         """gmsh.model.getClosestPoint(dim, tag, coord)
 
         Get the points `closestCoord' on the entity of dimension `dim' and tag
@@ -2032,7 +2048,7 @@ class model:
     @staticmethod
     def reparametrizeOnSurface(
         dim: int, tag: int, parametricCoord, surfaceTag: int, which: int = 0
-    ):
+    ) -> builtins.list[float]:
         """gmsh.model.reparametrizeOnSurface(dim, tag, parametricCoord, surfaceTag, which=0)
 
         Reparametrize the boundary entity (point or curve, i.e. with `dim' == 0 or
@@ -2506,7 +2522,7 @@ class model:
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
         @staticmethod
-        def getLastNodeError():
+        def getLastNodeError() -> list[int]:
             """gmsh.model.mesh.getLastNodeError()
 
             Get the last node tags `nodeTags' where a meshing error occurred. Currently
@@ -2651,7 +2667,7 @@ class model:
             *,
             includeBoundary: bool = False,
             returnParametricCoord: bool = True,
-        ):
+        ) -> tuple[list[int], list[float], list[float]]:
             """gmsh.model.mesh.getNodes(dim=-1, tag=-1, includeBoundary=False, returnParametricCoord=True)
 
             Get the nodes classified on the entity of dimension `dim' and tag `tag'. If
@@ -2721,7 +2737,7 @@ class model:
             *,
             tag: int = -1,
             returnParametricCoord: bool = True,
-        ):
+        ) -> tuple[list[int], list[float], list[float]]:
             """gmsh.model.mesh.getNodesByElementType(elementType, tag=-1, returnParametricCoord=True)
 
             Get the nodes classified on the entity of tag `tag', for all the elements
@@ -2773,7 +2789,7 @@ class model:
             )
 
         @staticmethod
-        def getNode(nodeTag: int):
+        def getNode(nodeTag: int) -> tuple[list[float], list[float], int, int]:
             """gmsh.model.mesh.getNode(nodeTag)
 
             Get the coordinates and the parametric coordinates (if any) of the node
@@ -2890,7 +2906,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getNodesForPhysicalGroup(dim: int, tag: int):
+        def getNodesForPhysicalGroup(
+            dim: int, tag: int
+        ) -> tuple[list[int], list[float]]:
             """gmsh.model.mesh.getNodesForPhysicalGroup(dim, tag)
 
             Get the nodes from all the elements belonging to the physical group of
@@ -3029,7 +3047,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getElements(dim: int = -1, tag: int = -1):
+        def getElements(
+            dim: int = -1, tag: int = -1
+        ) -> tuple[list[int], list[list[int]], list[list[int]]]:
             """gmsh.model.mesh.getElements(dim=-1, tag=-1)
 
             Get the elements classified on the entity of dimension `dim' and tag `tag'.
@@ -3096,7 +3116,7 @@ class model:
             )
 
         @staticmethod
-        def getElement(elementTag: int):
+        def getElement(elementTag: int) -> tuple[int, list[int], int, int]:
             """gmsh.model.mesh.getElement(elementTag)
 
             Get the type and node tags of the element with tag `tag', as well as the
@@ -3148,7 +3168,7 @@ class model:
             *,
             dim: int = -1,
             strict: bool = False,
-        ):
+        ) -> tuple[int, int, list[int], float, float, float]:
             """gmsh.model.mesh.getElementByCoordinates(x, y, z, dim=-1, strict=False)
 
             Search the mesh for an element located at coordinates (`x', `y', `z'). This
@@ -3217,7 +3237,7 @@ class model:
             *,
             dim: int = -1,
             strict: bool = False,
-        ):
+        ) -> list[int]:
             """gmsh.model.mesh.getElementsByCoordinates(x, y, z, dim=-1, strict=False)
 
             Search the mesh for element(s) located at coordinates (`x', `y', `z'). This
@@ -3298,7 +3318,7 @@ class model:
             return (api_u_.value, api_v_.value, api_w_.value)
 
         @staticmethod
-        def getElementTypes(dim: int = -1, tag: int = -1):
+        def getElementTypes(dim: int = -1, tag: int = -1) -> list[int]:
             """gmsh.model.mesh.getElementTypes(dim=-1, tag=-1)
 
             Get the types of elements in the entity of dimension `dim' and tag `tag'.
@@ -3358,7 +3378,9 @@ class model:
             return api_result_
 
         @staticmethod
-        def getElementProperties(elementType: int):
+        def getElementProperties(
+            elementType: int,
+        ) -> tuple[str, int, int, int, list[float], int]:
             """gmsh.model.mesh.getElementProperties(elementType)
 
             Get the properties of an element of type `elementType': its name
@@ -3419,7 +3441,7 @@ class model:
             tag: int = -1,
             task: int = 0,
             numTasks: int = 1,
-        ):
+        ) -> tuple[list[int], list[int]]:
             """gmsh.model.mesh.getElementsByType(elementType, tag=-1, task=0, numTasks=1)
 
             Get the elements of type `elementType' classified on the entity of tag
@@ -3496,7 +3518,7 @@ class model:
             qualityName: str = "minSICN",
             task: int = 0,
             numTasks: int = 1,
-        ):
+        ) -> list[float]:
             """gmsh.model.mesh.getElementQualities(elementTags, qualityName="minSICN", task=0, numTasks=1)
 
             Get the quality `elementQualities' of the elements with tags `elementTags'.
@@ -3628,7 +3650,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getIntegrationPoints(elementType, integrationType):
+        def getIntegrationPoints(
+            elementType, integrationType
+        ) -> tuple[list[float], list[float]]:
             """gmsh.model.mesh.getIntegrationPoints(elementType, integrationType)
 
             Get the numerical quadrature information for the given element type
@@ -3678,7 +3702,9 @@ class model:
             )
 
         @staticmethod
-        def getJacobians(elementType, localCoord, tag=-1, task=0, numTasks=1):
+        def getJacobians(
+            elementType, localCoord, tag=-1, task=0, numTasks=1
+        ) -> tuple[list[float], list[float], list[float]]:
             """gmsh.model.mesh.getJacobians(elementType, localCoord, tag=-1, task=0, numTasks=1)
 
             Get the Jacobians of all the elements of type `elementType' classified on
@@ -3747,7 +3773,9 @@ class model:
             )
 
         @staticmethod
-        def getJacobian(elementTag, localCoord):
+        def getJacobian(
+            elementTag, localCoord
+        ) -> tuple[list[float], list[float], list[float]]:
             """gmsh.model.mesh.getJacobian(elementTag, localCoord)
 
             Get the Jacobian for a single element `elementTag', at the G evaluation
@@ -3808,7 +3836,7 @@ class model:
         @staticmethod
         def getBasisFunctions(
             elementType, localCoord, functionSpaceType, wantedOrientations=[]
-        ):
+        ) -> tuple[int, list[float], int]:
             """gmsh.model.mesh.getBasisFunctions(elementType, localCoord, functionSpaceType, wantedOrientations=[])
 
             Get the basis functions of the element of type `elementType' at the
@@ -3880,7 +3908,7 @@ class model:
         @staticmethod
         def getBasisFunctionsOrientation(
             elementType, functionSpaceType, tag=-1, task=0, numTasks=1
-        ):
+        ) -> list[int]:
             """gmsh.model.mesh.getBasisFunctionsOrientation(elementType, functionSpaceType, tag=-1, task=0, numTasks=1)
 
             Get the orientation index of the elements of type `elementType' in the
@@ -3951,10 +3979,6 @@ class model:
                 raise RuntimeError(logger.getLastError())
             return api_basisFunctionsOrientation_.value
 
-        get_basis_functions_orientation_for_element = (
-            getBasisFunctionsOrientationForElement
-        )
-
         @staticmethod
         def getNumberOfOrientations(
             elementType: int, functionSpaceType: str
@@ -3981,7 +4005,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def getEdges(nodeTags):
+        def getEdges(nodeTags) -> tuple[list[int], list[int]]:
             """gmsh.model.mesh.getEdges(nodeTags)
 
             Get the global unique mesh edge identifiers `edgeTags' and orientations
@@ -4028,7 +4052,7 @@ class model:
             )
 
         @staticmethod
-        def getFaces(faceType, nodeTags):
+        def getFaces(faceType, nodeTags) -> tuple[list[int], list[int]]:
             """gmsh.model.mesh.getFaces(faceType, nodeTags)
 
             Get the global unique mesh face identifiers `faceTags' and orientations
@@ -4111,7 +4135,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getAllEdges():
+        def getAllEdges() -> tuple[list[int], list[int]]:
             """gmsh.model.mesh.getAllEdges()
 
             Get the global unique identifiers `edgeTags' and the nodes `edgeNodes' of
@@ -4148,7 +4172,7 @@ class model:
             )
 
         @staticmethod
-        def getAllFaces(faceType):
+        def getAllFaces(faceType) -> tuple[list[int], list[int]]:
             """gmsh.model.mesh.getAllFaces(faceType)
 
             Get the global unique identifiers `faceTags' and the nodes `faceNodes' of
@@ -4237,7 +4261,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getKeys(elementType, functionSpaceType, tag=-1, returnCoord=True):
+        def getKeys(
+            elementType, functionSpaceType, tag=-1, returnCoord=True
+        ) -> tuple[list[int], list[int], list[float]]:
             """gmsh.model.mesh.getKeys(elementType, functionSpaceType, tag=-1, returnCoord=True)
 
             Generate the pair of keys for the elements of type `elementType' in the
@@ -4294,7 +4320,9 @@ class model:
             )
 
         @staticmethod
-        def getKeysForElement(elementTag, functionSpaceType, returnCoord=True):
+        def getKeysForElement(
+            elementTag, functionSpaceType, returnCoord=True
+        ) -> tuple[list[int], list[int], list[float]]:
             """gmsh.model.mesh.getKeysForElement(elementTag, functionSpaceType, returnCoord=True)
 
             Get the pair of keys for a single element `elementTag'.
@@ -4413,7 +4441,7 @@ class model:
         @staticmethod
         def getBarycenters(
             elementType, tag, fast, primary, task=0, numTasks=1
-        ):
+        ) -> list[float]:
             """gmsh.model.mesh.getBarycenters(elementType, tag, fast, primary, task=0, numTasks=1)
 
             Get the barycenters of all elements of type `elementType' classified on the
@@ -4459,7 +4487,7 @@ class model:
         @staticmethod
         def getElementEdgeNodes(
             elementType, tag=-1, primary=False, task=0, numTasks=1
-        ):
+        ) -> list[int]:
             """gmsh.model.mesh.getElementEdgeNodes(elementType, tag=-1, primary=False, task=0, numTasks=1)
 
             Get the nodes on the edges of all elements of type `elementType' classified
@@ -4503,7 +4531,7 @@ class model:
         @staticmethod
         def getElementFaceNodes(
             elementType, faceType, tag=-1, primary=False, task=0, numTasks=1
-        ):
+        ) -> list[int]:
             """gmsh.model.mesh.getElementFaceNodes(elementType, faceType, tag=-1, primary=False, task=0, numTasks=1)
 
             Get the nodes on the faces of type `faceType' (3 for triangular faces, 4
@@ -4548,7 +4576,9 @@ class model:
             return _ovectorsize(api_nodeTags_, api_nodeTags_n_.value)
 
         @staticmethod
-        def getGhostElements(dim: int, tag: int):
+        def getGhostElements(
+            dim: int, tag: int
+        ) -> tuple[list[int], list[int]]:
             """gmsh.model.mesh.getGhostElements(dim, tag)
 
             Get the ghost elements `elementTags' and their associated `partitions'
@@ -4611,7 +4641,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getSizes(dimTags):
+        def getSizes(dimTags) -> list[float]:
             """gmsh.model.mesh.getSizes(dimTags)
 
             Get the mesh size constraints (if any) associated with the model entities
@@ -4727,7 +4757,11 @@ class model:
 
         @staticmethod
         def setTransfiniteCurve(
-            tag, numNodes, meshType="Progression", coef=1.0
+            tag: int,
+            numNodes: int,
+            *,
+            meshType: str = "Progression",
+            coef: float = 1.0,
         ) -> None:
             """gmsh.model.mesh.setTransfiniteCurve(tag, numNodes, meshType="Progression", coef=1.)
 
@@ -4755,7 +4789,10 @@ class model:
 
         @staticmethod
         def setTransfiniteSurface(
-            tag: int, arrangement="Left", cornerTags=[]
+            tag: int,
+            *,
+            arrangement: str = "Left",
+            cornerTags: Sequence[int] = [],
         ) -> None:
             """gmsh.model.mesh.setTransfiniteSurface(tag, arrangement="Left", cornerTags=[])
 
@@ -4785,7 +4822,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setTransfiniteVolume(tag: int, cornerTags=[]) -> None:
+        def setTransfiniteVolume(
+            tag: int, *, cornerTags: Sequence[int] = []
+        ) -> None:
             """gmsh.model.mesh.setTransfiniteVolume(tag, cornerTags=[])
 
             Set a transfinite meshing constraint on the surface `tag'. `cornerTags' can
@@ -4809,7 +4848,10 @@ class model:
 
         @staticmethod
         def setTransfiniteAutomatic(
-            dimTags=[], cornerAngle=2.35, recombine=True
+            dimTags: Sequence[tuple[int, int]] = [],
+            *,
+            cornerAngle: float = 2.35,
+            recombine: bool = True,
         ) -> None:
             """gmsh.model.mesh.setTransfiniteAutomatic(dimTags=[], cornerAngle=2.35, recombine=True)
 
@@ -4840,7 +4882,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setRecombine(dim: int, tag: int, angle=45.0) -> None:
+        def setRecombine(dim: int, tag: int, *, angle: float = 45.0) -> None:
             """gmsh.model.mesh.setRecombine(dim, tag, angle=45.)
 
             Set a recombination meshing constraint on the model entity of dimension
@@ -5125,7 +5167,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def computeRenumbering(method="RCMK", elementTags=[]):
+        def computeRenumbering(
+            method="RCMK", elementTags=[]
+        ) -> tuple[list[int], list[int]]:
             """gmsh.model.mesh.computeRenumbering(method="RCMK", elementTags=[])
 
             Compute a renumbering vector `newTags' corresponding to the input tags
@@ -5295,7 +5339,9 @@ class model:
             return _ovectorint(api_tagMaster_, api_tagMaster_n_.value)
 
         @staticmethod
-        def getPeriodicNodes(dim: int, tag: int, includeHighOrderNodes=False):
+        def getPeriodicNodes(
+            dim: int, tag: int, includeHighOrderNodes=False
+        ) -> tuple[int, list[int], list[int], list[float]]:
             """gmsh.model.mesh.getPeriodicNodes(dim, tag, includeHighOrderNodes=False)
 
             Get the master entity `tagMaster', the node tags `nodeTags' and their
@@ -5356,7 +5402,15 @@ class model:
         @staticmethod
         def getPeriodicKeys(
             elementType, functionSpaceType, tag, returnCoord=True
-        ):
+        ) -> tuple[
+            int,
+            list[int],
+            list[int],
+            list[int],
+            list[int],
+            list[float],
+            list[float],
+        ]:
             """gmsh.model.mesh.getPeriodicKeys(elementType, functionSpaceType, tag, returnCoord=True)
 
             Get the master entity `tagMaster' and the key pairs (`typeKeyMaster',
@@ -5453,7 +5507,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getDuplicateNodes(dimTags=[]):
+        def getDuplicateNodes(dimTags=[]) -> list[int]:
             """gmsh.model.mesh.getDuplicateNodes(dimTags=[])
 
             Get the `tags' of any duplicate nodes in the mesh of the entities
@@ -5560,7 +5614,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def getVisibility(elementTags):
+        def getVisibility(elementTags) -> list[int]:
             """gmsh.model.mesh.getVisibility(elementTags)
 
             Get the visibility of the elements of tags `elementTags'.
@@ -5649,7 +5703,7 @@ class model:
 
         @staticmethod
         def createTopology(
-            makeSimplyConnected=True, exportDiscrete=True
+            *, makeSimplyConnected: bool = True, exportDiscrete: bool = True
         ) -> None:
             """gmsh.model.mesh.createTopology(makeSimplyConnected=True, exportDiscrete=True)
 
@@ -5758,7 +5812,7 @@ class model:
             return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
         @staticmethod
-        def computeCrossField():
+        def computeCrossField() -> list[int]:
             """gmsh.model.mesh.computeCrossField()
 
             Compute a cross field for the current mesh. The function creates 3 views:
@@ -5785,7 +5839,7 @@ class model:
             return _ovectorint(api_viewTags_, api_viewTags_n_.value)
 
         @staticmethod
-        def triangulate(coord):
+        def triangulate(coord) -> list[int]:
             """gmsh.model.mesh.triangulate(coord)
 
             Triangulate the points given in the `coord' vector as pairs of u, v
@@ -5816,7 +5870,7 @@ class model:
             return _ovectorsize(api_tri_, api_tri_n_.value)
 
         @staticmethod
-        def tetrahedralize(coord):
+        def tetrahedralize(coord) -> list[int]:
             """gmsh.model.mesh.tetrahedralize(coord)
 
             Tetrahedralize the points given in the `coord' vector as x, y, z
@@ -5892,7 +5946,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def list():
+            def list() -> list[int]:
                 """gmsh.model.mesh.field.list()
 
                 Get the list of all fields.
@@ -6007,7 +6061,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def getString(tag: int, option: str):
+            def getString(tag: int, option: str) -> str:
                 """gmsh.model.mesh.field.getString(tag, option)
 
                 Get the value of the string option `option' for field `tag'.
@@ -6057,7 +6111,7 @@ class model:
                     raise RuntimeError(logger.getLastError())
 
             @staticmethod
-            def getNumbers(tag: int, option: str):
+            def getNumbers(tag: int, option: str) -> builtins.list[float]:
                 """gmsh.model.mesh.field.getNumbers(tag, option)
 
                 Get the value of the numerical list option `option' for field `tag'.
@@ -6483,7 +6537,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addCurveLoops(curveTags):
+        def addCurveLoops(curveTags) -> list[int]:
             """gmsh.model.geo.addCurveLoops(curveTags)
 
             Add curve loops in the built-in CAD representation based on the curves
@@ -7194,7 +7248,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def splitCurve(tag: int, pointTags):
+        def splitCurve(tag: int, pointTags) -> list[int]:
             """gmsh.model.geo.splitCurve(tag, pointTags)
 
             Split the curve of tag `tag' in the built-in CAD representation, on the
@@ -10106,7 +10160,7 @@ class model:
             )
 
         @staticmethod
-        def getCurveLoops(surfaceTag):
+        def getCurveLoops(surfaceTag) -> tuple[list[int], list[list[int]]]:
             """gmsh.model.occ.getCurveLoops(surfaceTag)
 
             Get the tags `curveLoopTags' of the curve loops making up the surface of
@@ -10149,7 +10203,7 @@ class model:
             )
 
         @staticmethod
-        def getSurfaceLoops(volumeTag):
+        def getSurfaceLoops(volumeTag) -> tuple[list[int], list[list[int]]]:
             """gmsh.model.occ.getSurfaceLoops(volumeTag)
 
             Get the tags `surfaceLoopTags' of the surface loops making up the volume of
@@ -10253,7 +10307,7 @@ class model:
             return (api_x_.value, api_y_.value, api_z_.value)
 
         @staticmethod
-        def getMatrixOfInertia(dim: int, tag: int):
+        def getMatrixOfInertia(dim: int, tag: int) -> list[float]:
             """gmsh.model.occ.getMatrixOfInertia(dim, tag)
 
             Get the matrix of inertia (by row) of the OpenCASCADE entity of dimension
@@ -10393,7 +10447,7 @@ class view:
         return api_result_
 
     @staticmethod
-    def remove(tag) -> None:
+    def remove(tag: int) -> None:
         """gmsh.view.remove(tag)
 
         Remove the view with tag `tag'.
@@ -10407,7 +10461,7 @@ class view:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getIndex(tag):
+    def getIndex(tag: int) -> int:
         """gmsh.view.getIndex(tag)
 
         Get the index of the view with tag `tag' in the list of currently loaded
@@ -10428,7 +10482,7 @@ class view:
         return api_result_
 
     @staticmethod
-    def getTags():
+    def getTags() -> list[int]:
         """gmsh.view.getTags()
 
         Get the tags of all views.
@@ -10563,7 +10617,9 @@ class view:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getModelData(tag: int, step):
+    def getModelData(
+        tag: int, step
+    ) -> tuple[str, list[int], list[list[float]], float, int]:
         """gmsh.view.getModelData(tag, step)
 
         Get model-based post-processing data from the view with tag `tag' at step
@@ -10619,7 +10675,9 @@ class view:
         )
 
     @staticmethod
-    def getHomogeneousModelData(tag: int, step):
+    def getHomogeneousModelData(
+        tag: int, step
+    ) -> tuple[str, list[int], list[float], float, int]:
         """gmsh.view.getHomogeneousModelData(tag, step)
 
         Get homogeneous model-based post-processing data from the view with tag
@@ -10707,7 +10765,9 @@ class view:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getListData(tag: int, returnAdaptive=False):
+    def getListData(
+        tag: int, returnAdaptive=False
+    ) -> tuple[list[str], list[int], list[list[float]]]:
         """gmsh.view.getListData(tag, returnAdaptive=False)
 
         Get list-based post-processing data from the view with tag `tag'. Return
@@ -10800,7 +10860,9 @@ class view:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getListDataStrings(tag: int, dim):
+    def getListDataStrings(
+        tag: int, dim
+    ) -> tuple[list[float], list[str], list[str]]:
         """gmsh.view.getListDataStrings(tag, dim)
 
         Get list-based post-processing data strings (2D strings if `dim' == 2, 3D
@@ -11487,7 +11549,7 @@ class fltk:
         return api_result_
 
     @staticmethod
-    def selectEntities(dim: int = -1):
+    def selectEntities(dim: int = -1) -> tuple[int, list[tuple[int, int]]]:
         """gmsh.fltk.selectEntities(dim=-1)
 
         Select entities in the user interface. Return the selected entities as a
@@ -11516,7 +11578,7 @@ class fltk:
         return (api_result_, _ovectorpair(api_dimTags_, api_dimTags_n_.value))
 
     @staticmethod
-    def selectElements():
+    def selectElements() -> tuple[int, list[int]]:
         """gmsh.fltk.selectElements()
 
         Select elements in the user interface.
@@ -11544,7 +11606,7 @@ class fltk:
         )
 
     @staticmethod
-    def selectViews():
+    def selectViews() -> tuple[int, list[int]]:
         """gmsh.fltk.selectViews()
 
         Select views in the user interface.
@@ -11753,7 +11815,7 @@ class parser:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getNumber(name: str):
+    def getNumber(name: str) -> list[float]:
         """gmsh.parser.getNumber(name)
 
         Get the value of the number variable `name' from the Gmsh parser. Return an
@@ -11965,7 +12027,7 @@ class onelab:
             raise RuntimeError(logger.getLastError())
 
     @staticmethod
-    def getNumber(name: str):
+    def getNumber(name: str) -> list[float]:
         """gmsh.onelab.getNumber(name)
 
         Get the value of the number parameter `name' from the ONELAB database.
