@@ -341,7 +341,7 @@ def _ostring(s: ctypes.c_char_p) -> str:
     if s.value is None:
         msg = "null pointer"
         raise RuntimeError(msg)
-    sp = s.value.decode("utf-8")
+    sp = s.value.decode()
     gmsh.lib.gmshFree(s)
     return sp
 
