@@ -325,7 +325,7 @@ import gmsh
 
 if TYPE_CHECKING:
     import builtins
-    from collections.abc import Sequence
+    from collections.abc import Callable, Sequence
     from ctypes import (
         Array,
         _Pointer,
@@ -1884,7 +1884,9 @@ class model:
         return _ovectordouble(api_normals_, api_normals_n_.value)
 
     @staticmethod
-    def getParametrization(dim: int, tag: int, coord) -> builtins.list[float]:
+    def getParametrization(
+        dim: int, tag: int, coord: Sequence[float]
+    ) -> builtins.list[float]:
         """gmsh.model.getParametrization(dim, tag, coord)
 
         Get the parametric coordinates `parametricCoord' for the points `coord' on
@@ -2001,7 +2003,7 @@ class model:
 
     @staticmethod
     def getClosestPoint(
-        dim: int, tag: int, coord
+        dim: int, tag: int, coord: Sequence[float]
     ) -> tuple[builtins.list[float], builtins.list[float]]:
         """gmsh.model.getClosestPoint(dim, tag, coord)
 
@@ -3673,7 +3675,7 @@ class model:
 
         @staticmethod
         def getIntegrationPoints(
-            elementType, integrationType
+            elementType: int, integrationType: str
         ) -> tuple[list[float], list[float]]:
             """gmsh.model.mesh.getIntegrationPoints(elementType, integrationType)
 
@@ -3725,7 +3727,12 @@ class model:
 
         @staticmethod
         def getJacobians(
-            elementType, localCoord, tag=-1, task=0, numTasks=1
+            elementType: int,
+            localCoord: Sequence[float],
+            *,
+            tag: int = -1,
+            task: int = 0,
+            numTasks: int = 1,
         ) -> tuple[list[float], list[float], list[float]]:
             """gmsh.model.mesh.getJacobians(elementType, localCoord, tag=-1, task=0, numTasks=1)
 
@@ -3796,7 +3803,7 @@ class model:
 
         @staticmethod
         def getJacobian(
-            elementTag, localCoord
+            elementTag: int, localCoord: Sequence[float]
         ) -> tuple[list[float], list[float], list[float]]:
             """gmsh.model.mesh.getJacobian(elementTag, localCoord)
 
@@ -3857,7 +3864,11 @@ class model:
 
         @staticmethod
         def getBasisFunctions(
-            elementType, localCoord, functionSpaceType, wantedOrientations=[]
+            elementType: int,
+            localCoord: Sequence[float],
+            functionSpaceType: str,
+            *,
+            wantedOrientations: Sequence[int] = [],
         ) -> tuple[int, list[float], int]:
             """gmsh.model.mesh.getBasisFunctions(elementType, localCoord, functionSpaceType, wantedOrientations=[])
 
@@ -3929,7 +3940,12 @@ class model:
 
         @staticmethod
         def getBasisFunctionsOrientation(
-            elementType, functionSpaceType, tag=-1, task=0, numTasks=1
+            elementType: int,
+            functionSpaceType: str,
+            *,
+            tag: int = -1,
+            task: int = 0,
+            numTasks: int = 1,
         ) -> list[int]:
             """gmsh.model.mesh.getBasisFunctionsOrientation(elementType, functionSpaceType, tag=-1, task=0, numTasks=1)
 
@@ -3976,7 +3992,7 @@ class model:
 
         @staticmethod
         def getBasisFunctionsOrientationForElement(
-            elementTag, functionSpaceType
+            elementTag: int, functionSpaceType: str
         ) -> int:
             """gmsh.model.mesh.getBasisFunctionsOrientationForElement(elementTag, functionSpaceType)
 
@@ -4196,7 +4212,7 @@ class model:
             )
 
         @staticmethod
-        def getAllFaces(faceType) -> tuple[list[int], list[int]]:
+        def getAllFaces(faceType: int) -> tuple[list[int], list[int]]:
             """gmsh.model.mesh.getAllFaces(faceType)
 
             Get the global unique identifiers `faceTags' and the nodes `faceNodes' of
@@ -4406,7 +4422,7 @@ class model:
             )
 
         @staticmethod
-        def getNumberOfKeys(elementType, functionSpaceType) -> int:
+        def getNumberOfKeys(elementType: int, functionSpaceType: str) -> int:
             """gmsh.model.mesh.getNumberOfKeys(elementType, functionSpaceType)
 
             Get the number of keys by elements of type `elementType' for function space
@@ -4430,7 +4446,10 @@ class model:
 
         @staticmethod
         def getKeysInformation(
-            typeKeys, entityKeys, elementType, functionSpaceType
+            typeKeys: Sequence[int],
+            entityKeys: Sequence[int],
+            elementType: int,
+            functionSpaceType: str,
         ) -> list[tuple[int, int]]:
             """gmsh.model.mesh.getKeysInformation(typeKeys, entityKeys, elementType, functionSpaceType)
 
@@ -4475,7 +4494,13 @@ class model:
 
         @staticmethod
         def getBarycenters(
-            elementType:int, tag:int, *, fast:bool, primary:bool, task:int=0, numTasks:int=1
+            elementType: int,
+            tag: int,
+            *,
+            fast: bool,
+            primary: bool,
+            task: int = 0,
+            numTasks: int = 1,
         ) -> list[float]:
             """gmsh.model.mesh.getBarycenters(elementType, tag, fast, primary, task=0, numTasks=1)
 
@@ -4664,7 +4689,7 @@ class model:
             )
 
         @staticmethod
-        def setSize(dimTags: Sequence[tuple[int, int]], size) -> None:
+        def setSize(dimTags: Sequence[tuple[int, int]], size: float) -> None:
             """gmsh.model.mesh.setSize(dimTags, size)
 
             Set a mesh size constraint on the model entities `dimTags', given as a
@@ -4755,7 +4780,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setSizeCallback(callback) -> None:
+        def setSizeCallback(
+            callback: Callable[[int, int, float, float, float, float], None],
+        ) -> None:
             """gmsh.model.mesh.setSizeCallback(callback)
 
             Set a mesh size callback for the current model. The callback function
@@ -4957,7 +4984,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setSmoothing(dim: int, tag: int, val) -> None:
+        def setSmoothing(dim: int, tag: int, val: int) -> None:
             """gmsh.model.mesh.setSmoothing(dim, tag, val)
 
             Set a smoothing meshing constraint on the model entity of dimension `dim'
@@ -5004,7 +5031,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setAlgorithm(dim: int, tag: int, val:int) -> None:
+        def setAlgorithm(dim: int, tag: int, val: int) -> None:
             """gmsh.model.mesh.setAlgorithm(dim, tag, val)
 
             Set the meshing algorithm on the model entity of dimension `dim' and tag
@@ -5027,7 +5054,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setSizeFromBoundary(dim: int, tag: int, val) -> None:
+        def setSizeFromBoundary(dim: int, tag: int, val: int) -> None:
             """gmsh.model.mesh.setSizeFromBoundary(dim, tag, val)
 
             Force the mesh size to be extended from the boundary, or not, for the model
@@ -5050,7 +5077,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setCompound(dim:int, tags:Sequence[int]) -> None:
+        def setCompound(dim: int, tags: Sequence[int]) -> None:
             """gmsh.model.mesh.setCompound(dim, tags)
 
             Set a compound meshing constraint on the model entities of dimension `dim'
@@ -5070,7 +5097,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setOutwardOrientation(tag:int) -> None:
+        def setOutwardOrientation(tag: int) -> None:
             """gmsh.model.mesh.setOutwardOrientation(tag)
 
             Set meshing constraints on the bounding surfaces of the volume of tag `tag'
@@ -5108,7 +5135,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def embed(dim:int, tags:Sequence[int], inDim:int, inTag:int) -> None:
+        def embed(
+            dim: int, tags: Sequence[int], inDim: int, inTag: int
+        ) -> None:
             """gmsh.model.mesh.embed(dim, tags, inDim, inTag)
 
             Embed the model entities of dimension `dim' and tags `tags' in the
@@ -5141,7 +5170,9 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def removeEmbedded(dimTags: Sequence[tuple[int, int]], *, dim:int=-1) -> None:
+        def removeEmbedded(
+            dimTags: Sequence[tuple[int, int]], *, dim: int = -1
+        ) -> None:
             """gmsh.model.mesh.removeEmbedded(dimTags, dim=-1)
 
             Remove embedded entities from the model entities `dimTags', given as a
@@ -5326,7 +5357,12 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def setPeriodic(dim:int, tags:Sequence[int], tagsMaster:Sequence[int], affineTransform:Sequence[float]) -> None:
+        def setPeriodic(
+            dim: int,
+            tags: Sequence[int],
+            tagsMaster: Sequence[int],
+            affineTransform: Sequence[float],
+        ) -> None:
             """gmsh.model.mesh.setPeriodic(dim, tags, tagsMaster, affineTransform)
 
             Set the meshes of the entities of dimension `dim' and tag `tags' as
@@ -5458,7 +5494,11 @@ class model:
 
         @staticmethod
         def getPeriodicKeys(
-            elementType:int, functionSpaceType:str, tag:int, *, returnCoord: bool = True
+            elementType: int,
+            functionSpaceType: str,
+            tag: int,
+            *,
+            returnCoord: bool = True,
         ) -> tuple[
             int,
             list[int],
@@ -5707,7 +5747,7 @@ class model:
 
         @staticmethod
         def classifySurfaces(
-            angle:float,
+            angle: float,
             *,
             boundary: bool = True,
             forReparametrization: bool = False,
@@ -5935,7 +5975,7 @@ class model:
             return _ovectorsize(api_tri_, api_tri_n_.value)
 
         @staticmethod
-        def tetrahedralize(coord:Sequence[float]) -> list[int]:
+        def tetrahedralize(coord: Sequence[float]) -> list[int]:
             """gmsh.model.mesh.tetrahedralize(coord)
 
             Tetrahedralize the points given in the `coord' vector as x, y, z
@@ -6796,7 +6836,7 @@ class model:
             geometryTag: int,
             x: float,
             y: float,
-            z:float=0.0,
+            z: float = 0.0,
             *,
             meshSize: float = 0.0,
             tag: int = -1,
