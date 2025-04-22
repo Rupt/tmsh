@@ -1040,7 +1040,7 @@ class model:
         return api_result_
 
     @staticmethod
-    def removePhysicalGroups(dimTags: Sequence[tuple[int, int]] = []) -> None:
+    def removePhysicalGroups(dimTags: Sequence[tuple[int, int]] = ()) -> None:
         """gmsh.model.removePhysicalGroups(dimTags=[])
 
         Remove the physical groups `dimTags' (given as a vector of (dim, tag)
@@ -1350,7 +1350,7 @@ class model:
 
     @staticmethod
     def addDiscreteEntity(
-        dim: int, tag: int = -1, boundary: Sequence[int] = []
+        dim: int, tag: int = -1, boundary: Sequence[int] = ()
     ) -> int:
         """gmsh.model.addDiscreteEntity(dim, tag=-1, boundary=[])
 
@@ -2295,8 +2295,8 @@ class model:
         def partition(
             numPart: int,
             *,
-            elementTags: Sequence[int] = [],
-            partitions: Sequence[int] = [],
+            elementTags: Sequence[int] = (),
+            partitions: Sequence[int] = (),
         ) -> None:
             """gmsh.model.mesh.partition(numPart, elementTags=[], partitions=[])
 
@@ -2340,7 +2340,7 @@ class model:
             method: str = "",
             force: bool = False,
             niter: int = 1,
-            dimTags: Sequence[tuple[int, int]] = [],
+            dimTags: Sequence[tuple[int, int]] = (),
         ) -> None:
             """gmsh.model.mesh.optimize(method="", force=False, niter=1, dimTags=[])
 
@@ -2464,7 +2464,7 @@ class model:
             return _ovectorsize(api_nodeTags_, api_nodeTags_n_.value)
 
         @staticmethod
-        def clear(dimTags: Sequence[tuple[int, int]] = []) -> None:
+        def clear(dimTags: Sequence[tuple[int, int]] = ()) -> None:
             """gmsh.model.mesh.clear(dimTags=[])
 
             Clear the mesh, i.e. delete all the nodes and elements, for the entities
@@ -2486,7 +2486,7 @@ class model:
 
         @staticmethod
         def removeElements(
-            dim: int, tag: int, elementTags: Sequence[int] = []
+            dim: int, tag: int, elementTags: Sequence[int] = ()
         ) -> None:
             """gmsh.model.mesh.removeElements(dim, tag, elementTags=[])
 
@@ -2513,7 +2513,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def reverse(dimTags: Sequence[tuple[int, int]] = []) -> None:
+        def reverse(dimTags: Sequence[tuple[int, int]] = ()) -> None:
             """gmsh.model.mesh.reverse(dimTags=[])
 
             Reverse the orientation of the elements in the entities `dimTags', given as
@@ -2551,7 +2551,7 @@ class model:
         @staticmethod
         def affineTransform(
             affineTransform: Sequence[float],
-            dimTags: Sequence[tuple[int, int]] = [],
+            dimTags: Sequence[tuple[int, int]] = (),
         ) -> None:
             """gmsh.model.mesh.affineTransform(affineTransform, dimTags=[])
 
@@ -2895,7 +2895,7 @@ class model:
             tag: int,
             nodeTags: Sequence[int],
             coord: Sequence[float],
-            parametricCoord: Sequence[float] = [],
+            parametricCoord: Sequence[float] = (),
         ) -> None:
             """gmsh.model.mesh.addNodes(dim, tag, nodeTags, coord, parametricCoord=[])
 
@@ -3775,7 +3775,7 @@ class model:
             localCoord: Sequence[float],
             functionSpaceType: str,
             *,
-            wantedOrientations: Sequence[int] = [],
+            wantedOrientations: Sequence[int] = (),
         ) -> tuple[int, list[float], int]:
             """gmsh.model.mesh.getBasisFunctions(elementType, localCoord, functionSpaceType, wantedOrientations=[])
 
@@ -4046,7 +4046,7 @@ class model:
             )
 
         @staticmethod
-        def createEdges(dimTags: Sequence[tuple[int, int]] = []) -> None:
+        def createEdges(dimTags: Sequence[tuple[int, int]] = ()) -> None:
             """gmsh.model.mesh.createEdges(dimTags=[])
 
             Create unique mesh edges for the entities `dimTags', given as a vector of
@@ -4064,7 +4064,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def createFaces(dimTags: Sequence[tuple[int, int]] = []) -> None:
+        def createFaces(dimTags: Sequence[tuple[int, int]] = ()) -> None:
             """gmsh.model.mesh.createFaces(dimTags=[])
 
             Create unique mesh faces for the entities `dimTags', given as a vector of
@@ -4777,7 +4777,7 @@ class model:
             tag: int,
             *,
             arrangement: str = "Left",
-            cornerTags: Sequence[int] = [],
+            cornerTags: Sequence[int] = (),
         ) -> None:
             """gmsh.model.mesh.setTransfiniteSurface(tag, arrangement="Left", cornerTags=[])
 
@@ -4808,7 +4808,7 @@ class model:
 
         @staticmethod
         def setTransfiniteVolume(
-            tag: int, *, cornerTags: Sequence[int] = []
+            tag: int, *, cornerTags: Sequence[int] = ()
         ) -> None:
             """gmsh.model.mesh.setTransfiniteVolume(tag, cornerTags=[])
 
@@ -4833,7 +4833,7 @@ class model:
 
         @staticmethod
         def setTransfiniteAutomatic(
-            dimTags: Sequence[tuple[int, int]] = [],
+            dimTags: Sequence[tuple[int, int]] = (),
             *,
             cornerAngle: float = 2.35,
             recombine: bool = True,
@@ -5023,7 +5023,7 @@ class model:
                 raise RuntimeError(logger.getLastError())
 
         @staticmethod
-        def removeConstraints(dimTags: Sequence[tuple[int, int]] = []) -> None:
+        def removeConstraints(dimTags: Sequence[tuple[int, int]] = ()) -> None:
             """gmsh.model.mesh.removeConstraints(dimTags=[])
 
             Remove all meshing constraints from the model entities `dimTags', given as
@@ -5159,7 +5159,7 @@ class model:
 
         @staticmethod
         def computeRenumbering(
-            method: str = "RCMK", elementTags: Sequence[int] = []
+            method: str = "RCMK", elementTags: Sequence[int] = ()
         ) -> tuple[list[int], list[int]]:
             """gmsh.model.mesh.computeRenumbering(method="RCMK", elementTags=[])
 
@@ -5208,7 +5208,7 @@ class model:
 
         @staticmethod
         def renumberNodes(
-            oldTags: Sequence[int] = [], newTags: Sequence[int] = []
+            oldTags: Sequence[int] = [], newTags: Sequence[int] = ()
         ) -> None:
             """gmsh.model.mesh.renumberNodes(oldTags=[], newTags=[])
 
@@ -5236,7 +5236,7 @@ class model:
 
         @staticmethod
         def renumberElements(
-            oldTags: Sequence[int] = [], newTags: Sequence[int] = []
+            oldTags: Sequence[int] = [], newTags: Sequence[int] = ()
         ) -> None:
             """gmsh.model.mesh.renumberElements(oldTags=[], newTags=[])
 
@@ -5512,7 +5512,7 @@ class model:
 
         @staticmethod
         def getDuplicateNodes(
-            dimTags: Sequence[tuple[int, int]] = [],
+            dimTags: Sequence[tuple[int, int]] = (),
         ) -> list[int]:
             """gmsh.model.mesh.getDuplicateNodes(dimTags=[])
 
@@ -5545,7 +5545,7 @@ class model:
 
         @staticmethod
         def removeDuplicateNodes(
-            dimTags: Sequence[tuple[int, int]] = [],
+            dimTags: Sequence[tuple[int, int]] = (),
         ) -> None:
             """gmsh.model.mesh.removeDuplicateNodes(dimTags=[])
 
@@ -5565,7 +5565,7 @@ class model:
 
         @staticmethod
         def removeDuplicateElements(
-            dimTags: Sequence[tuple[int, int]] = [],
+            dimTags: Sequence[tuple[int, int]] = (),
         ) -> None:
             """gmsh.model.mesh.removeDuplicateElements(dimTags=[])
 
@@ -5742,9 +5742,9 @@ class model:
         def addHomologyRequest(
             *,
             type: str = "Homology",  # noqa: A002
-            domainTags: Sequence[int] = [],
-            subdomainTags: Sequence[int] = [],
-            dims: Sequence[int] = [],
+            domainTags: Sequence[int] = (),
+            subdomainTags: Sequence[int] = (),
+            dims: Sequence[int] = (),
         ) -> None:
             """gmsh.model.mesh.addHomologyRequest(type="Homology", domainTags=[], subdomainTags=[], dims=[])
 
@@ -6699,8 +6699,8 @@ class model:
         @staticmethod
         def addGeometry(
             geometry: str,
-            numbers: Sequence[float] = [],
-            strings: Sequence[str] = [],
+            numbers: Sequence[float] = (),
+            strings: Sequence[str] = (),
             *,
             tag: int = -1,
         ) -> int:
@@ -6787,8 +6787,8 @@ class model:
             dy: float,
             dz: float,
             *,
-            numElements: Sequence[int] = [],
-            heights: Sequence[float] = [],
+            numElements: Sequence[int] = (),
+            heights: Sequence[float] = (),
             recombine: bool = False,
         ) -> list[tuple[int, int]]:
             """gmsh.model.geo.extrude(dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False)
@@ -6849,8 +6849,8 @@ class model:
             az: float,
             angle: float,
             *,
-            numElements: Sequence[int] = [],
-            heights: Sequence[float] = [],
+            numElements: Sequence[int] = (),
+            heights: Sequence[float] = (),
             recombine: bool = False,
         ) -> list[tuple[int, int]]:
             """gmsh.model.geo.revolve(dimTags, x, y, z, ax, ay, az, angle, numElements=[], heights=[], recombine=False)
@@ -6924,8 +6924,8 @@ class model:
             az: float,
             angle: float,
             *,
-            numElements: Sequence[int] = [],
-            heights: Sequence[float] = [],
+            numElements: Sequence[int] = (),
+            heights: Sequence[float] = (),
             recombine: bool = False,
         ) -> list[tuple[int, int]]:
             """gmsh.model.geo.twist(dimTags, x, y, z, dx, dy, dz, ax, ay, az, angle, numElements=[], heights=[], recombine=False)
@@ -6997,7 +6997,7 @@ class model:
             dimTags: Sequence[tuple[int, int]],
             *,
             numElements: Sequence[int] = [1],
-            heights: Sequence[float] = [],
+            heights: Sequence[float] = (),
             recombine: bool = False,
             second: bool = False,
             viewIndex: int = -1,
@@ -7407,7 +7407,7 @@ class model:
 
         @staticmethod
         def removePhysicalGroups(
-            dimTags: Sequence[tuple[int, int]] = [],
+            dimTags: Sequence[tuple[int, int]] = (),
         ) -> None:
             """gmsh.model.geo.removePhysicalGroups(dimTags=[])
 
@@ -7508,7 +7508,7 @@ class model:
                 tag: int,
                 *,
                 arrangement: str = "Left",
-                cornerTags: Sequence[int] = [],
+                cornerTags: Sequence[int] = (),
             ) -> None:
                 """gmsh.model.geo.mesh.setTransfiniteSurface(tag, arrangement="Left", cornerTags=[])
 
@@ -7539,7 +7539,7 @@ class model:
 
             @staticmethod
             def setTransfiniteVolume(
-                tag: int, *, cornerTags: Sequence[int] = []
+                tag: int, *, cornerTags: Sequence[int] = ()
             ) -> None:
                 """gmsh.model.geo.mesh.setTransfiniteVolume(tag, cornerTags=[])
 
@@ -7801,8 +7801,8 @@ class model:
             tag: int = -1,
             angle1: float = 0.0,
             angle2: float = 2 * math.pi,
-            zAxis: Sequence[float] = [],
-            xAxis: Sequence[float] = [],
+            zAxis: Sequence[float] = (),
+            xAxis: Sequence[float] = (),
         ) -> int:
             """gmsh.model.occ.addCircle(x, y, z, r, tag=-1, angle1=0., angle2=2*pi, zAxis=[], xAxis=[])
 
@@ -7958,7 +7958,7 @@ class model:
             pointTags: Sequence[int],
             *,
             tag: int = -1,
-            tangents: Sequence[float] = [],
+            tangents: Sequence[float] = (),
         ) -> int:
             """gmsh.model.occ.addSpline(pointTags, tag=-1, tangents=[])
 
@@ -8000,9 +8000,9 @@ class model:
             *,
             tag: int = -1,
             degree: int = 3,
-            weights: Sequence[float] = [],
-            knots: Sequence[float] = [],
-            multiplicities: Sequence[int] = [],
+            weights: Sequence[float] = (),
+            knots: Sequence[float] = (),
+            multiplicities: Sequence[int] = (),
         ) -> int:
             """gmsh.model.occ.addBSpline(pointTags, tag=-1, degree=3, weights=[], knots=[], multiplicities=[])
 
@@ -8427,12 +8427,12 @@ class model:
             tag: int = -1,
             degreeU: int = 3,
             degreeV: int = 3,
-            weights: Sequence[float] = [],
-            knotsU: Sequence[float] = [],
-            knotsV: Sequence[float] = [],
-            multiplicitiesU: Sequence[int] = [],
-            multiplicitiesV: Sequence[int] = [],
-            wireTags: Sequence[int] = [],
+            weights: Sequence[float] = (),
+            knotsU: Sequence[float] = (),
+            knotsV: Sequence[float] = (),
+            multiplicitiesU: Sequence[int] = (),
+            multiplicitiesV: Sequence[int] = (),
+            wireTags: Sequence[int] = (),
             wire3D: bool = False,
         ) -> int:
             """gmsh.model.occ.addBSplineSurface(pointTags, numPointsU, tag=-1, degreeU=3, degreeV=3, weights=[], knotsU=[], knotsV=[], multiplicitiesU=[], multiplicitiesV=[], wireTags=[], wire3D=False)
@@ -8509,7 +8509,7 @@ class model:
             numPointsU: int,
             *,
             tag: int = -1,
-            wireTags: Sequence[int] = [],
+            wireTags: Sequence[int] = (),
             wire3D: bool = False,
         ) -> int:
             """gmsh.model.occ.addBezierSurface(pointTags, numPointsU, tag=-1, wireTags=[], wire3D=False)
@@ -8554,7 +8554,7 @@ class model:
         def addTrimmedSurface(
             surfaceTag: int,
             *,
-            wireTags: Sequence[int] = [],
+            wireTags: Sequence[int] = (),
             wire3D: bool = False,
             tag: int = -1,
         ) -> int:
@@ -9075,8 +9075,8 @@ class model:
             dy: float,
             dz: float,
             *,
-            numElements: Sequence[int] = [],
-            heights: Sequence[float] = [],
+            numElements: Sequence[int] = (),
+            heights: Sequence[float] = (),
             recombine: bool = False,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.extrude(dimTags, dx, dy, dz, numElements=[], heights=[], recombine=False)
@@ -9137,8 +9137,8 @@ class model:
             az: float,
             angle: float,
             *,
-            numElements: Sequence[int] = [],
-            heights: Sequence[float] = [],
+            numElements: Sequence[int] = (),
+            heights: Sequence[float] = (),
             recombine: bool = False,
         ) -> list[tuple[int, int]]:
             """gmsh.model.occ.revolve(dimTags, x, y, z, ax, ay, az, angle, numElements=[], heights=[], recombine=False)
@@ -11046,7 +11046,7 @@ class view:
         coord: Sequence[float],
         data: Sequence[str],
         *,
-        style: Sequence[str] = [],
+        style: Sequence[str] = (),
     ) -> None:
         """gmsh.view.addListDataString(tag, coord, data, style=[])
 
@@ -11147,8 +11147,8 @@ class view:
         exp: Sequence[float],
         *,
         dGeo: int = 0,
-        coefGeo: Sequence[float] = [],
-        expGeo: Sequence[float] = [],
+        coefGeo: Sequence[float] = (),
+        expGeo: Sequence[float] = (),
     ) -> None:
         """gmsh.view.setInterpolationMatrices(tag, type, d, coef, exp, dGeo=0, coefGeo=[], expGeo=[])
 
@@ -11265,9 +11265,9 @@ class view:
         numComp: int = -1,
         gradient: bool = False,
         distanceMax: float = 0.0,
-        xElemCoord: Sequence[float] = [],
-        yElemCoord: Sequence[float] = [],
-        zElemCoord: Sequence[float] = [],
+        xElemCoord: Sequence[float] = (),
+        yElemCoord: Sequence[float] = (),
+        zElemCoord: Sequence[float] = (),
         dim: int = -1,
     ) -> tuple[list[float], float]:
         """gmsh.view.probe(tag, x, y, z, step=-1, numComp=-1, gradient=False, distanceMax=0., xElemCoord=[], yElemCoord=[], zElemCoord=[], dim=-1)
