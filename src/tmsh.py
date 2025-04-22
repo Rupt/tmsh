@@ -353,7 +353,7 @@ def _ovectorpair(
     return v
 
 
-def _ovectorint(ptr, size: int):
+def _ovectorint(ptr: ctypes._Pointer[ctypes.c_int], size: int):
     if size == 0:
         gmsh.lib.gmshFree(ptr)
         return numpy.ndarray((0,), numpy.int32)
@@ -8219,7 +8219,10 @@ class model:
 
         @staticmethod
         def addBezierFilling(
-            wireTag: int, *, tag: int = -1, type: str = "" # noqa: A002
+            wireTag: int,
+            *,
+            tag: int = -1,
+            type: str = "",  # noqa: A002
         ) -> int:
             """gmsh.model.occ.addBezierFilling(wireTag, tag=-1, type="")
 
