@@ -345,7 +345,9 @@ def _ostring(s: ctypes.c_char_p) -> str:
     return sp
 
 
-def _ovectorpair(ptr, size: int):
+def _ovectorpair(
+    ptr: ctypes._Pointer[ctypes.c_int], size: int
+) -> list[tuple[int, int]]:
     v = [(ptr[i * 2], ptr[i * 2 + 1]) for i in range(size // 2)]
     gmsh.lib.gmshFree(ptr)
     return v
@@ -8182,8 +8184,11 @@ class model:
 
         @staticmethod
         def addBSplineFilling(
-            wireTag: int, *, tag: int = -1, type: str = ""
-        ) -> int:  # noqa: A002
+            wireTag: int,
+            *,
+            tag: int = -1,
+            type: str = "",  # noqa: A002
+        ) -> int:
             """gmsh.model.occ.addBSplineFilling(wireTag, tag=-1, type="")
 
             Add a BSpline surface in the OpenCASCADE CAD representation, filling the
@@ -8214,8 +8219,8 @@ class model:
 
         @staticmethod
         def addBezierFilling(
-            wireTag: int, *, tag: int = -1, type: str = ""
-        ) -> int:  # noqa: A002
+            wireTag: int, *, tag: int = -1, type: str = "" # noqa: A002
+        ) -> int:
             """gmsh.model.occ.addBezierFilling(wireTag, tag=-1, type="")
 
             Add a Bezier surface in the OpenCASCADE CAD representation, filling the
