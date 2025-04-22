@@ -1,6 +1,6 @@
 [project]
 name = "tmsh"
-version = "0.0.3"
+version = "0.0.4"
 description = "Type-annotated and linted Python interface for Gmsh"
 readme = "README.md"
 requires-python = ">=3.12"
