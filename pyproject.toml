@@ -131,6 +131,6 @@ useLibraryCodeForTypes = false
 reportUnnecessaryTypeIgnoreComment = true
 
 [tool.mypy]
-files = ["src/*.py", "tests/*.py"]
+files = ["src/**/*.py", "tests/**/*.py"]
 disable_error_code = "import-untyped"
 color_output = false
