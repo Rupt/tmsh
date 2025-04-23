@@ -6188,7 +6188,7 @@ class model:
 
         @staticmethod
         def addPoint(
-            x: float, y: float, z: float, meshSize: float = 0.0, tag: int = -1
+            x: float, y: float, z: float, *, meshSize: float = 0.0, tag: int = -1
         ) -> int:
             """gmsh.model.geo.addPoint(x, y, z, meshSize=0., tag=-1)
 
@@ -6222,7 +6222,7 @@ class model:
             return api_result_
 
         @staticmethod
-        def addLine(startTag: int, endTag: int, tag: int = -1) -> int:
+        def addLine(startTag: int, endTag: int, *, tag: int = -1) -> int:
             """gmsh.model.geo.addLine(startTag, endTag, tag=-1)
 
             Add a straight line segment in the built-in CAD representation, between the
@@ -6253,6 +6253,7 @@ class model:
             startTag: int,
             centerTag: int,
             endTag: int,
+            *,
             tag: int = -1,
             nx: float = 0.0,
             ny: float = 0.0,
@@ -6453,7 +6454,7 @@ class model:
 
         @staticmethod
         def addCompoundSpline(
-            curveTags: Sequence[int], numIntervals: int = 5, tag: int = -1
+            curveTags: Sequence[int], *, numIntervals: int = 5, tag: int = -1
         ) -> int:
             """gmsh.model.geo.addCompoundSpline(curveTags, numIntervals=5, tag=-1)
 
@@ -6485,7 +6486,7 @@ class model:
 
         @staticmethod
         def addCompoundBSpline(
-            curveTags: Sequence[int], numIntervals: int = 20, tag: int = -1
+            curveTags: Sequence[int], *, numIntervals: int = 20, tag: int = -1
         ) -> int:
             """gmsh.model.geo.addCompoundBSpline(curveTags, numIntervals=20, tag=-1)
 
@@ -6517,7 +6518,7 @@ class model:
 
         @staticmethod
         def addCurveLoop(
-            curveTags: Sequence[int], tag: int = -1, *, reorient: bool = False
+            curveTags: Sequence[int], *, tag: int = -1, reorient: bool = False
         ) -> int:
             """gmsh.model.geo.addCurveLoop(curveTags, tag=-1, reorient=False)
 
@@ -6578,7 +6579,7 @@ class model:
             return _ovectorint(api_tags_, api_tags_n_.value)
 
         @staticmethod
-        def addPlaneSurface(wireTags: Sequence[int], tag: int = -1) -> int:
+        def addPlaneSurface(wireTags: Sequence[int], *, tag: int = -1) -> int:
             """gmsh.model.geo.addPlaneSurface(wireTags, tag=-1)
 
             Add a plane surface in the built-in CAD representation, defined by one or
@@ -6995,9 +6996,9 @@ class model:
         @staticmethod
         def extrudeBoundaryLayer(
             dimTags: Sequence[tuple[int, int]],
-            *,
-            numElements: Sequence[int] = [1],
+            numElements: Sequence[int] = (1,),
             heights: Sequence[float] = (),
+            *,
             recombine: bool = False,
             second: bool = False,
             viewIndex: int = -1,
@@ -7374,7 +7375,7 @@ class model:
 
         @staticmethod
         def addPhysicalGroup(
-            dim: int, tags: Sequence[int], tag: int = -1, name: str = ""
+            dim: int, tags: Sequence[int], *, tag: int = -1, name: str = ""
         ) -> int:
             """gmsh.model.geo.addPhysicalGroup(dim, tags, tag=-1, name="")
 
