@@ -2,38 +2,36 @@ from __future__ import annotations
 
 import unittest
 
+import tests
 import tmsh
 
 
 class Model(unittest.TestCase):
+    @tests.initialized()
     def test_add(self) -> None:
-        tmsh.initialize()
         name = "a"
         assert name not in tmsh.model.list()
         tmsh.model.add(name)
         self.assertIn(name, tmsh.model.list())
-        tmsh.finalize()
 
+    @tests.initialized()
     def test_remove(self) -> None:
-        tmsh.initialize()
         name = "b"
         tmsh.model.add(name)
         assert tmsh.model.getCurrent() == name
         tmsh.model.remove()
         self.assertNotEqual(tmsh.model.getCurrent(), name)
         self.assertNotIn(name, tmsh.model.list())
-        tmsh.finalize()
 
+    @tests.initialized()
     def test_list(self) -> None:
-        tmsh.initialize()
         self.assertEqual(tmsh.model.list(), [""])
         name = "1"
         tmsh.model.add(name)
         self.assertEqual(set(tmsh.model.list()), {"", name})
-        tmsh.finalize()
 
+    @tests.initialized()
     def test_current(self) -> None:
-        tmsh.initialize()
         one = "I"
         two = "II"
         tmsh.model.add(one)
@@ -42,17 +40,15 @@ class Model(unittest.TestCase):
         self.assertEqual(tmsh.model.getCurrent(), one)
         tmsh.model.setCurrent(two)
         self.assertEqual(tmsh.model.getCurrent(), two)
-        tmsh.finalize()
 
+    @tests.initialized()
     def test_filename(self) -> None:
-        tmsh.initialize()
         name = "abc"
         tmsh.model.setFileName(name)
         self.assertEqual(tmsh.model.getFileName(), name)
-        tmsh.finalize()
 
+    @tests.initialized()
     def test_entities(self) -> None:
-        tmsh.initialize()
         self.assertEqual(tmsh.model.getEntities(), [])
 
         a = tmsh.model.geo.addPoint(0.0, 0.0, 0.0)
@@ -100,5 +96,3 @@ class Model(unittest.TestCase):
         self.assertEqual(
             set(tmsh.model.getEntities(dim=-1)), {*e0, *e1, *e2, *e3}
         )
-
-        tmsh.finalize()
