@@ -337,7 +337,7 @@ if TYPE_CHECKING:
     )
 
 
-def _ostring(s: ctypes.c_char_p) -> str:
+def _ostring(s: c_char_p) -> str:
     if s.value is None:
         msg = "null pointer"
         raise RuntimeError(msg)
