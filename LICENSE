@@ -1,10 +1,10 @@
 tmsh is provided under the terms of the Gmsh License, given below, because
-the file 'src/tmsh.py' is derived from Gmsh; the Gmsh License comprises the
-GNU General Public License, version 2 or later, with a stated exception.
+the file 'src/tmsh/__init__.py' derives from Gmsh; the Gmsh License comprises
+the GNU General Public License Version 2, with a stated exception.
 
-Subsets of tmsh distributed without `src/tmsh.py` are not derived from Gmsh,
-and are available under the terms of the MIT License, given below, as
-permitted by the Gmsh License.
+Subsets of tmsh without `src/tmsh/__init__.py` are not derived from Gmsh, and
+are available for distribution under the terms of the MIT License, given below,
+as permitted by the Gmsh License.
 
 Gmsh License
 
