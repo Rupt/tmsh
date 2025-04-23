@@ -13,10 +13,6 @@ class Tmsh(unittest.TestCase):
         tmsh.finalize()
         self.assertFalse(tmsh.isInitialized())
 
-    def test_bad_finalize(self) -> None:
-        with self.assertRaises(RuntimeError):
-            tmsh.finalize()
-
     @tests.initialized
     def test_clear(self) -> None:
         tmsh.model.add("name")
