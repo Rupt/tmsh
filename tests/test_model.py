@@ -7,14 +7,14 @@ import tmsh
 
 
 class Model(unittest.TestCase):
-    @tests.initialized()
+    @tests.initialized
     def test_add(self) -> None:
         name = "a"
         assert name not in tmsh.model.list()
         tmsh.model.add(name)
         self.assertIn(name, tmsh.model.list())
 
-    @tests.initialized()
+    @tests.initialized
     def test_remove(self) -> None:
         name = "b"
         tmsh.model.add(name)
@@ -23,14 +23,14 @@ class Model(unittest.TestCase):
         self.assertNotEqual(tmsh.model.getCurrent(), name)
         self.assertNotIn(name, tmsh.model.list())
 
-    @tests.initialized()
+    @tests.initialized
     def test_list(self) -> None:
         self.assertEqual(tmsh.model.list(), [""])
         name = "1"
         tmsh.model.add(name)
         self.assertEqual(set(tmsh.model.list()), {"", name})
 
-    @tests.initialized()
+    @tests.initialized
     def test_current(self) -> None:
         one = "I"
         two = "II"
@@ -41,13 +41,13 @@ class Model(unittest.TestCase):
         tmsh.model.setCurrent(two)
         self.assertEqual(tmsh.model.getCurrent(), two)
 
-    @tests.initialized()
+    @tests.initialized
     def test_filename(self) -> None:
         name = "abc"
         tmsh.model.setFileName(name)
         self.assertEqual(tmsh.model.getFileName(), name)
 
-    @tests.initialized()
+    @tests.initialized
     def test_entities(self) -> None:
         self.assertEqual(tmsh.model.getEntities(), [])
 

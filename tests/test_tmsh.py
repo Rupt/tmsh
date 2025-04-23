@@ -17,7 +17,7 @@ class Tmsh(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             tmsh.finalize()
 
-    @tests.initialized()
+    @tests.initialized
     def test_clear(self) -> None:
         tmsh.model.add("name")
         tmsh.option.setNumber("General.Verbosity", 3)
