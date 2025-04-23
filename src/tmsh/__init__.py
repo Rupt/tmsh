@@ -830,11 +830,11 @@ class model:
     def getEntities(dim: int = -1) -> builtins.list[tuple[int, int]]:
         """Return the (dim, tag) pairs of all entities in the current model.
 
-        A model entity is represented by two integers: its dimension
-        (dim == 0, 1, 2 or 3) and its tag (its unique, strictly positive
-        identifier). If `dim' is >= 0, return only the entities of the
-        specified dimension (e.g. points if `dim' == 0). The entities are
-        returned as a collection of (dim, tag) pairs.
+        A model entity is represented by two integers: its dimension (dim == 0,
+        1, 2 or 3) and its tag (its unique, strictly positive identifier). If
+        'dim' is >= 0, return only the entities of the specified dimension
+        (e.g. points if 'dim' == 0). The entities are returned as a collection
+        of (dim, tag) pairs.
         """
         api_dimTags_ = ctypes.POINTER(ctypes.c_int)()
         api_dimTags_n_ = ctypes.c_size_t()
@@ -851,7 +851,7 @@ class model:
 
     @staticmethod
     def setEntityName(dim: int, tag: int, name: str) -> None:
-        """Set the name of the entity of dimension `dim' and tag `tag'."""
+        """Set the name of the entity of dimension 'dim' and tag 'tag'."""
         ierr = ctypes.c_int()
         gmsh.lib.gmshModelSetEntityName(
             ctypes.c_int(dim),
