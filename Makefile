@@ -3,7 +3,8 @@
 .venv/.tombstone:
 	python3.12 -m venv .venv
 	.venv/bin/pip install --upgrade 'pip >=25.0.1'
-	.venv/bin/pip install --upgrade . -r requirements.txt
+	.venv/bin/pip install --upgrade --editable .
+	.venv/bin/pip install --upgrade --requirement requirements.txt
 	touch $@
 
 .PHONY: test
