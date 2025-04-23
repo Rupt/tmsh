@@ -1,9 +1,9 @@
-# This file is adapted from the Gmsh license, which comprises the GNU General
-# Public License with custom exceptions, as specified below.
+# This file is adapted from Gmsh under the Gmsh License, which comprises the
+# GNU General Public License with a custom exception, as stated below.
 #
 # This file has been changed from the Gmsh original as of 2025-04-21.
 #
-# The Gmsh license:
+# Gmsh License
 #
 # Gmsh - Copyright (C) 1997-2024 C. Geuzaine, J.-F. Remacle
 #
