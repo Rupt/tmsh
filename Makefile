@@ -30,7 +30,7 @@ upgrade: .venv/.tombstone
 		'coverage >=7.8.0' \
 		'mypy >=1.15.0' \
 		'pyright >=1.1.400' \
-		'ruff >=0.11.6' \
+		'ruff >=0.11.7' \
 		'setuptools >=79.0.0' \
 		'twine >=6.1.0'
 	.venv/bin/pip freeze | grep -v tmsh > requirements.txt
