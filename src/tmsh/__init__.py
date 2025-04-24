@@ -355,20 +355,18 @@ def initialize(
     sets the options "General.AbortOnError" to 2 and "General.Terminal" to 1.
     """
     api_argc_, api_argv_ = _iargcargv(argv)
-    ierr = ctypes.c_int()
-    gmsh.lib.gmshInitialize(
-        api_argc_,
-        api_argv_,
-        ctypes.c_int(bool(readConfigFiles)),
-        ctypes.c_int(bool(run)),
-        ctypes.byref(ierr),
-    )
-    if interruptible:
-        gmsh.prev_interrupt_handler = signal.signal(
-            signal.SIGINT, signal.SIG_DFL
+    with _ErrorCode() as ierr:
+        gmsh.lib.gmshInitialize(
+            api_argc_,
+            api_argv_,
+            ctypes.c_int(bool(readConfigFiles)),
+            ctypes.c_int(bool(run)),
+            ctypes.byref(ierr),
         )
-    if ierr.value != 0:
-        raise RuntimeError(logger.getLastError())
+        if interruptible:
+            gmsh.prev_interrupt_handler = signal.signal(
+                signal.SIGINT, signal.SIG_DFL
+            )
 
 
 def isInitialized() -> int:
@@ -382,12 +380,10 @@ def finalize() -> None:
 
     This must be called when you are done using the Gmsh API.
     """
-    ierr = ctypes.c_int()
-    gmsh.lib.gmshFinalize(ctypes.byref(ierr))
-    if gmsh.prev_interrupt_handler is not None:
-        signal.signal(signal.SIGINT, gmsh.prev_interrupt_handler)
-    if ierr.value != 0:
-        raise RuntimeError(logger.getLastError())
+    with _ErrorCode() as ierr:
+        gmsh.lib.gmshFinalize(ctypes.byref(ierr))
+        if gmsh.prev_interrupt_handler is not None:
+            signal.signal(signal.SIGINT, gmsh.prev_interrupt_handler)
 
 
 def open(fileName: str) -> None:  # noqa: A001
@@ -397,10 +393,10 @@ def open(fileName: str) -> None:  # noqa: A001
     depends on its extension and/or its contents: opening a file with model
     data will create a new model.
     """
-    ierr = ctypes.c_int()
-    gmsh.lib.gmshOpen(ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr))
-    if ierr.value != 0:
-        raise RuntimeError(logger.getLastError())
+    with _ErrorCode() as ierr:
+        gmsh.lib.gmshOpen(
+            ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr)
+        )
 
 
 def merge(fileName: str) -> None:
@@ -411,10 +407,10 @@ def merge(fileName: str) -> None:
     Handling of the file depends on its extension and/or its contents. Merging
     a file with model data will add the data to the current model.
     """
-    ierr = ctypes.c_int()
-    gmsh.lib.gmshMerge(ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr))
-    if ierr.value != 0:
-        raise RuntimeError(logger.getLastError())
+    with _ErrorCode() as ierr:
+        gmsh.lib.gmshMerge(
+            ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr)
+        )
 
 
 def write(fileName: str) -> None:
@@ -422,10 +418,10 @@ def write(fileName: str) -> None:
 
     The export format is determined by the file extension.
     """
-    ierr = ctypes.c_int()
-    gmsh.lib.gmshWrite(ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr))
-    if ierr.value != 0:
-        raise RuntimeError(logger.getLastError())
+    with _ErrorCode() as ierr:
+        gmsh.lib.gmshWrite(
+            ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr)
+        )
 
 
 def clear() -> None:
@@ -433,10 +429,8 @@ def clear() -> None:
 
     Clear all loaded models and post-processing data, and add a new empty model.
     """
-    ierr = ctypes.c_int()
-    gmsh.lib.gmshClear(ctypes.byref(ierr))
-    if ierr.value != 0:
-        raise RuntimeError(logger.getLastError())
+    with _ErrorCode() as ierr:
+        gmsh.lib.gmshClear(ctypes.byref(ierr))
 
 
 class option:
@@ -451,14 +445,12 @@ class option:
         chapter of the Gmsh reference manual
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
         """
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshOptionSetNumber(
-            ctypes.c_char_p(name.encode()),
-            ctypes.c_double(value),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshOptionSetNumber(
+                ctypes.c_char_p(name.encode()),
+                ctypes.c_double(value),
+                ctypes.byref(ierr),
+            )
 
     @staticmethod
     def getNumber(name: str) -> float:
@@ -470,14 +462,12 @@ class option:
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
         """
         api_value_ = ctypes.c_double()
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshOptionGetNumber(
-            ctypes.c_char_p(name.encode()),
-            ctypes.byref(api_value_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshOptionGetNumber(
+                ctypes.c_char_p(name.encode()),
+                ctypes.byref(api_value_),
+                ctypes.byref(ierr),
+            )
         return api_value_.value
 
     @staticmethod
@@ -489,14 +479,12 @@ class option:
         chapter of the Gmsh reference manual
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
         """
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshOptionSetString(
-            ctypes.c_char_p(name.encode()),
-            ctypes.c_char_p(value.encode()),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshOptionSetString(
+                ctypes.c_char_p(name.encode()),
+                ctypes.c_char_p(value.encode()),
+                ctypes.byref(ierr),
+            )
 
     @staticmethod
     def getString(name: str) -> str:
@@ -508,14 +496,12 @@ class option:
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
         """
         api_value_ = ctypes.c_char_p()
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshOptionGetString(
-            ctypes.c_char_p(name.encode()),
-            ctypes.byref(api_value_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshOptionGetString(
+                ctypes.c_char_p(name.encode()),
+                ctypes.byref(api_value_),
+                ctypes.byref(ierr),
+            )
         return _ostring(api_value_)
 
     @staticmethod
@@ -529,17 +515,15 @@ class option:
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
         For conciseness, "Color." can be omitted in `name`.
         """
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshOptionSetColor(
-            ctypes.c_char_p(name.encode()),
-            ctypes.c_int(r),
-            ctypes.c_int(g),
-            ctypes.c_int(b),
-            ctypes.c_int(a),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshOptionSetColor(
+                ctypes.c_char_p(name.encode()),
+                ctypes.c_int(r),
+                ctypes.c_int(g),
+                ctypes.c_int(b),
+                ctypes.c_int(a),
+                ctypes.byref(ierr),
+            )
 
     @staticmethod
     def getColor(name: str) -> tuple[int, int, int, int]:
@@ -555,26 +539,22 @@ class option:
         api_g_ = ctypes.c_int()
         api_b_ = ctypes.c_int()
         api_a_ = ctypes.c_int()
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshOptionGetColor(
-            ctypes.c_char_p(name.encode()),
-            ctypes.byref(api_r_),
-            ctypes.byref(api_g_),
-            ctypes.byref(api_b_),
-            ctypes.byref(api_a_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshOptionGetColor(
+                ctypes.c_char_p(name.encode()),
+                ctypes.byref(api_r_),
+                ctypes.byref(api_g_),
+                ctypes.byref(api_b_),
+                ctypes.byref(api_a_),
+                ctypes.byref(ierr),
+            )
         return (api_r_.value, api_g_.value, api_b_.value, api_a_.value)
 
     @staticmethod
     def restoreDefaults() -> None:
         """Restore all options to default settings."""
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshOptionRestoreDefaults(ctypes.byref(ierr))
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshOptionRestoreDefaults(ctypes.byref(ierr))
 
 
 class model:
@@ -583,20 +563,16 @@ class model:
     @staticmethod
     def add(name: str) -> None:
         """Add a new model with name `name` and set it as the current model."""
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelAdd(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelAdd(
+                ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            )
 
     @staticmethod
     def remove() -> None:
         """Remove the current model."""
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelRemove(ctypes.byref(ierr))
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelRemove(ctypes.byref(ierr))
 
     @staticmethod
     def list() -> builtins.list[str]:
@@ -605,26 +581,22 @@ class model:
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelList(
-            ctypes.byref(api_names_),
-            ctypes.byref(api_names_n_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelList(
+                ctypes.byref(api_names_),
+                ctypes.byref(api_names_n_),
+                ctypes.byref(ierr),
+            )
         return _ovectorstring(api_names_, api_names_n_.value)
 
     @staticmethod
     def getCurrent() -> str:
         """Return the name of the current model."""
         api_name_ = ctypes.c_char_p()
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetCurrent(
-            ctypes.byref(api_name_), ctypes.byref(ierr)
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetCurrent(
+                ctypes.byref(api_name_), ctypes.byref(ierr)
+            )
         return _ostring(api_name_)
 
     @staticmethod
@@ -634,12 +606,10 @@ class model:
         If several models have the same name, select the one that was added
         first.
         """
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelSetCurrent(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelSetCurrent(
+                ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            )
 
     @staticmethod
     def getFileName() -> str:
@@ -648,23 +618,19 @@ class model:
         A file name is associated when a model is read from a file on disk.
         """
         api_fileName_ = ctypes.c_char_p()
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetFileName(
-            ctypes.byref(api_fileName_), ctypes.byref(ierr)
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetFileName(
+                ctypes.byref(api_fileName_), ctypes.byref(ierr)
+            )
         return _ostring(api_fileName_)
 
     @staticmethod
     def setFileName(fileName: str) -> None:
         """Set the file name associated with the current model."""
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelSetFileName(
-            ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr)
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelSetFileName(
+                ctypes.c_char_p(fileName.encode()), ctypes.byref(ierr)
+            )
 
     @staticmethod
     def getEntities(dim: int = -1) -> builtins.list[tuple[int, int]]:
@@ -678,15 +644,13 @@ class model:
         """
         api_dimTags_ = ctypes.POINTER(ctypes.c_int)()
         api_dimTags_n_ = ctypes.c_size_t()
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetEntities(
-            ctypes.byref(api_dimTags_),
-            ctypes.byref(api_dimTags_n_),
-            ctypes.c_int(dim),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetEntities(
+                ctypes.byref(api_dimTags_),
+                ctypes.byref(api_dimTags_n_),
+                ctypes.c_int(dim),
+                ctypes.byref(ierr),
+            )
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
