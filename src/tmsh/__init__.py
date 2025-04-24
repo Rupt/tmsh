@@ -1296,7 +1296,6 @@ class model:
                 ctypes.byref(api_coord_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectordouble(api_coord_, api_coord_n_.value)
 
     @staticmethod
@@ -1340,7 +1339,6 @@ class model:
                 ctypes.byref(api_derivatives_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectordouble(api_derivatives_, api_derivatives_n_.value)
 
     @staticmethod
@@ -1386,7 +1384,6 @@ class model:
                 ctypes.byref(api_derivatives_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectordouble(api_derivatives_, api_derivatives_n_.value)
 
     @staticmethod
@@ -1426,7 +1423,6 @@ class model:
                 ctypes.byref(api_curvatures_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectordouble(api_curvatures_, api_curvatures_n_.value)
 
     @staticmethod
@@ -1489,7 +1485,6 @@ class model:
                 ctypes.byref(api_directionMin_n_),
                 ctypes.byref(ierr),
             )
-
         return (
             _ovectordouble(api_curvatureMax_, api_curvatureMax_n_.value),
             _ovectordouble(api_curvatureMin_, api_curvatureMin_n_.value),
@@ -1531,7 +1526,6 @@ class model:
                 ctypes.byref(api_normals_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectordouble(api_normals_, api_normals_n_.value)
 
     @staticmethod
@@ -1570,7 +1564,6 @@ class model:
                 ctypes.byref(api_parametricCoord_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectordouble(
             api_parametricCoord_, api_parametricCoord_n_.value
         )
@@ -1610,7 +1603,6 @@ class model:
                 ctypes.byref(api_max_n_),
                 ctypes.byref(ierr),
             )
-
         return (
             _ovectordouble(api_min_, api_min_n_.value),
             _ovectordouble(api_max_, api_max_n_.value),
@@ -1690,7 +1682,6 @@ class model:
                 ctypes.byref(api_parametricCoord_n_),
                 ctypes.byref(ierr),
             )
-
         return (
             _ovectordouble(api_closestCoord_, api_closestCoord_n_.value),
             _ovectordouble(api_parametricCoord_, api_parametricCoord_n_.value),
@@ -1743,7 +1734,6 @@ class model:
                 ctypes.c_int(which),
                 ctypes.byref(ierr),
             )
-
         return _ovectordouble(
             api_surfaceParametricCoord_, api_surfaceParametricCoord_n_.value
         )
@@ -1797,7 +1787,6 @@ class model:
                 ctypes.byref(api_value_),
                 ctypes.byref(ierr),
             )
-
         return api_value_.value
 
     @staticmethod
@@ -1888,7 +1877,6 @@ class model:
                 ctypes.byref(api_a_),
                 ctypes.byref(ierr),
             )
-
         return (api_r_.value, api_g_.value, api_b_.value, api_a_.value)
 
     @staticmethod
@@ -1954,7 +1942,6 @@ class model:
                 ctypes.byref(api_values_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectorstring(api_values_, api_values_n_.value)
 
     @staticmethod
@@ -1978,7 +1965,6 @@ class model:
                 ctypes.byref(api_names_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectorstring(api_names_, api_names_n_.value)
 
     @staticmethod
@@ -10014,7 +10000,6 @@ class view:
                 ctypes.byref(api_tags_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectorint(api_tags_, api_tags_n_.value)
 
     @staticmethod
@@ -10173,7 +10158,6 @@ class view:
                 ctypes.byref(api_numComponents_),
                 ctypes.byref(ierr),
             )
-
         return (
             _ostring(api_dataType_),
             _ovectorsize(api_tags_, api_tags_n_.value),
@@ -10228,7 +10212,6 @@ class view:
                 ctypes.byref(api_numComponents_),
                 ctypes.byref(ierr),
             )
-
         return (
             _ostring(api_dataType_),
             _ovectorsize(api_tags_, api_tags_n_.value),
@@ -10317,7 +10300,6 @@ class view:
                 ctypes.c_int(bool(returnAdaptive)),
                 ctypes.byref(ierr),
             )
-
         return (
             _ovectorstring(api_dataType_, api_dataType_n_.value),
             _ovectorint(api_numElements_, api_numElements_n_.value),
@@ -10412,7 +10394,6 @@ class view:
                 ctypes.byref(api_style_n_),
                 ctypes.byref(ierr),
             )
-
         return (
             _ovectordouble(api_coord_, api_coord_n_.value),
             _ovectorstring(api_data_, api_data_n_.value),
@@ -10608,7 +10589,6 @@ class view:
                 ctypes.c_int(dim),
                 ctypes.byref(ierr),
             )
-
         return (
             _ovectordouble(api_values_, api_values_n_.value),
             api_distance_.value,
@@ -11037,7 +11017,6 @@ class fltk:
                 ctypes.c_int(dim),
                 ctypes.byref(ierr),
             )
-
         return (api_result_, _ovectorpair(api_dimTags_, api_dimTags_n_.value))
 
     @staticmethod
@@ -11061,7 +11040,6 @@ class fltk:
                 ctypes.byref(api_elementTags_n_),
                 ctypes.byref(ierr),
             )
-
         return (
             api_result_,
             _ovectorsize(api_elementTags_, api_elementTags_n_.value),
@@ -11088,7 +11066,6 @@ class fltk:
                 ctypes.byref(api_viewTags_n_),
                 ctypes.byref(ierr),
             )
-
         return (api_result_, _ovectorint(api_viewTags_, api_viewTags_n_.value))
 
     @staticmethod
@@ -11215,7 +11192,6 @@ class parser:
                 ctypes.c_char_p(search.encode()),
                 ctypes.byref(ierr),
             )
-
         return _ovectorstring(api_names_, api_names_n_.value)
 
     @staticmethod
@@ -11282,7 +11258,6 @@ class parser:
                 ctypes.byref(api_value_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectordouble(api_value_, api_value_n_.value)
 
     @staticmethod
@@ -11309,7 +11284,6 @@ class parser:
                 ctypes.byref(api_value_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectorstring(api_value_, api_value_n_.value)
 
     @staticmethod
@@ -11384,7 +11358,6 @@ class onelab:
                 ctypes.c_char_p(format.encode()),
                 ctypes.byref(ierr),
             )
-
         return _ostring(api_data_)
 
     @staticmethod
@@ -11411,7 +11384,6 @@ class onelab:
                 ctypes.c_char_p(search.encode()),
                 ctypes.byref(ierr),
             )
-
         return _ovectorstring(api_names_, api_names_n_.value)
 
     @staticmethod
@@ -11480,7 +11452,6 @@ class onelab:
                 ctypes.byref(api_value_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectordouble(api_value_, api_value_n_.value)
 
     @staticmethod
@@ -11507,7 +11478,6 @@ class onelab:
                 ctypes.byref(api_value_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectorstring(api_value_, api_value_n_.value)
 
     @staticmethod
