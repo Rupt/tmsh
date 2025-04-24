@@ -656,40 +656,34 @@ class model:
     @staticmethod
     def setEntityName(dim: int, tag: int, name: str) -> None:
         """Set the name of the entity of dimension 'dim' and tag 'tag'."""
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelSetEntityName(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            ctypes.c_char_p(name.encode()),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelSetEntityName(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                ctypes.c_char_p(name.encode()),
+                ctypes.byref(ierr),
+            )
 
     @staticmethod
     def getEntityName(dim: int, tag: int) -> str:
         """Return the name of the entity of dimension `dim` and tag `tag`."""
         api_name_ = ctypes.c_char_p()
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetEntityName(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            ctypes.byref(api_name_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetEntityName(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                ctypes.byref(api_name_),
+                ctypes.byref(ierr),
+            )
         return _ostring(api_name_)
 
     @staticmethod
     def removeEntityName(name: str) -> None:
         """Remove the entity name `name` from the current model."""
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelRemoveEntityName(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelRemoveEntityName(
+                ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            )
 
     @staticmethod
     def getPhysicalGroups(dim: int = -1) -> builtins.list[tuple[int, int]]:
@@ -709,15 +703,13 @@ class model:
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetPhysicalGroups(
-            ctypes.byref(api_dimTags_),
-            ctypes.byref(api_dimTags_n_),
-            ctypes.c_int(dim),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetPhysicalGroups(
+                ctypes.byref(api_dimTags_),
+                ctypes.byref(api_dimTags_n_),
+                ctypes.c_int(dim),
+                ctypes.byref(ierr),
+            )
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
@@ -738,16 +730,14 @@ class model:
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetEntitiesForPhysicalGroup(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            ctypes.byref(api_tags_),
-            ctypes.byref(api_tags_n_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetEntitiesForPhysicalGroup(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                ctypes.byref(api_tags_),
+                ctypes.byref(api_tags_n_),
+                ctypes.byref(ierr),
+            )
         return _ovectorint(api_tags_, api_tags_n_.value)
 
     @staticmethod
@@ -769,15 +759,13 @@ class model:
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetEntitiesForPhysicalName(
-            ctypes.c_char_p(name.encode()),
-            ctypes.byref(api_dimTags_),
-            ctypes.byref(api_dimTags_n_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetEntitiesForPhysicalName(
+                ctypes.c_char_p(name.encode()),
+                ctypes.byref(api_dimTags_),
+                ctypes.byref(api_dimTags_n_),
+                ctypes.byref(ierr),
+            )
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
@@ -798,16 +786,14 @@ class model:
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetPhysicalGroupsForEntity(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            ctypes.byref(api_physicalTags_),
-            ctypes.byref(api_physicalTags_n_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetPhysicalGroupsForEntity(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                ctypes.byref(api_physicalTags_),
+                ctypes.byref(api_physicalTags_n_),
+                ctypes.byref(ierr),
+            )
         return _ovectorint(api_physicalTags_, api_physicalTags_n_.value)
 
     @staticmethod
@@ -830,18 +816,15 @@ class model:
         - `name`: string
         """
         api_tags_, api_tags_n_ = _ivectorint(tags)
-        ierr = ctypes.c_int()
-        api_result_ = gmsh.lib.gmshModelAddPhysicalGroup(
-            ctypes.c_int(dim),
-            api_tags_,
-            api_tags_n_,
-            ctypes.c_int(tag),
-            ctypes.c_char_p(name.encode()),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
-        return api_result_
+        with _ErrorCode() as ierr:
+            return gmsh.lib.gmshModelAddPhysicalGroup(
+                ctypes.c_int(dim),
+                api_tags_,
+                api_tags_n_,
+                ctypes.c_int(tag),
+                ctypes.c_char_p(name.encode()),
+                ctypes.byref(ierr),
+            )
 
     @staticmethod
     def removePhysicalGroups(dimTags: Sequence[tuple[int, int]] = ()) -> None:
@@ -854,12 +837,10 @@ class model:
         - `dimTags`: vector of pairs of integers
         """
         api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelRemovePhysicalGroups(
-            api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelRemovePhysicalGroups(
+                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+            )
 
     @staticmethod
     def setPhysicalName(dim: int, tag: int, name: str) -> None:
@@ -872,15 +853,13 @@ class model:
         - `tag`: integer
         - `name`: string
         """
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelSetPhysicalName(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            ctypes.c_char_p(name.encode()),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelSetPhysicalName(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                ctypes.c_char_p(name.encode()),
+                ctypes.byref(ierr),
+            )
 
     @staticmethod
     def getPhysicalName(dim: int, tag: int) -> str:
@@ -896,15 +875,13 @@ class model:
         - `name`: string
         """
         api_name_ = ctypes.c_char_p()
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetPhysicalName(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            ctypes.byref(api_name_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetPhysicalName(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                ctypes.byref(api_name_),
+                ctypes.byref(ierr),
+            )
         return _ostring(api_name_)
 
     @staticmethod
@@ -916,12 +893,10 @@ class model:
         Types:
         - `name`: string
         """
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelRemovePhysicalName(
-            ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelRemovePhysicalName(
+                ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
+            )
 
     @staticmethod
     def setTag(dim: int, tag: int, newTag: int) -> None:
@@ -935,15 +910,13 @@ class model:
         - `tag`: integer
         - `newTag`: integer
         """
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelSetTag(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            ctypes.c_int(newTag),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelSetTag(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                ctypes.c_int(newTag),
+                ctypes.byref(ierr),
+            )
 
     @staticmethod
     def getBoundary(
@@ -977,19 +950,17 @@ class model:
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetBoundary(
-            api_dimTags_,
-            api_dimTags_n_,
-            ctypes.byref(api_outDimTags_),
-            ctypes.byref(api_outDimTags_n_),
-            ctypes.c_int(bool(combined)),
-            ctypes.c_int(bool(oriented)),
-            ctypes.c_int(bool(recursive)),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetBoundary(
+                api_dimTags_,
+                api_dimTags_n_,
+                ctypes.byref(api_outDimTags_),
+                ctypes.byref(api_outDimTags_n_),
+                ctypes.c_int(bool(combined)),
+                ctypes.c_int(bool(oriented)),
+                ctypes.c_int(bool(recursive)),
+                ctypes.byref(ierr),
+            )
         return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
 
     @staticmethod
@@ -1019,18 +990,16 @@ class model:
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetAdjacencies(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            ctypes.byref(api_upward_),
-            ctypes.byref(api_upward_n_),
-            ctypes.byref(api_downward_),
-            ctypes.byref(api_downward_n_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetAdjacencies(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                ctypes.byref(api_upward_),
+                ctypes.byref(api_upward_n_),
+                ctypes.byref(api_downward_),
+                ctypes.byref(api_downward_n_),
+                ctypes.byref(ierr),
+            )
         return (
             _ovectorint(api_upward_, api_upward_n_.value),
             _ovectorint(api_downward_, api_downward_n_.value),
@@ -1070,21 +1039,19 @@ class model:
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetEntitiesInBoundingBox(
-            ctypes.c_double(xmin),
-            ctypes.c_double(ymin),
-            ctypes.c_double(zmin),
-            ctypes.c_double(xmax),
-            ctypes.c_double(ymax),
-            ctypes.c_double(zmax),
-            ctypes.byref(api_dimTags_),
-            ctypes.byref(api_dimTags_n_),
-            ctypes.c_int(dim),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetEntitiesInBoundingBox(
+                ctypes.c_double(xmin),
+                ctypes.c_double(ymin),
+                ctypes.c_double(zmin),
+                ctypes.c_double(xmax),
+                ctypes.c_double(ymax),
+                ctypes.c_double(zmax),
+                ctypes.byref(api_dimTags_),
+                ctypes.byref(api_dimTags_n_),
+                ctypes.c_int(dim),
+                ctypes.byref(ierr),
+            )
         return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
 
     @staticmethod
@@ -1115,20 +1082,18 @@ class model:
         api_xmax_ = ctypes.c_double()
         api_ymax_ = ctypes.c_double()
         api_zmax_ = ctypes.c_double()
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetBoundingBox(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            ctypes.byref(api_xmin_),
-            ctypes.byref(api_ymin_),
-            ctypes.byref(api_zmin_),
-            ctypes.byref(api_xmax_),
-            ctypes.byref(api_ymax_),
-            ctypes.byref(api_zmax_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetBoundingBox(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                ctypes.byref(api_xmin_),
+                ctypes.byref(api_ymin_),
+                ctypes.byref(api_zmin_),
+                ctypes.byref(api_xmax_),
+                ctypes.byref(api_ymax_),
+                ctypes.byref(api_zmax_),
+                ctypes.byref(ierr),
+            )
         return (
             api_xmin_.value,
             api_ymin_.value,
@@ -1146,11 +1111,8 @@ class model:
 
         Return an integer.
         """
-        ierr = ctypes.c_int()
-        api_result_ = gmsh.lib.gmshModelGetDimension(ctypes.byref(ierr))
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
-        return api_result_
+        with _ErrorCode() as ierr:
+            return gmsh.lib.gmshModelGetDimension(ctypes.byref(ierr))
 
     @staticmethod
     def addDiscreteEntity(
@@ -1172,17 +1134,14 @@ class model:
         - `boundary`: vector of integers
         """
         api_boundary_, api_boundary_n_ = _ivectorint(boundary)
-        ierr = ctypes.c_int()
-        api_result_ = gmsh.lib.gmshModelAddDiscreteEntity(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            api_boundary_,
-            api_boundary_n_,
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
-        return api_result_
+        with _ErrorCode() as ierr:
+            return gmsh.lib.gmshModelAddDiscreteEntity(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                api_boundary_,
+                api_boundary_n_,
+                ctypes.byref(ierr),
+            )
 
     @staticmethod
     def removeEntities(
@@ -1200,15 +1159,13 @@ class model:
         - `recursive`: boolean
         """
         api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelRemoveEntities(
-            api_dimTags_,
-            api_dimTags_n_,
-            ctypes.c_int(bool(recursive)),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelRemoveEntities(
+                api_dimTags_,
+                api_dimTags_n_,
+                ctypes.c_int(bool(recursive)),
+                ctypes.byref(ierr),
+            )
 
     @staticmethod
     def getType(dim: int, tag: int) -> str:
@@ -1224,15 +1181,13 @@ class model:
         - `entityType`: string
         """
         api_entityType_ = ctypes.c_char_p()
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetType(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            ctypes.byref(api_entityType_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetType(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                ctypes.byref(api_entityType_),
+                ctypes.byref(ierr),
+            )
         return _ostring(api_entityType_)
 
     @staticmethod
@@ -1253,17 +1208,15 @@ class model:
         """
         api_parentDim_ = ctypes.c_int()
         api_parentTag_ = ctypes.c_int()
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetParent(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            ctypes.byref(api_parentDim_),
-            ctypes.byref(api_parentTag_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
-        return (api_parentDim_.value, api_parentTag_.value)
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetParent(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                ctypes.byref(api_parentDim_),
+                ctypes.byref(api_parentTag_),
+                ctypes.byref(ierr),
+            )
+        return api_parentDim_.value, api_parentTag_.value
 
     @staticmethod
     def getNumberOfPartitions() -> int:
@@ -1273,13 +1226,8 @@ class model:
 
         Return an integer.
         """
-        ierr = ctypes.c_int()
-        api_result_ = gmsh.lib.gmshModelGetNumberOfPartitions(
-            ctypes.byref(ierr)
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
-        return api_result_
+        with _ErrorCode() as ierr:
+            return gmsh.lib.gmshModelGetNumberOfPartitions(ctypes.byref(ierr))
 
     @staticmethod
     def getPartitions(dim: int, tag: int) -> builtins.list[int]:
@@ -1299,16 +1247,14 @@ class model:
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
-        ierr = ctypes.c_int()
-        gmsh.lib.gmshModelGetPartitions(
-            ctypes.c_int(dim),
-            ctypes.c_int(tag),
-            ctypes.byref(api_partitions_),
-            ctypes.byref(api_partitions_n_),
-            ctypes.byref(ierr),
-        )
-        if ierr.value != 0:
-            raise RuntimeError(logger.getLastError())
+        with _ErrorCode() as ierr:
+            gmsh.lib.gmshModelGetPartitions(
+                ctypes.c_int(dim),
+                ctypes.c_int(tag),
+                ctypes.byref(api_partitions_),
+                ctypes.byref(api_partitions_n_),
+                ctypes.byref(ierr),
+            )
         return _ovectorint(api_partitions_, api_partitions_n_.value)
 
     @staticmethod
