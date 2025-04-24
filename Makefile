@@ -29,7 +29,7 @@ upgrade: .venv/.tombstone
 		'build >=1.2.2.post1' \
 		'coverage >=7.8.0' \
 		'mypy >=1.15.0' \
-		'pyright >=1.1.399' \
+		'pyright >=1.1.400' \
 		'ruff >=0.11.6' \
 		'setuptools >=79.0.0' \
 		'twine >=6.1.0'
