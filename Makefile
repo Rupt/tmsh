@@ -7,6 +7,7 @@
 	.venv/bin/pip install --upgrade --requirement requirements.txt
 	touch $@
 
+# TODO: generate coverage on the actual source file
 .PHONY: test
 test: .venv/.tombstone
 	.venv/bin/coverage run -m unittest discover tests

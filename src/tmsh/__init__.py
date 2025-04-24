@@ -373,11 +373,8 @@ def initialize(
 
 def isInitialized() -> int:
     """Return 1 if the Gmsh API is initialized, and 0 if not."""
-    ierr = ctypes.c_int()
-    api_result_ = gmsh.lib.gmshIsInitialized(ctypes.byref(ierr))
-    if ierr.value != 0:
-        raise RuntimeError(logger.getLastError())
-    return api_result_
+    with _ErrorCode() as ierr:
+        return gmsh.lib.gmshIsInitialized(ctypes.byref(ierr))
 
 
 def finalize() -> None:
@@ -12549,3 +12546,16 @@ def _iargcargv(o: Sequence[str]) -> tuple[c_int, Array[c_char_p]]:
     argc = ctypes.c_int(len(o))
     argv = (ctypes.c_char_p * len(o))(*(s.encode() for s in o))
     return argc, argv
+
+
+class _ErrorCode:
+    def __init__(self) -> None:
+        self._error_code = ctypes.c_int()
+
+    def __enter__(self) -> c_int:
+        return self._error_code
+
+    def __exit__(self, *exc: object) -> None:
+        del exc  # unused
+        if self._error_code.value != 0:
+            raise RuntimeError(logger.getLastError())
