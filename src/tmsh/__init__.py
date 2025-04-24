@@ -687,22 +687,14 @@ class model:
 
     @staticmethod
     def getPhysicalGroups(dim: int = -1) -> builtins.list[tuple[int, int]]:
-        """gmsh.model.getPhysicalGroups(dim=-1)
+        """Return all the physical groups in the current model.
 
-        Get all the physical groups in the current model. If `dim` is >= 0, return
-        only the entities of the specified dimension (e.g. physical points if `dim`
-        == 0). The entities are returned as a vector of (dim, tag) pairs.
-
-        Return `dimTags`.
-
-        Types:
-        - `dimTags`: vector of pairs of integers
-        - `dim`: integer
+        If `dim` is >= 0, return only the entities of the specified dimension
+        (e.g. physical points if `dim` == 0). The entities are returned as a
+        list of (dim, tag) pairs.
         """
-        api_dimTags_, api_dimTags_n_ = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        api_dimTags_ = ctypes.POINTER(ctypes.c_int)()
+        api_dimTags_n_ = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetPhysicalGroups(
                 ctypes.byref(api_dimTags_),
@@ -714,22 +706,13 @@ class model:
 
     @staticmethod
     def getEntitiesForPhysicalGroup(dim: int, tag: int) -> builtins.list[int]:
-        """gmsh.model.getEntitiesForPhysicalGroup(dim, tag)
+        """Return tags of entities in the matching physical group.
 
-        Get the tags of the model entities making up the physical group of
-        dimension `dim` and tag `tag`.
-
-        Return `tags`.
-
-        Types:
-        - `dim`: integer
-        - `tag`: integer
-        - `tags`: vector of integers
+        This function selects the tags of the model entities making up the
+        physical group of dimension `dim` and tag `tag`.
         """
-        api_tags_, api_tags_n_ = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        api_tags_ = ctypes.POINTER(ctypes.c_int)()
+        api_tags_n_ = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetEntitiesForPhysicalGroup(
                 ctypes.c_int(dim),
