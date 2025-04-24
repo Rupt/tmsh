@@ -1638,7 +1638,7 @@ class model:
         """
         api_coord_, api_coord_n_ = _ivectordouble(coord)
         with _ErrorCode() as ierr:
-            api_result_ = gmsh.lib.gmshModelIsInside(
+            return gmsh.lib.gmshModelIsInside(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
                 api_coord_,
@@ -1646,8 +1646,6 @@ class model:
                 ctypes.c_int(bool(parametric)),
                 ctypes.byref(ierr),
             )
-
-        return api_result_
 
     @staticmethod
     def getClosestPoint(
@@ -2967,14 +2965,12 @@ class model:
             - `serendip`: boolean
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelMeshGetElementType(
+                return gmsh.lib.gmshModelMeshGetElementType(
                     ctypes.c_char_p(familyName.encode()),
                     ctypes.c_int(order),
                     ctypes.c_int(bool(serendip)),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def getElementProperties(
@@ -3601,13 +3597,11 @@ class model:
             - `functionSpaceType`: string
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelMeshGetNumberOfOrientations(
+                return gmsh.lib.gmshModelMeshGetNumberOfOrientations(
                     ctypes.c_int(elementType),
                     ctypes.c_char_p(functionSpaceType.encode()),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def getEdges(nodeTags: Sequence[int]) -> tuple[list[int], list[int]]:
@@ -3988,13 +3982,11 @@ class model:
             - `functionSpaceType`: string
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelMeshGetNumberOfKeys(
+                return gmsh.lib.gmshModelMeshGetNumberOfKeys(
                     ctypes.c_int(elementType),
                     ctypes.c_char_p(functionSpaceType.encode()),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def getKeysInformation(
@@ -5501,13 +5493,11 @@ class model:
                 - `tag`: integer
                 """
                 with _ErrorCode() as ierr:
-                    api_result_ = gmsh.lib.gmshModelMeshFieldAdd(
+                    return gmsh.lib.gmshModelMeshFieldAdd(
                         ctypes.c_char_p(fieldType.encode()),
                         ctypes.c_int(tag),
                         ctypes.byref(ierr),
                     )
-
-                return api_result_
 
             @staticmethod
             def remove(tag: int) -> None:
@@ -5765,7 +5755,7 @@ class model:
             - `tag`: integer
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddPoint(
+                return gmsh.lib.gmshModelGeoAddPoint(
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -5773,8 +5763,6 @@ class model:
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addLine(startTag: int, endTag: int, *, tag: int = -1) -> int:
@@ -5793,14 +5781,12 @@ class model:
             - `tag`: integer
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddLine(
+                return gmsh.lib.gmshModelGeoAddLine(
                     ctypes.c_int(startTag),
                     ctypes.c_int(endTag),
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addCircleArc(
@@ -5834,7 +5820,7 @@ class model:
             - `nz`: double
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddCircleArc(
+                return gmsh.lib.gmshModelGeoAddCircleArc(
                     ctypes.c_int(startTag),
                     ctypes.c_int(centerTag),
                     ctypes.c_int(endTag),
@@ -5844,8 +5830,6 @@ class model:
                     ctypes.c_double(nz),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addEllipseArc(
@@ -5881,7 +5865,7 @@ class model:
             - `nz`: double
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddEllipseArc(
+                return gmsh.lib.gmshModelGeoAddEllipseArc(
                     ctypes.c_int(startTag),
                     ctypes.c_int(centerTag),
                     ctypes.c_int(majorTag),
@@ -5892,8 +5876,6 @@ class model:
                     ctypes.c_double(nz),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addSpline(pointTags: Sequence[int], *, tag: int = -1) -> int:
@@ -5913,14 +5895,12 @@ class model:
             """
             api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddSpline(
+                return gmsh.lib.gmshModelGeoAddSpline(
                     api_pointTags_,
                     api_pointTags_n_,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addBSpline(pointTags: Sequence[int], *, tag: int = -1) -> int:
@@ -5940,14 +5920,12 @@ class model:
             """
             api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddBSpline(
+                return gmsh.lib.gmshModelGeoAddBSpline(
                     api_pointTags_,
                     api_pointTags_n_,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addBezier(pointTags: Sequence[int], *, tag: int = -1) -> int:
@@ -5965,14 +5943,12 @@ class model:
             """
             api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddBezier(
+                return gmsh.lib.gmshModelGeoAddBezier(
                     api_pointTags_,
                     api_pointTags_n_,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addPolyline(pointTags: Sequence[int], *, tag: int = -1) -> int:
@@ -5991,14 +5967,12 @@ class model:
             """
             api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddPolyline(
+                return gmsh.lib.gmshModelGeoAddPolyline(
                     api_pointTags_,
                     api_pointTags_n_,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addCompoundSpline(
@@ -6021,15 +5995,13 @@ class model:
             """
             api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddCompoundSpline(
+                return gmsh.lib.gmshModelGeoAddCompoundSpline(
                     api_curveTags_,
                     api_curveTags_n_,
                     ctypes.c_int(numIntervals),
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addCompoundBSpline(
@@ -6052,15 +6024,13 @@ class model:
             """
             api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddCompoundBSpline(
+                return gmsh.lib.gmshModelGeoAddCompoundBSpline(
                     api_curveTags_,
                     api_curveTags_n_,
                     ctypes.c_int(numIntervals),
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addCurveLoop(
@@ -6085,15 +6055,13 @@ class model:
             """
             api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddCurveLoop(
+                return gmsh.lib.gmshModelGeoAddCurveLoop(
                     api_curveTags_,
                     api_curveTags_n_,
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(reorient)),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addCurveLoops(curveTags: Sequence[int]) -> list[int]:
@@ -6140,14 +6108,12 @@ class model:
             """
             api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddPlaneSurface(
+                return gmsh.lib.gmshModelGeoAddPlaneSurface(
                     api_wireTags_,
                     api_wireTags_n_,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addSurfaceFilling(
@@ -6173,15 +6139,13 @@ class model:
             """
             api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddSurfaceFilling(
+                return gmsh.lib.gmshModelGeoAddSurfaceFilling(
                     api_wireTags_,
                     api_wireTags_n_,
                     ctypes.c_int(tag),
                     ctypes.c_int(sphereCenterTag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addSurfaceLoop(
@@ -6201,14 +6165,12 @@ class model:
             """
             api_surfaceTags_, api_surfaceTags_n_ = _ivectorint(surfaceTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddSurfaceLoop(
+                return gmsh.lib.gmshModelGeoAddSurfaceLoop(
                     api_surfaceTags_,
                     api_surfaceTags_n_,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addVolume(shellTags: Sequence[int], *, tag: int = -1) -> int:
@@ -6228,14 +6190,12 @@ class model:
             """
             api_shellTags_, api_shellTags_n_ = _ivectorint(shellTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddVolume(
+                return gmsh.lib.gmshModelGeoAddVolume(
                     api_shellTags_,
                     api_shellTags_n_,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addGeometry(
@@ -6266,7 +6226,7 @@ class model:
             api_numbers_, api_numbers_n_ = _ivectordouble(numbers)
             api_strings_, api_strings_n_ = _ivectorstring(strings)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddGeometry(
+                return gmsh.lib.gmshModelGeoAddGeometry(
                     ctypes.c_char_p(geometry.encode()),
                     api_numbers_,
                     api_numbers_n_,
@@ -6275,8 +6235,6 @@ class model:
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addPointOnGeometry(
@@ -6307,7 +6265,7 @@ class model:
             - `tag`: integer
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddPointOnGeometry(
+                return gmsh.lib.gmshModelGeoAddPointOnGeometry(
                     ctypes.c_int(geometryTag),
                     ctypes.c_double(x),
                     ctypes.c_double(y),
@@ -6316,8 +6274,6 @@ class model:
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def extrude(
@@ -6866,11 +6822,9 @@ class model:
             - `dim`: integer
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoGetMaxTag(
+                return gmsh.lib.gmshModelGeoGetMaxTag(
                     ctypes.c_int(dim), ctypes.byref(ierr)
                 )
-
-            return api_result_
 
         @staticmethod
         def setMaxTag(dim: int, maxTag: int) -> None:
@@ -6909,7 +6863,7 @@ class model:
             """
             api_tags_, api_tags_n_ = _ivectorint(tags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelGeoAddPhysicalGroup(
+                return gmsh.lib.gmshModelGeoAddPhysicalGroup(
                     ctypes.c_int(dim),
                     api_tags_,
                     api_tags_n_,
@@ -6917,8 +6871,6 @@ class model:
                     ctypes.c_char_p(name.encode()),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def removePhysicalGroups(
@@ -7205,7 +7157,7 @@ class model:
             - `tag`: integer
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddPoint(
+                return gmsh.lib.gmshModelOccAddPoint(
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -7213,8 +7165,6 @@ class model:
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addLine(startTag: int, endTag: int, *, tag: int = -1) -> int:
@@ -7233,14 +7183,12 @@ class model:
             - `tag`: integer
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddLine(
+                return gmsh.lib.gmshModelOccAddLine(
                     ctypes.c_int(startTag),
                     ctypes.c_int(endTag),
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addCircleArc(
@@ -7270,7 +7218,7 @@ class model:
             - `center`: boolean
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddCircleArc(
+                return gmsh.lib.gmshModelOccAddCircleArc(
                     ctypes.c_int(startTag),
                     ctypes.c_int(middleTag),
                     ctypes.c_int(endTag),
@@ -7278,8 +7226,6 @@ class model:
                     ctypes.c_int(bool(center)),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addCircle(
@@ -7320,7 +7266,7 @@ class model:
             api_zAxis_, api_zAxis_n_ = _ivectordouble(zAxis)
             api_xAxis_, api_xAxis_n_ = _ivectordouble(xAxis)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddCircle(
+                return gmsh.lib.gmshModelOccAddCircle(
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -7334,8 +7280,6 @@ class model:
                     api_xAxis_n_,
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addEllipseArc(
@@ -7365,7 +7309,7 @@ class model:
             - `tag`: integer
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddEllipseArc(
+                return gmsh.lib.gmshModelOccAddEllipseArc(
                     ctypes.c_int(startTag),
                     ctypes.c_int(centerTag),
                     ctypes.c_int(majorTag),
@@ -7373,8 +7317,6 @@ class model:
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addEllipse(
@@ -7422,7 +7364,7 @@ class model:
                 () if xAxis is None else xAxis
             )
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddEllipse(
+                return gmsh.lib.gmshModelOccAddEllipse(
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -7437,8 +7379,6 @@ class model:
                     api_xAxis_n_,
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addSpline(
@@ -7469,7 +7409,7 @@ class model:
             api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
             api_tangents_, api_tangents_n_ = _ivectordouble(tangents)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddSpline(
+                return gmsh.lib.gmshModelOccAddSpline(
                     api_pointTags_,
                     api_pointTags_n_,
                     ctypes.c_int(tag),
@@ -7477,8 +7417,6 @@ class model:
                     api_tangents_n_,
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addBSpline(
@@ -7516,7 +7454,7 @@ class model:
                 multiplicities
             )
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddBSpline(
+                return gmsh.lib.gmshModelOccAddBSpline(
                     api_pointTags_,
                     api_pointTags_n_,
                     ctypes.c_int(tag),
@@ -7529,8 +7467,6 @@ class model:
                     api_multiplicities_n_,
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addBezier(pointTags: Sequence[int], *, tag: int = -1) -> int:
@@ -7548,14 +7484,12 @@ class model:
             """
             api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddBezier(
+                return gmsh.lib.gmshModelOccAddBezier(
                     api_pointTags_,
                     api_pointTags_n_,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addWire(
@@ -7581,15 +7515,13 @@ class model:
             """
             api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddWire(
+                return gmsh.lib.gmshModelOccAddWire(
                     api_curveTags_,
                     api_curveTags_n_,
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(checkClosed)),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addCurveLoop(curveTags: Sequence[int], *, tag: int = -1) -> int:
@@ -7613,14 +7545,12 @@ class model:
             """
             api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddCurveLoop(
+                return gmsh.lib.gmshModelOccAddCurveLoop(
                     api_curveTags_,
                     api_curveTags_n_,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addRectangle(
@@ -7653,7 +7583,7 @@ class model:
             - `roundedRadius`: double
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddRectangle(
+                return gmsh.lib.gmshModelOccAddRectangle(
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -7663,8 +7593,6 @@ class model:
                     ctypes.c_double(roundedRadius),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addDisk(
@@ -7707,7 +7635,7 @@ class model:
                 () if xAxis is None else xAxis
             )
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddDisk(
+                return gmsh.lib.gmshModelOccAddDisk(
                     ctypes.c_double(xc),
                     ctypes.c_double(yc),
                     ctypes.c_double(zc),
@@ -7720,8 +7648,6 @@ class model:
                     api_xAxis_n_,
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addPlaneSurface(wireTags: Sequence[int], *, tag: int = -1) -> int:
@@ -7741,14 +7667,12 @@ class model:
             """
             api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddPlaneSurface(
+                return gmsh.lib.gmshModelOccAddPlaneSurface(
                     api_wireTags_,
                     api_wireTags_n_,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addSurfaceFilling(
@@ -7807,7 +7731,7 @@ class model:
             """
             api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddSurfaceFilling(
+                return gmsh.lib.gmshModelOccAddSurfaceFilling(
                     ctypes.c_int(wireTag),
                     ctypes.c_int(tag),
                     api_pointTags_,
@@ -7824,8 +7748,6 @@ class model:
                     ctypes.c_int(maxSegments),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addBSplineFilling(
@@ -7852,14 +7774,12 @@ class model:
             - `type`: string
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddBSplineFilling(
+                return gmsh.lib.gmshModelOccAddBSplineFilling(
                     ctypes.c_int(wireTag),
                     ctypes.c_int(tag),
                     ctypes.c_char_p(type.encode()),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addBezierFilling(
@@ -7886,14 +7806,12 @@ class model:
             - `type`: string
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddBezierFilling(
+                return gmsh.lib.gmshModelOccAddBezierFilling(
                     ctypes.c_int(wireTag),
                     ctypes.c_int(tag),
                     ctypes.c_char_p(type.encode()),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addBSplineSurface(
@@ -7953,7 +7871,7 @@ class model:
             )
             api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddBSplineSurface(
+                return gmsh.lib.gmshModelOccAddBSplineSurface(
                     api_pointTags_,
                     api_pointTags_n_,
                     ctypes.c_int(numPointsU),
@@ -7975,8 +7893,6 @@ class model:
                     ctypes.c_int(bool(wire3D)),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addBezierSurface(
@@ -8011,7 +7927,7 @@ class model:
             api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
             api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddBezierSurface(
+                return gmsh.lib.gmshModelOccAddBezierSurface(
                     api_pointTags_,
                     api_pointTags_n_,
                     ctypes.c_int(numPointsU),
@@ -8021,8 +7937,6 @@ class model:
                     ctypes.c_int(bool(wire3D)),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addTrimmedSurface(
@@ -8052,7 +7966,7 @@ class model:
             """
             api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddTrimmedSurface(
+                return gmsh.lib.gmshModelOccAddTrimmedSurface(
                     ctypes.c_int(surfaceTag),
                     api_wireTags_,
                     api_wireTags_n_,
@@ -8060,8 +7974,6 @@ class model:
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addSurfaceLoop(
@@ -8084,15 +7996,13 @@ class model:
             """
             api_surfaceTags_, api_surfaceTags_n_ = _ivectorint(surfaceTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddSurfaceLoop(
+                return gmsh.lib.gmshModelOccAddSurfaceLoop(
                     api_surfaceTags_,
                     api_surfaceTags_n_,
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(sewing)),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addVolume(shellTags: Sequence[int], *, tag: int = -1) -> int:
@@ -8112,14 +8022,12 @@ class model:
             """
             api_shellTags_, api_shellTags_n_ = _ivectorint(shellTags)
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddVolume(
+                return gmsh.lib.gmshModelOccAddVolume(
                     api_shellTags_,
                     api_shellTags_n_,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addSphere(
@@ -8155,7 +8063,7 @@ class model:
             - `angle3`: double
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddSphere(
+                return gmsh.lib.gmshModelOccAddSphere(
                     ctypes.c_double(xc),
                     ctypes.c_double(yc),
                     ctypes.c_double(zc),
@@ -8166,8 +8074,6 @@ class model:
                     ctypes.c_double(angle3),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addBox(
@@ -8199,7 +8105,7 @@ class model:
             - `tag`: integer
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddBox(
+                return gmsh.lib.gmshModelOccAddBox(
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -8209,8 +8115,6 @@ class model:
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addCylinder(
@@ -8248,7 +8152,7 @@ class model:
             - `angle`: double
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddCylinder(
+                return gmsh.lib.gmshModelOccAddCylinder(
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -8260,8 +8164,6 @@ class model:
                     ctypes.c_double(angle),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addCone(
@@ -8301,7 +8203,7 @@ class model:
             - `angle`: double
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddCone(
+                return gmsh.lib.gmshModelOccAddCone(
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -8314,8 +8216,6 @@ class model:
                     ctypes.c_double(angle),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addWedge(
@@ -8357,7 +8257,7 @@ class model:
                 () if zAxis is None else zAxis
             )
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddWedge(
+                return gmsh.lib.gmshModelOccAddWedge(
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -8370,8 +8270,6 @@ class model:
                     api_zAxis_n_,
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addTorus(
@@ -8410,7 +8308,7 @@ class model:
                 () if zAxis is None else zAxis
             )
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccAddTorus(
+                return gmsh.lib.gmshModelOccAddTorus(
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -8422,8 +8320,6 @@ class model:
                     api_zAxis_n_,
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def addThruSections(
@@ -8860,15 +8756,13 @@ class model:
             - `tag`: integer
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccFillet2D(
+                return gmsh.lib.gmshModelOccFillet2D(
                     ctypes.c_int(edgeTag1),
                     ctypes.c_int(edgeTag2),
                     ctypes.c_double(radius),
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def chamfer2D(
@@ -8896,7 +8790,7 @@ class model:
             - `tag`: integer
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccChamfer2D(
+                return gmsh.lib.gmshModelOccChamfer2D(
                     ctypes.c_int(edgeTag1),
                     ctypes.c_int(edgeTag2),
                     ctypes.c_double(distance1),
@@ -8904,8 +8798,6 @@ class model:
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
-
-            return api_result_
 
         @staticmethod
         def offsetCurve(
@@ -9986,11 +9878,9 @@ class model:
             - `dim`: integer
             """
             with _ErrorCode() as ierr:
-                api_result_ = gmsh.lib.gmshModelOccGetMaxTag(
+                return gmsh.lib.gmshModelOccGetMaxTag(
                     ctypes.c_int(dim), ctypes.byref(ierr)
                 )
-
-            return api_result_
 
         @staticmethod
         def setMaxTag(dim: int, maxTag: int) -> None:
@@ -10067,13 +9957,11 @@ class view:
         - `tag`: integer
         """
         with _ErrorCode() as ierr:
-            api_result_ = gmsh.lib.gmshViewAdd(
+            return gmsh.lib.gmshViewAdd(
                 ctypes.c_char_p(name.encode()),
                 ctypes.c_int(tag),
                 ctypes.byref(ierr),
             )
-
-        return api_result_
 
     @staticmethod
     def remove(tag: int) -> None:
@@ -10101,11 +9989,9 @@ class view:
         - `tag`: integer
         """
         with _ErrorCode() as ierr:
-            api_result_ = gmsh.lib.gmshViewGetIndex(
+            return gmsh.lib.gmshViewGetIndex(
                 ctypes.c_int(tag), ctypes.byref(ierr)
             )
-
-        return api_result_
 
     @staticmethod
     def getTags() -> list[int]:
@@ -10609,14 +10495,12 @@ class view:
         - `tag`: integer
         """
         with _ErrorCode() as ierr:
-            api_result_ = gmsh.lib.gmshViewAddAlias(
+            return gmsh.lib.gmshViewAddAlias(
                 ctypes.c_int(refTag),
                 ctypes.c_int(bool(copyOptions)),
                 ctypes.c_int(tag),
                 ctypes.byref(ierr),
             )
-
-        return api_result_
 
     @staticmethod
     def combine(
@@ -11004,11 +10888,9 @@ class plugin:
         - `name`: string
         """
         with _ErrorCode() as ierr:
-            api_result_ = gmsh.lib.gmshPluginRun(
+            return gmsh.lib.gmshPluginRun(
                 ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
             )
-
-        return api_result_
 
 
 class graphics:
@@ -11128,9 +11010,7 @@ class fltk:
         Return an integer.
         """
         with _ErrorCode() as ierr:
-            api_result_ = gmsh.lib.gmshFltkIsAvailable(ctypes.byref(ierr))
-
-        return api_result_
+            return gmsh.lib.gmshFltkIsAvailable(ctypes.byref(ierr))
 
     @staticmethod
     def selectEntities(dim: int = -1) -> tuple[int, list[tuple[int, int]]]:
@@ -11643,11 +11523,9 @@ class onelab:
         - `name`: string
         """
         with _ErrorCode() as ierr:
-            api_result_ = gmsh.lib.gmshOnelabGetChanged(
+            return gmsh.lib.gmshOnelabGetChanged(
                 ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
             )
-
-        return api_result_
 
     @staticmethod
     def setChanged(name: str, value: int) -> None:
@@ -11751,7 +11629,6 @@ class logger:
                 ctypes.byref(api_log_n_),
                 ctypes.byref(ierr),
             )
-
         return _ovectorstring(api_log_, api_log_n_.value)
 
     @staticmethod
@@ -11771,11 +11648,9 @@ class logger:
 
         Return a double.
         """
+        gmsh.lib.gmshLoggerGetWallTime.restype = ctypes.c_double
         with _ErrorCode() as ierr:
-            gmsh.lib.gmshLoggerGetWallTime.restype = ctypes.c_double
-        api_result_ = gmsh.lib.gmshLoggerGetWallTime(ctypes.byref(ierr))
-
-        return api_result_
+            return gmsh.lib.gmshLoggerGetWallTime(ctypes.byref(ierr))
 
     @staticmethod
     def getCpuTime() -> float:
@@ -11785,11 +11660,9 @@ class logger:
 
         Return a double.
         """
+        gmsh.lib.gmshLoggerGetCpuTime.restype = ctypes.c_double
         with _ErrorCode() as ierr:
-            gmsh.lib.gmshLoggerGetCpuTime.restype = ctypes.c_double
-        api_result_ = gmsh.lib.gmshLoggerGetCpuTime(ctypes.byref(ierr))
-
-        return api_result_
+            return gmsh.lib.gmshLoggerGetCpuTime(ctypes.byref(ierr))
 
     @staticmethod
     def getMemory() -> float:
@@ -11799,11 +11672,9 @@ class logger:
 
         Return a double.
         """
+        gmsh.lib.gmshLoggerGetMemory.restype = ctypes.c_double
         with _ErrorCode() as ierr:
-            gmsh.lib.gmshLoggerGetMemory.restype = ctypes.c_double
-        api_result_ = gmsh.lib.gmshLoggerGetMemory(ctypes.byref(ierr))
-
-        return api_result_
+            return gmsh.lib.gmshLoggerGetMemory(ctypes.byref(ierr))
 
     @staticmethod
     def getTotalMemory() -> float:
@@ -11813,11 +11684,9 @@ class logger:
 
         Return a double.
         """
+        gmsh.lib.gmshLoggerGetTotalMemory.restype = ctypes.c_double
         with _ErrorCode() as ierr:
-            gmsh.lib.gmshLoggerGetTotalMemory.restype = ctypes.c_double
-        api_result_ = gmsh.lib.gmshLoggerGetTotalMemory(ctypes.byref(ierr))
-
-        return api_result_
+            return gmsh.lib.gmshLoggerGetTotalMemory(ctypes.byref(ierr))
 
     @staticmethod
     def getLastError() -> str:
@@ -11831,11 +11700,11 @@ class logger:
         - `error`: string
         """
         api_error_ = ctypes.c_char_p()
-        with _ErrorCode() as ierr:
-            gmsh.lib.gmshLoggerGetLastError(
-                ctypes.byref(api_error_), ctypes.byref(ierr)
-            )
-
+        ierr = ctypes.c_int()
+        gmsh.lib.gmshLoggerGetLastError(
+            ctypes.byref(api_error_), ctypes.byref(ierr)
+        )
+        if ierr.value != 0:
             msg = "Could not get last error"
             raise RuntimeError(msg)
         return _ostring(api_error_)
