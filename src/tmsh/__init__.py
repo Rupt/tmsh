@@ -11684,41 +11684,49 @@ def _ostring(s: c_char_p) -> str:
     if s.value is None:
         msg = "null pointer"
         raise RuntimeError(msg)
-    sp = s.value.decode()
-    gmsh.lib.gmshFree(s)
-    return sp
+    try:
+        return s.value.decode()
+    finally:
+        gmsh.lib.gmshFree(s)
 
 
 def _ovectorpair(ptr: _Pointer[c_int], size: int) -> list[tuple[int, int]]:
     # TODO: explain why this function supports odd size
     #   https://github.com/Rupt/tmsh/issues/15
-    v = [(ptr[i * 2], ptr[i * 2 + 1]) for i in range(size // 2)]
-    gmsh.lib.gmshFree(ptr)
-    return v
+    try:
+        return [(ptr[i * 2], ptr[i * 2 + 1]) for i in range(size // 2)]
+    finally:
+        gmsh.lib.gmshFree(ptr)
 
 
 def _ovectorint(ptr: _Pointer[c_int], size: int) -> list[int]:
-    v = ptr[:size]
-    gmsh.lib.gmshFree(ptr)
-    return v
+    try:
+        return ptr[:size]
+    finally:
+        gmsh.lib.gmshFree(ptr)
 
 
 def _ovectorsize(ptr: _Pointer[c_size_t], size: int) -> list[int]:
-    v = ptr[:size]
-    gmsh.lib.gmshFree(ptr)
-    return v
+    try:
+        return ptr[:size]
+    finally:
+        gmsh.lib.gmshFree(ptr)
 
 
 def _ovectordouble(ptr: _Pointer[c_double], size: int) -> list[float]:
-    v = ptr[:size]
-    gmsh.lib.gmshFree(ptr)
-    return v
+    try:
+        return ptr[:size]
+    finally:
+        gmsh.lib.gmshFree(ptr)
 
 
 def _ovectorstring(ptr: _Pointer[_Pointer[c_char]], size: int) -> list[str]:
-    v = [_ostring(ctypes.cast(ptr[i], ctypes.c_char_p)) for i in range(size)]
-    gmsh.lib.gmshFree(ptr)
-    return v
+    try:
+        return [
+            _ostring(ctypes.cast(ptr[i], ctypes.c_char_p)) for i in range(size)
+        ]
+    finally:
+        gmsh.lib.gmshFree(ptr)
 
 
 def _ovectorvectorint(
@@ -11726,13 +11734,14 @@ def _ovectorvectorint(
     size: _Pointer[c_size_t],
     n: ctypes.c_size_t,
 ) -> list[list[int]]:
-    v = [
-        _ovectorint(ctypes.pointer(ptr[i].contents), size[i])
-        for i in range(n.value)
-    ]
-    gmsh.lib.gmshFree(size)
-    gmsh.lib.gmshFree(ptr)
-    return v
+    try:
+        return [
+            _ovectorint(ctypes.pointer(ptr[i].contents), size[i])
+            for i in range(n.value)
+        ]
+    finally:
+        gmsh.lib.gmshFree(size)
+        gmsh.lib.gmshFree(ptr)
 
 
 def _ovectorvectorsize(
@@ -11740,13 +11749,14 @@ def _ovectorvectorsize(
     size: _Pointer[c_size_t],
     n: ctypes.c_size_t,
 ) -> list[list[int]]:
-    v = [
-        _ovectorsize(ctypes.pointer(ptr[i].contents), size[i])
-        for i in range(n.value)
-    ]
-    gmsh.lib.gmshFree(size)
-    gmsh.lib.gmshFree(ptr)
-    return v
+    try:
+        return [
+            _ovectorsize(ctypes.pointer(ptr[i].contents), size[i])
+            for i in range(n.value)
+        ]
+    finally:
+        gmsh.lib.gmshFree(size)
+        gmsh.lib.gmshFree(ptr)
 
 
 def _ovectorvectordouble(
@@ -11754,13 +11764,14 @@ def _ovectorvectordouble(
     size: _Pointer[c_size_t],
     n: ctypes.c_size_t,
 ) -> list[list[float]]:
-    v = [
-        _ovectordouble(ctypes.pointer(ptr[i].contents), size[i])
-        for i in range(n.value)
-    ]
-    gmsh.lib.gmshFree(size)
-    gmsh.lib.gmshFree(ptr)
-    return v
+    try:
+        return [
+            _ovectordouble(ctypes.pointer(ptr[i].contents), size[i])
+            for i in range(n.value)
+        ]
+    finally:
+        gmsh.lib.gmshFree(size)
+        gmsh.lib.gmshFree(ptr)
 
 
 def _ovectorvectorpair(
@@ -11768,10 +11779,11 @@ def _ovectorvectorpair(
     size: _Pointer[c_size_t],
     n: ctypes.c_size_t,
 ) -> list[list[tuple[int, int]]]:
-    v = [_ovectorpair(ptr[i], size[i]) for i in range(n.value)]
-    gmsh.lib.gmshFree(size)
-    gmsh.lib.gmshFree(ptr)
-    return v
+    try:
+        return [_ovectorpair(ptr[i], size[i]) for i in range(n.value)]
+    finally:
+        gmsh.lib.gmshFree(size)
+        gmsh.lib.gmshFree(ptr)
 
 
 def _ivectorint(o: Sequence[int]) -> tuple[Array[c_int], c_size_t]:
