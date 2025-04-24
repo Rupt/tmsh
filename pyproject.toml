@@ -35,6 +35,11 @@ dev = [
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[tool.coverage.run]
+branch = true
+source = ["tests"]
+source_pkgs = ["tmsh"]
+
 [tool.ruff]
 exclude = []
 include = ["src/*.py", "tests/*.py"]

@@ -9,7 +9,7 @@
 
 .PHONY: test
 test: .venv/.tombstone
-	.venv/bin/coverage run --source .venv/lib/python3.12/site-packages/tmsh --branch -m unittest discover tests
+	.venv/bin/coverage run -m unittest discover tests
 	.venv/bin/coverage xml
 	sed -i 's \.venv/lib/python3\.12/site-packages/ src/ g' coverage.xml
 
