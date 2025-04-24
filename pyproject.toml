@@ -40,6 +40,9 @@ branch = true
 source = ["tests"]
 source_pkgs = ["tmsh"]
 
+[tool.coverage.report]
+exclude_also = ["if TYPE_CHECKING:"]
+
 [tool.ruff]
 exclude = []
 include = ["src/*.py", "tests/*.py"]
