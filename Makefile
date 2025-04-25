@@ -25,7 +25,9 @@ lint: .venv/.tombstone
 # 	e.g. `.venv/bin/pip install --upgrade --group dev`
 .PHONY: upgrade
 upgrade: .venv/.tombstone
-	.venv/bin/pip install --upgrade . \
+	.venv/bin/pip install --upgrade 'pip >=25.0.1'
+	.venv/bin/pip install --upgrade --editable .
+	.venv/bin/pip install --upgrade \
 		'build >=1.2.2.post1' \
 		'coverage >=7.8.0' \
 		'mypy >=1.15.0' \
