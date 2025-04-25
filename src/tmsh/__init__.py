@@ -354,11 +354,11 @@ def initialize(
     on the command line arguments. If `run` is not set, initializing the API
     sets the options "General.AbortOnError" to 2 and "General.Terminal" to 1.
     """
-    api_argc_, api_argv_ = _iargcargv(argv)
+    c_argc, c_argv = _iargcargv(argv)
     with _ErrorCode() as ierr:
         gmsh.lib.gmshInitialize(
-            api_argc_,
-            api_argv_,
+            c_argc,
+            c_argv,
             ctypes.c_int(bool(readConfigFiles)),
             ctypes.c_int(bool(run)),
             ctypes.byref(ierr),
@@ -461,14 +461,14 @@ class option:
         chapter of the Gmsh reference manual
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
         """
-        api_value_ = ctypes.c_double()
+        c_value = ctypes.c_double()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshOptionGetNumber(
                 ctypes.c_char_p(name.encode()),
-                ctypes.byref(api_value_),
+                ctypes.byref(c_value),
                 ctypes.byref(ierr),
             )
-        return api_value_.value
+        return c_value.value
 
     @staticmethod
     def setString(name: str, value: str) -> None:
@@ -495,14 +495,14 @@ class option:
         chapter of the Gmsh reference manual
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
         """
-        api_value_ = ctypes.c_char_p()
+        c_value = ctypes.c_char_p()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshOptionGetString(
                 ctypes.c_char_p(name.encode()),
-                ctypes.byref(api_value_),
+                ctypes.byref(c_value),
                 ctypes.byref(ierr),
             )
-        return _ostring(api_value_)
+        return _ostring(c_value)
 
     @staticmethod
     def setColor(name: str, r: int, g: int, b: int, a: int = 255) -> None:
@@ -535,20 +535,20 @@ class option:
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-options).
         For conciseness "Color." can be omitted in `name`.
         """
-        api_r_ = ctypes.c_int()
-        api_g_ = ctypes.c_int()
-        api_b_ = ctypes.c_int()
-        api_a_ = ctypes.c_int()
+        c_r = ctypes.c_int()
+        c_g = ctypes.c_int()
+        c_b = ctypes.c_int()
+        c_a = ctypes.c_int()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshOptionGetColor(
                 ctypes.c_char_p(name.encode()),
-                ctypes.byref(api_r_),
-                ctypes.byref(api_g_),
-                ctypes.byref(api_b_),
-                ctypes.byref(api_a_),
+                ctypes.byref(c_r),
+                ctypes.byref(c_g),
+                ctypes.byref(c_b),
+                ctypes.byref(c_a),
                 ctypes.byref(ierr),
             )
-        return (api_r_.value, api_g_.value, api_b_.value, api_a_.value)
+        return (c_r.value, c_g.value, c_b.value, c_a.value)
 
     @staticmethod
     def restoreDefaults() -> None:
@@ -577,27 +577,27 @@ class model:
     @staticmethod
     def list() -> builtins.list[str]:
         """Return a list of the names of all models."""
-        api_names_, api_names_n_ = (
+        c_names, c_names_n = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelList(
-                ctypes.byref(api_names_),
-                ctypes.byref(api_names_n_),
+                ctypes.byref(c_names),
+                ctypes.byref(c_names_n),
                 ctypes.byref(ierr),
             )
-        return _ovectorstring(api_names_, api_names_n_.value)
+        return _ovectorstring(c_names, c_names_n.value)
 
     @staticmethod
     def getCurrent() -> str:
         """Return the name of the current model."""
-        api_name_ = ctypes.c_char_p()
+        c_name = ctypes.c_char_p()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetCurrent(
-                ctypes.byref(api_name_), ctypes.byref(ierr)
+                ctypes.byref(c_name), ctypes.byref(ierr)
             )
-        return _ostring(api_name_)
+        return _ostring(c_name)
 
     @staticmethod
     def setCurrent(name: str) -> None:
@@ -617,12 +617,12 @@ class model:
 
         A file name is associated when a model is read from a file on disk.
         """
-        api_fileName_ = ctypes.c_char_p()
+        c_fileName = ctypes.c_char_p()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetFileName(
-                ctypes.byref(api_fileName_), ctypes.byref(ierr)
+                ctypes.byref(c_fileName), ctypes.byref(ierr)
             )
-        return _ostring(api_fileName_)
+        return _ostring(c_fileName)
 
     @staticmethod
     def setFileName(fileName: str) -> None:
@@ -642,16 +642,16 @@ class model:
         (e.g. points if 'dim' == 0). The entities are returned as a collection
         of (dim, tag) pairs.
         """
-        api_dimTags_ = ctypes.POINTER(ctypes.c_int)()
-        api_dimTags_n_ = ctypes.c_size_t()
+        c_dimTags = ctypes.POINTER(ctypes.c_int)()
+        c_dimTags_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetEntities(
-                ctypes.byref(api_dimTags_),
-                ctypes.byref(api_dimTags_n_),
+                ctypes.byref(c_dimTags),
+                ctypes.byref(c_dimTags_n),
                 ctypes.c_int(dim),
                 ctypes.byref(ierr),
             )
-        return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
+        return _ovectorpair(c_dimTags, c_dimTags_n.value)
 
     @staticmethod
     def setEntityName(dim: int, tag: int, name: str) -> None:
@@ -667,15 +667,15 @@ class model:
     @staticmethod
     def getEntityName(dim: int, tag: int) -> str:
         """Return the name of the entity of dimension `dim` and tag `tag`."""
-        api_name_ = ctypes.c_char_p()
+        c_name = ctypes.c_char_p()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetEntityName(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                ctypes.byref(api_name_),
+                ctypes.byref(c_name),
                 ctypes.byref(ierr),
             )
-        return _ostring(api_name_)
+        return _ostring(c_name)
 
     @staticmethod
     def removeEntityName(name: str) -> None:
@@ -693,16 +693,16 @@ class model:
         (e.g. physical points if `dim` == 0). The entities are returned as a
         list of (dim, tag) pairs.
         """
-        api_dimTags_ = ctypes.POINTER(ctypes.c_int)()
-        api_dimTags_n_ = ctypes.c_size_t()
+        c_dimTags = ctypes.POINTER(ctypes.c_int)()
+        c_dimTags_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetPhysicalGroups(
-                ctypes.byref(api_dimTags_),
-                ctypes.byref(api_dimTags_n_),
+                ctypes.byref(c_dimTags),
+                ctypes.byref(c_dimTags_n),
                 ctypes.c_int(dim),
                 ctypes.byref(ierr),
             )
-        return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
+        return _ovectorpair(c_dimTags, c_dimTags_n.value)
 
     @staticmethod
     def getEntitiesForPhysicalGroup(dim: int, tag: int) -> builtins.list[int]:
@@ -711,50 +711,50 @@ class model:
         This function selects the tags of the model entities making up the
         physical group of dimension `dim` and tag `tag`.
         """
-        api_tags_ = ctypes.POINTER(ctypes.c_int)()
-        api_tags_n_ = ctypes.c_size_t()
+        c_tags = ctypes.POINTER(ctypes.c_int)()
+        c_tags_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetEntitiesForPhysicalGroup(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                ctypes.byref(api_tags_),
-                ctypes.byref(api_tags_n_),
+                ctypes.byref(c_tags),
+                ctypes.byref(c_tags_n),
                 ctypes.byref(ierr),
             )
-        return _ovectorint(api_tags_, api_tags_n_.value)
+        return _ovectorint(c_tags, c_tags_n.value)
 
     @staticmethod
     def getEntitiesForPhysicalName(
         name: str,
     ) -> builtins.list[tuple[int, int]]:
         """Return all (dim, tag)s for entities in the named physical group."""
-        api_dimTags_, api_dimTags_n_ = (
+        c_dimTags, c_dimTags_n = (
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetEntitiesForPhysicalName(
                 ctypes.c_char_p(name.encode()),
-                ctypes.byref(api_dimTags_),
-                ctypes.byref(api_dimTags_n_),
+                ctypes.byref(c_dimTags),
+                ctypes.byref(c_dimTags_n),
                 ctypes.byref(ierr),
             )
-        return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
+        return _ovectorpair(c_dimTags, c_dimTags_n.value)
 
     @staticmethod
     def getPhysicalGroupsForEntity(dim: int, tag: int) -> builtins.list[int]:
         """Return the tags of physical groups containing entity (dim, tag)."""
-        api_physicalTags_ = ctypes.POINTER(ctypes.c_int)()
-        api_physicalTags_n_ = ctypes.c_size_t()
+        c_physicalTags = ctypes.POINTER(ctypes.c_int)()
+        c_physicalTags_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetPhysicalGroupsForEntity(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                ctypes.byref(api_physicalTags_),
-                ctypes.byref(api_physicalTags_n_),
+                ctypes.byref(c_physicalTags),
+                ctypes.byref(c_physicalTags_n),
                 ctypes.byref(ierr),
             )
-        return _ovectorint(api_physicalTags_, api_physicalTags_n_.value)
+        return _ovectorint(c_physicalTags, c_physicalTags_n.value)
 
     @staticmethod
     def addPhysicalGroup(
@@ -767,12 +767,12 @@ class model:
         if `tag` is positive, or a new tag if `tag` < 0. Set the name of the
         physical group if `name` is not empty.
         """
-        api_tags_, api_tags_n_ = _ivectorint(tags)
+        c_tags, c_tags_n = _ivectorint(tags)
         with _ErrorCode() as ierr:
             return gmsh.lib.gmshModelAddPhysicalGroup(
                 ctypes.c_int(dim),
-                api_tags_,
-                api_tags_n_,
+                c_tags,
+                c_tags_n,
                 ctypes.c_int(tag),
                 ctypes.c_char_p(name.encode()),
                 ctypes.byref(ierr),
@@ -786,10 +786,10 @@ class model:
         physical groups `dimTags` (given as a sequence of (dim, tag) pairs)
         from the current model.
         """
-        api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+        c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelRemovePhysicalGroups(
-                api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                c_dimTags, c_dimTags_n, ctypes.byref(ierr)
             )
 
     @staticmethod
@@ -806,15 +806,15 @@ class model:
     @staticmethod
     def getPhysicalName(dim: int, tag: int) -> str:
         """Return the name of the physical group with the given (dim, tag)."""
-        api_name_ = ctypes.c_char_p()
+        c_name = ctypes.c_char_p()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetPhysicalName(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                ctypes.byref(api_name_),
+                ctypes.byref(c_name),
                 ctypes.byref(ierr),
             )
-        return _ostring(api_name_)
+        return _ostring(c_name)
 
     @staticmethod
     def removePhysicalName(name: str) -> None:
@@ -858,21 +858,21 @@ class model:
         Apply the boundary operator recursively down to dimension 0 (i.e. to
         points) if `recursive` is true.
         """
-        api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-        api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-        api_outDimTags_n_ = ctypes.c_size_t()
+        c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
+        c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+        c_outDimTags_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetBoundary(
-                api_dimTags_,
-                api_dimTags_n_,
-                ctypes.byref(api_outDimTags_),
-                ctypes.byref(api_outDimTags_n_),
+                c_dimTags,
+                c_dimTags_n,
+                ctypes.byref(c_outDimTags),
+                ctypes.byref(c_outDimTags_n),
                 ctypes.c_int(bool(combined)),
                 ctypes.c_int(bool(oriented)),
                 ctypes.c_int(bool(recursive)),
                 ctypes.byref(ierr),
             )
-        return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+        return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
     @staticmethod
     def getAdjacencies(
@@ -886,23 +886,23 @@ class model:
             dimension `dim` + 1; the `downward` vector returns the tags of
             adjacent entities of dimension `dim` - 1.
         """
-        api_upward_ = ctypes.POINTER(ctypes.c_int)()
-        api_upward_n_ = ctypes.c_size_t()
-        api_downward_ = ctypes.POINTER(ctypes.c_int)()
-        api_downward_n_ = ctypes.c_size_t()
+        c_upward = ctypes.POINTER(ctypes.c_int)()
+        c_upward_n = ctypes.c_size_t()
+        c_downward = ctypes.POINTER(ctypes.c_int)()
+        c_downward_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetAdjacencies(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                ctypes.byref(api_upward_),
-                ctypes.byref(api_upward_n_),
-                ctypes.byref(api_downward_),
-                ctypes.byref(api_downward_n_),
+                ctypes.byref(c_upward),
+                ctypes.byref(c_upward_n),
+                ctypes.byref(c_downward),
+                ctypes.byref(c_downward_n),
                 ctypes.byref(ierr),
             )
         return (
-            _ovectorint(api_upward_, api_upward_n_.value),
-            _ovectorint(api_downward_, api_downward_n_.value),
+            _ovectorint(c_upward, c_upward_n.value),
+            _ovectorint(c_downward, c_downward_n.value),
         )
 
     @staticmethod
@@ -935,7 +935,7 @@ class model:
         - `dimTags`: vector of pairs of integers
         - `dim`: integer
         """
-        api_dimTags_, api_dimTags_n_ = (
+        c_dimTags, c_dimTags_n = (
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
@@ -947,12 +947,12 @@ class model:
                 ctypes.c_double(xmax),
                 ctypes.c_double(ymax),
                 ctypes.c_double(zmax),
-                ctypes.byref(api_dimTags_),
-                ctypes.byref(api_dimTags_n_),
+                ctypes.byref(c_dimTags),
+                ctypes.byref(c_dimTags_n),
                 ctypes.c_int(dim),
                 ctypes.byref(ierr),
             )
-        return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
+        return _ovectorpair(c_dimTags, c_dimTags_n.value)
 
     @staticmethod
     def getBoundingBox(
@@ -976,31 +976,31 @@ class model:
         - `ymax`: double
         - `zmax`: double
         """
-        api_xmin_ = ctypes.c_double()
-        api_ymin_ = ctypes.c_double()
-        api_zmin_ = ctypes.c_double()
-        api_xmax_ = ctypes.c_double()
-        api_ymax_ = ctypes.c_double()
-        api_zmax_ = ctypes.c_double()
+        c_xmin = ctypes.c_double()
+        c_ymin = ctypes.c_double()
+        c_zmin = ctypes.c_double()
+        c_xmax = ctypes.c_double()
+        c_ymax = ctypes.c_double()
+        c_zmax = ctypes.c_double()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetBoundingBox(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                ctypes.byref(api_xmin_),
-                ctypes.byref(api_ymin_),
-                ctypes.byref(api_zmin_),
-                ctypes.byref(api_xmax_),
-                ctypes.byref(api_ymax_),
-                ctypes.byref(api_zmax_),
+                ctypes.byref(c_xmin),
+                ctypes.byref(c_ymin),
+                ctypes.byref(c_zmin),
+                ctypes.byref(c_xmax),
+                ctypes.byref(c_ymax),
+                ctypes.byref(c_zmax),
                 ctypes.byref(ierr),
             )
         return (
-            api_xmin_.value,
-            api_ymin_.value,
-            api_zmin_.value,
-            api_xmax_.value,
-            api_ymax_.value,
-            api_zmax_.value,
+            c_xmin.value,
+            c_ymin.value,
+            c_zmin.value,
+            c_xmax.value,
+            c_ymax.value,
+            c_zmax.value,
         )
 
     @staticmethod
@@ -1028,13 +1028,13 @@ class model:
         - `tag`: integer
         - `boundary`: vector of integers
         """
-        api_boundary_, api_boundary_n_ = _ivectorint(boundary)
+        c_boundary, c_boundary_n = _ivectorint(boundary)
         with _ErrorCode() as ierr:
             return gmsh.lib.gmshModelAddDiscreteEntity(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                api_boundary_,
-                api_boundary_n_,
+                c_boundary,
+                c_boundary_n,
                 ctypes.byref(ierr),
             )
 
@@ -1053,11 +1053,11 @@ class model:
         - `dimTags`: vector of pairs of integers
         - `recursive`: boolean
         """
-        api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+        c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelRemoveEntities(
-                api_dimTags_,
-                api_dimTags_n_,
+                c_dimTags,
+                c_dimTags_n,
                 ctypes.c_int(bool(recursive)),
                 ctypes.byref(ierr),
             )
@@ -1065,15 +1065,15 @@ class model:
     @staticmethod
     def getType(dim: int, tag: int) -> str:
         """Return the type of the entity identified by (dim, tag)."""
-        api_entityType_ = ctypes.c_char_p()
+        c_entityType = ctypes.c_char_p()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetType(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                ctypes.byref(api_entityType_),
+                ctypes.byref(c_entityType),
                 ctypes.byref(ierr),
             )
-        return _ostring(api_entityType_)
+        return _ostring(c_entityType)
 
     @staticmethod
     def getParent(dim: int, tag: int) -> tuple[int, int]:
@@ -1091,17 +1091,17 @@ class model:
         - `parentDim`: integer
         - `parentTag`: integer
         """
-        api_parentDim_ = ctypes.c_int()
-        api_parentTag_ = ctypes.c_int()
+        c_parentDim = ctypes.c_int()
+        c_parentTag = ctypes.c_int()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetParent(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                ctypes.byref(api_parentDim_),
-                ctypes.byref(api_parentTag_),
+                ctypes.byref(c_parentDim),
+                ctypes.byref(c_parentTag),
                 ctypes.byref(ierr),
             )
-        return api_parentDim_.value, api_parentTag_.value
+        return c_parentDim.value, c_parentTag.value
 
     @staticmethod
     def getNumberOfPartitions() -> int:
@@ -1123,7 +1123,7 @@ class model:
         - `tag`: integer
         - `partitions`: vector of integers
         """
-        api_partitions_, api_partitions_n_ = (
+        c_partitions, c_partitions_n = (
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
@@ -1131,11 +1131,11 @@ class model:
             gmsh.lib.gmshModelGetPartitions(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                ctypes.byref(api_partitions_),
-                ctypes.byref(api_partitions_n_),
+                ctypes.byref(c_partitions),
+                ctypes.byref(c_partitions_n),
                 ctypes.byref(ierr),
             )
-        return _ovectorint(api_partitions_, api_partitions_n_.value)
+        return _ovectorint(c_partitions, c_partitions_n.value)
 
     @staticmethod
     def getValue(
@@ -1159,10 +1159,10 @@ class model:
         - `parametricCoord`: vector of doubles
         - `coord`: vector of doubles
         """
-        api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
+        c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        api_coord_, api_coord_n_ = (
+        c_coord, c_coord_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
@@ -1170,13 +1170,13 @@ class model:
             gmsh.lib.gmshModelGetValue(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                api_parametricCoord_,
-                api_parametricCoord_n_,
-                ctypes.byref(api_coord_),
-                ctypes.byref(api_coord_n_),
+                c_parametricCoord,
+                c_parametricCoord_n,
+                ctypes.byref(c_coord),
+                ctypes.byref(c_coord_n),
                 ctypes.byref(ierr),
             )
-        return _ovectordouble(api_coord_, api_coord_n_.value)
+        return _ovectordouble(c_coord, c_coord_n.value)
 
     @staticmethod
     def getDerivative(
@@ -1202,10 +1202,10 @@ class model:
         - `parametricCoord`: vector of doubles
         - `derivatives`: vector of doubles
         """
-        api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
+        c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        api_derivatives_, api_derivatives_n_ = (
+        c_derivatives, c_derivatives_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
@@ -1213,13 +1213,13 @@ class model:
             gmsh.lib.gmshModelGetDerivative(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                api_parametricCoord_,
-                api_parametricCoord_n_,
-                ctypes.byref(api_derivatives_),
-                ctypes.byref(api_derivatives_n_),
+                c_parametricCoord,
+                c_parametricCoord_n,
+                ctypes.byref(c_derivatives),
+                ctypes.byref(c_derivatives_n),
                 ctypes.byref(ierr),
             )
-        return _ovectordouble(api_derivatives_, api_derivatives_n_.value)
+        return _ovectordouble(c_derivatives, c_derivatives_n.value)
 
     @staticmethod
     def getSecondDerivative(
@@ -1247,10 +1247,10 @@ class model:
         - `parametricCoord`: vector of doubles
         - `derivatives`: vector of doubles
         """
-        api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
+        c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        api_derivatives_, api_derivatives_n_ = (
+        c_derivatives, c_derivatives_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
@@ -1258,13 +1258,13 @@ class model:
             gmsh.lib.gmshModelGetSecondDerivative(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                api_parametricCoord_,
-                api_parametricCoord_n_,
-                ctypes.byref(api_derivatives_),
-                ctypes.byref(api_derivatives_n_),
+                c_parametricCoord,
+                c_parametricCoord_n,
+                ctypes.byref(c_derivatives),
+                ctypes.byref(c_derivatives_n),
                 ctypes.byref(ierr),
             )
-        return _ovectordouble(api_derivatives_, api_derivatives_n_.value)
+        return _ovectordouble(c_derivatives, c_derivatives_n.value)
 
     @staticmethod
     def getCurvature(
@@ -1286,10 +1286,10 @@ class model:
         - `parametricCoord`: vector of doubles
         - `curvatures`: vector of doubles
         """
-        api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
+        c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        api_curvatures_, api_curvatures_n_ = (
+        c_curvatures, c_curvatures_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
@@ -1297,13 +1297,13 @@ class model:
             gmsh.lib.gmshModelGetCurvature(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                api_parametricCoord_,
-                api_parametricCoord_n_,
-                ctypes.byref(api_curvatures_),
-                ctypes.byref(api_curvatures_n_),
+                c_parametricCoord,
+                c_parametricCoord_n,
+                ctypes.byref(c_curvatures),
+                ctypes.byref(c_curvatures_n),
                 ctypes.byref(ierr),
             )
-        return _ovectordouble(api_curvatures_, api_curvatures_n_.value)
+        return _ovectordouble(c_curvatures, c_curvatures_n.value)
 
     @staticmethod
     def getPrincipalCurvatures(
@@ -1331,45 +1331,45 @@ class model:
         - `directionMax`: vector of doubles
         - `directionMin`: vector of doubles
         """
-        api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
+        c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        api_curvatureMax_, api_curvatureMax_n_ = (
+        c_curvatureMax, c_curvatureMax_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
-        api_curvatureMin_, api_curvatureMin_n_ = (
+        c_curvatureMin, c_curvatureMin_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
-        api_directionMax_, api_directionMax_n_ = (
+        c_directionMax, c_directionMax_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
-        api_directionMin_, api_directionMin_n_ = (
+        c_directionMin, c_directionMin_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetPrincipalCurvatures(
                 ctypes.c_int(tag),
-                api_parametricCoord_,
-                api_parametricCoord_n_,
-                ctypes.byref(api_curvatureMax_),
-                ctypes.byref(api_curvatureMax_n_),
-                ctypes.byref(api_curvatureMin_),
-                ctypes.byref(api_curvatureMin_n_),
-                ctypes.byref(api_directionMax_),
-                ctypes.byref(api_directionMax_n_),
-                ctypes.byref(api_directionMin_),
-                ctypes.byref(api_directionMin_n_),
+                c_parametricCoord,
+                c_parametricCoord_n,
+                ctypes.byref(c_curvatureMax),
+                ctypes.byref(c_curvatureMax_n),
+                ctypes.byref(c_curvatureMin),
+                ctypes.byref(c_curvatureMin_n),
+                ctypes.byref(c_directionMax),
+                ctypes.byref(c_directionMax_n),
+                ctypes.byref(c_directionMin),
+                ctypes.byref(c_directionMin_n),
                 ctypes.byref(ierr),
             )
         return (
-            _ovectordouble(api_curvatureMax_, api_curvatureMax_n_.value),
-            _ovectordouble(api_curvatureMin_, api_curvatureMin_n_.value),
-            _ovectordouble(api_directionMax_, api_directionMax_n_.value),
-            _ovectordouble(api_directionMin_, api_directionMin_n_.value),
+            _ovectordouble(c_curvatureMax, c_curvatureMax_n.value),
+            _ovectordouble(c_curvatureMin, c_curvatureMin_n.value),
+            _ovectordouble(c_directionMax, c_directionMax_n.value),
+            _ovectordouble(c_directionMin, c_directionMin_n.value),
         )
 
     @staticmethod
@@ -1390,23 +1390,23 @@ class model:
         - `parametricCoord`: vector of doubles
         - `normals`: vector of doubles
         """
-        api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
+        c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        api_normals_, api_normals_n_ = (
+        c_normals, c_normals_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetNormal(
                 ctypes.c_int(tag),
-                api_parametricCoord_,
-                api_parametricCoord_n_,
-                ctypes.byref(api_normals_),
-                ctypes.byref(api_normals_n_),
+                c_parametricCoord,
+                c_parametricCoord_n,
+                ctypes.byref(c_normals),
+                ctypes.byref(c_normals_n),
                 ctypes.byref(ierr),
             )
-        return _ovectordouble(api_normals_, api_normals_n_.value)
+        return _ovectordouble(c_normals, c_normals_n.value)
 
     @staticmethod
     def getParametrization(
@@ -1429,8 +1429,8 @@ class model:
         - `coord`: vector of doubles
         - `parametricCoord`: vector of doubles
         """
-        api_coord_, api_coord_n_ = _ivectordouble(coord)
-        api_parametricCoord_, api_parametricCoord_n_ = (
+        c_coord, c_coord_n = _ivectordouble(coord)
+        c_parametricCoord, c_parametricCoord_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
@@ -1438,15 +1438,13 @@ class model:
             gmsh.lib.gmshModelGetParametrization(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                api_coord_,
-                api_coord_n_,
-                ctypes.byref(api_parametricCoord_),
-                ctypes.byref(api_parametricCoord_n_),
+                c_coord,
+                c_coord_n,
+                ctypes.byref(c_parametricCoord),
+                ctypes.byref(c_parametricCoord_n),
                 ctypes.byref(ierr),
             )
-        return _ovectordouble(
-            api_parametricCoord_, api_parametricCoord_n_.value
-        )
+        return _ovectordouble(c_parametricCoord, c_parametricCoord_n.value)
 
     @staticmethod
     def getParametrizationBounds(
@@ -1465,27 +1463,21 @@ class model:
         - `min`: vector of doubles
         - `max`: vector of doubles
         """
-        api_min_, api_min_n_ = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
-        api_max_, api_max_n_ = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_min, c_min_n = (ctypes.POINTER(ctypes.c_double)(), ctypes.c_size_t())
+        c_max, c_max_n = (ctypes.POINTER(ctypes.c_double)(), ctypes.c_size_t())
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetParametrizationBounds(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                ctypes.byref(api_min_),
-                ctypes.byref(api_min_n_),
-                ctypes.byref(api_max_),
-                ctypes.byref(api_max_n_),
+                ctypes.byref(c_min),
+                ctypes.byref(c_min_n),
+                ctypes.byref(c_max),
+                ctypes.byref(c_max_n),
                 ctypes.byref(ierr),
             )
         return (
-            _ovectordouble(api_min_, api_min_n_.value),
-            _ovectordouble(api_max_, api_max_n_.value),
+            _ovectordouble(c_min, c_min_n.value),
+            _ovectordouble(c_max, c_max_n.value),
         )
 
     @staticmethod
@@ -1508,13 +1500,13 @@ class model:
         - `coord`: vector of doubles
         - `parametric`: boolean
         """
-        api_coord_, api_coord_n_ = _ivectordouble(coord)
+        c_coord, c_coord_n = _ivectordouble(coord)
         with _ErrorCode() as ierr:
             return gmsh.lib.gmshModelIsInside(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                api_coord_,
-                api_coord_n_,
+                c_coord,
+                c_coord_n,
                 ctypes.c_int(bool(parametric)),
                 ctypes.byref(ierr),
             )
@@ -1541,12 +1533,12 @@ class model:
         - `closestCoord`: vector of doubles
         - `parametricCoord`: vector of doubles
         """
-        api_coord_, api_coord_n_ = _ivectordouble(coord)
-        api_closestCoord_, api_closestCoord_n_ = (
+        c_coord, c_coord_n = _ivectordouble(coord)
+        c_closestCoord, c_closestCoord_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
-        api_parametricCoord_, api_parametricCoord_n_ = (
+        c_parametricCoord, c_parametricCoord_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
@@ -1554,17 +1546,17 @@ class model:
             gmsh.lib.gmshModelGetClosestPoint(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                api_coord_,
-                api_coord_n_,
-                ctypes.byref(api_closestCoord_),
-                ctypes.byref(api_closestCoord_n_),
-                ctypes.byref(api_parametricCoord_),
-                ctypes.byref(api_parametricCoord_n_),
+                c_coord,
+                c_coord_n,
+                ctypes.byref(c_closestCoord),
+                ctypes.byref(c_closestCoord_n),
+                ctypes.byref(c_parametricCoord),
+                ctypes.byref(c_parametricCoord_n),
                 ctypes.byref(ierr),
             )
         return (
-            _ovectordouble(api_closestCoord_, api_closestCoord_n_.value),
-            _ovectordouble(api_parametricCoord_, api_parametricCoord_n_.value),
+            _ovectordouble(c_closestCoord, c_closestCoord_n.value),
+            _ovectordouble(c_parametricCoord, c_parametricCoord_n.value),
         )
 
     @staticmethod
@@ -1595,10 +1587,10 @@ class model:
         - `surfaceParametricCoord`: vector of doubles
         - `which`: integer
         """
-        api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
+        c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        api_surfaceParametricCoord_, api_surfaceParametricCoord_n_ = (
+        c_surfaceParametricCoord, c_surfaceParametricCoord_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
@@ -1606,16 +1598,16 @@ class model:
             gmsh.lib.gmshModelReparametrizeOnSurface(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                api_parametricCoord_,
-                api_parametricCoord_n_,
+                c_parametricCoord,
+                c_parametricCoord_n,
                 ctypes.c_int(surfaceTag),
-                ctypes.byref(api_surfaceParametricCoord_),
-                ctypes.byref(api_surfaceParametricCoord_n_),
+                ctypes.byref(c_surfaceParametricCoord),
+                ctypes.byref(c_surfaceParametricCoord_n),
                 ctypes.c_int(which),
                 ctypes.byref(ierr),
             )
         return _ovectordouble(
-            api_surfaceParametricCoord_, api_surfaceParametricCoord_n_.value
+            c_surfaceParametricCoord, c_surfaceParametricCoord_n.value
         )
 
     @staticmethod
@@ -1636,11 +1628,11 @@ class model:
         - `value`: integer
         - `recursive`: boolean
         """
-        api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+        c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelSetVisibility(
-                api_dimTags_,
-                api_dimTags_n_,
+                c_dimTags,
+                c_dimTags_n,
                 ctypes.c_int(value),
                 ctypes.c_int(bool(recursive)),
                 ctypes.byref(ierr),
@@ -1659,15 +1651,15 @@ class model:
         - `tag`: integer
         - `value`: integer
         """
-        api_value_ = ctypes.c_int()
+        c_value = ctypes.c_int()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetVisibility(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                ctypes.byref(api_value_),
+                ctypes.byref(c_value),
                 ctypes.byref(ierr),
             )
-        return api_value_.value
+        return c_value.value
 
     @staticmethod
     def setVisibilityPerWindow(value: int, *, windowIndex: int = 0) -> None:
@@ -1712,11 +1704,11 @@ class model:
         - `a`: integer
         - `recursive`: boolean
         """
-        api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+        c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelSetColor(
-                api_dimTags_,
-                api_dimTags_n_,
+                c_dimTags,
+                c_dimTags_n,
                 ctypes.c_int(r),
                 ctypes.c_int(g),
                 ctypes.c_int(b),
@@ -1743,21 +1735,21 @@ class model:
         - `b`: integer
         - `a`: integer
         """
-        api_r_ = ctypes.c_int()
-        api_g_ = ctypes.c_int()
-        api_b_ = ctypes.c_int()
-        api_a_ = ctypes.c_int()
+        c_r = ctypes.c_int()
+        c_g = ctypes.c_int()
+        c_b = ctypes.c_int()
+        c_a = ctypes.c_int()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetColor(
                 ctypes.c_int(dim),
                 ctypes.c_int(tag),
-                ctypes.byref(api_r_),
-                ctypes.byref(api_g_),
-                ctypes.byref(api_b_),
-                ctypes.byref(api_a_),
+                ctypes.byref(c_r),
+                ctypes.byref(c_g),
+                ctypes.byref(c_b),
+                ctypes.byref(c_a),
                 ctypes.byref(ierr),
             )
-        return (api_r_.value, api_g_.value, api_b_.value, api_a_.value)
+        return (c_r.value, c_g.value, c_b.value, c_a.value)
 
     @staticmethod
     def setCoordinates(tag: int, x: float, y: float, z: float) -> None:
@@ -1790,12 +1782,12 @@ class model:
         - `name`: string
         - `values`: vector of strings
         """
-        api_values_, api_values_n_ = _ivectorstring(values)
+        c_values, c_values_n = _ivectorstring(values)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelSetAttribute(
                 ctypes.c_char_p(name.encode()),
-                api_values_,
-                api_values_n_,
+                c_values,
+                c_values_n,
                 ctypes.byref(ierr),
             )
 
@@ -1811,18 +1803,18 @@ class model:
         - `name`: string
         - `values`: vector of strings
         """
-        api_values_, api_values_n_ = (
+        c_values, c_values_n = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetAttribute(
                 ctypes.c_char_p(name.encode()),
-                ctypes.byref(api_values_),
-                ctypes.byref(api_values_n_),
+                ctypes.byref(c_values),
+                ctypes.byref(c_values_n),
                 ctypes.byref(ierr),
             )
-        return _ovectorstring(api_values_, api_values_n_.value)
+        return _ovectorstring(c_values, c_values_n.value)
 
     @staticmethod
     def getAttributeNames() -> builtins.list[str]:
@@ -1835,17 +1827,17 @@ class model:
         Types:
         - `names`: vector of strings
         """
-        api_names_, api_names_n_ = (
+        c_names, c_names_n = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetAttributeNames(
-                ctypes.byref(api_names_),
-                ctypes.byref(api_names_n_),
+                ctypes.byref(c_names),
+                ctypes.byref(c_names_n),
                 ctypes.byref(ierr),
             )
-        return _ovectorstring(api_names_, api_names_n_.value)
+        return _ovectorstring(c_names, c_names_n.value)
 
     @staticmethod
     def removeAttribute(name: str) -> None:
@@ -1896,15 +1888,15 @@ class model:
             - `elementTags`: vector of sizes
             - `partitions`: vector of integers
             """
-            api_elementTags_, api_elementTags_n_ = _ivectorsize(elementTags)
-            api_partitions_, api_partitions_n_ = _ivectorint(partitions)
+            c_elementTags, c_elementTags_n = _ivectorsize(elementTags)
+            c_partitions, c_partitions_n = _ivectorint(partitions)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshPartition(
                     ctypes.c_int(numPart),
-                    api_elementTags_,
-                    api_elementTags_n_,
-                    api_partitions_,
-                    api_partitions_n_,
+                    c_elementTags,
+                    c_elementTags_n,
+                    c_partitions,
+                    c_partitions_n,
                     ctypes.byref(ierr),
                 )
 
@@ -1943,14 +1935,14 @@ class model:
             - `niter`: integer
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshOptimize(
                     ctypes.c_char_p(method.encode()),
                     ctypes.c_int(bool(force)),
                     ctypes.c_int(niter),
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.byref(ierr),
                 )
 
@@ -2000,18 +1992,18 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = (
+            c_dimTags, c_dimTags_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetLastEntityError(
-                    ctypes.byref(api_dimTags_),
-                    ctypes.byref(api_dimTags_n_),
+                    ctypes.byref(c_dimTags),
+                    ctypes.byref(c_dimTags_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
+            return _ovectorpair(c_dimTags, c_dimTags_n.value)
 
         @staticmethod
         def getLastNodeError() -> list[int]:
@@ -2025,16 +2017,16 @@ class model:
             Types:
             - `nodeTags`: vector of sizes
             """
-            api_nodeTags_ = ctypes.POINTER(ctypes.c_size_t)()
-            api_nodeTags_n_ = ctypes.c_size_t()
+            c_nodeTags = ctypes.POINTER(ctypes.c_size_t)()
+            c_nodeTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetLastNodeError(
-                    ctypes.byref(api_nodeTags_),
-                    ctypes.byref(api_nodeTags_n_),
+                    ctypes.byref(c_nodeTags),
+                    ctypes.byref(c_nodeTags_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorsize(api_nodeTags_, api_nodeTags_n_.value)
+            return _ovectorsize(c_nodeTags, c_nodeTags_n.value)
 
         @staticmethod
         def clear(dimTags: Sequence[tuple[int, int]] = ()) -> None:
@@ -2049,10 +2041,10 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshClear(
-                    api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                    c_dimTags, c_dimTags_n, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -2071,13 +2063,13 @@ class model:
             - `tag`: integer
             - `elementTags`: vector of sizes
             """
-            api_elementTags_, api_elementTags_n_ = _ivectorsize(elementTags)
+            c_elementTags, c_elementTags_n = _ivectorsize(elementTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshRemoveElements(
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
-                    api_elementTags_,
-                    api_elementTags_n_,
+                    c_elementTags,
+                    c_elementTags_n,
                     ctypes.byref(ierr),
                 )
 
@@ -2092,10 +2084,10 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshReverse(
-                    api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                    c_dimTags, c_dimTags_n, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -2107,10 +2099,10 @@ class model:
             Types:
             - `elementTags`: vector of sizes
             """
-            api_elementTags_, api_elementTags_n_ = _ivectorsize(elementTags)
+            c_elementTags, c_elementTags_n = _ivectorsize(elementTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshReverseElements(
-                    api_elementTags_, api_elementTags_n_, ctypes.byref(ierr)
+                    c_elementTags, c_elementTags_n, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -2130,16 +2122,16 @@ class model:
             - `affineTransform`: vector of doubles
             - `dimTags`: vector of pairs of integers
             """
-            api_affineTransform_, api_affineTransform_n_ = _ivectordouble(
+            c_affineTransform, c_affineTransform_n = _ivectordouble(
                 affineTransform
             )
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshAffineTransform(
-                    api_affineTransform_,
-                    api_affineTransform_n_,
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_affineTransform,
+                    c_affineTransform_n,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.byref(ierr),
                 )
 
@@ -2178,26 +2170,26 @@ class model:
             - `includeBoundary`: boolean
             - `returnParametricCoord`: boolean
             """
-            api_nodeTags_, api_nodeTags_n_ = (
+            c_nodeTags, c_nodeTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_coord_, api_coord_n_ = (
+            c_coord, c_coord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
-            api_parametricCoord_, api_parametricCoord_n_ = (
+            c_parametricCoord, c_parametricCoord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetNodes(
-                    ctypes.byref(api_nodeTags_),
-                    ctypes.byref(api_nodeTags_n_),
-                    ctypes.byref(api_coord_),
-                    ctypes.byref(api_coord_n_),
-                    ctypes.byref(api_parametricCoord_),
-                    ctypes.byref(api_parametricCoord_n_),
+                    ctypes.byref(c_nodeTags),
+                    ctypes.byref(c_nodeTags_n),
+                    ctypes.byref(c_coord),
+                    ctypes.byref(c_coord_n),
+                    ctypes.byref(c_parametricCoord),
+                    ctypes.byref(c_parametricCoord_n),
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(includeBoundary)),
@@ -2206,11 +2198,9 @@ class model:
                 )
 
             return (
-                _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
-                _ovectordouble(api_coord_, api_coord_n_.value),
-                _ovectordouble(
-                    api_parametricCoord_, api_parametricCoord_n_.value
-                ),
+                _ovectorsize(c_nodeTags, c_nodeTags_n.value),
+                _ovectordouble(c_coord, c_coord_n.value),
+                _ovectordouble(c_parametricCoord, c_parametricCoord_n.value),
             )
 
         @staticmethod
@@ -2235,38 +2225,36 @@ class model:
             - `tag`: integer
             - `returnParametricCoord`: boolean
             """
-            api_nodeTags_, api_nodeTags_n_ = (
+            c_nodeTags, c_nodeTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_coord_, api_coord_n_ = (
+            c_coord, c_coord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
-            api_parametricCoord_, api_parametricCoord_n_ = (
+            c_parametricCoord, c_parametricCoord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetNodesByElementType(
                     ctypes.c_int(elementType),
-                    ctypes.byref(api_nodeTags_),
-                    ctypes.byref(api_nodeTags_n_),
-                    ctypes.byref(api_coord_),
-                    ctypes.byref(api_coord_n_),
-                    ctypes.byref(api_parametricCoord_),
-                    ctypes.byref(api_parametricCoord_n_),
+                    ctypes.byref(c_nodeTags),
+                    ctypes.byref(c_nodeTags_n),
+                    ctypes.byref(c_coord),
+                    ctypes.byref(c_coord_n),
+                    ctypes.byref(c_parametricCoord),
+                    ctypes.byref(c_parametricCoord_n),
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(returnParametricCoord)),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
-                _ovectordouble(api_coord_, api_coord_n_.value),
-                _ovectordouble(
-                    api_parametricCoord_, api_parametricCoord_n_.value
-                ),
+                _ovectorsize(c_nodeTags, c_nodeTags_n.value),
+                _ovectordouble(c_coord, c_coord_n.value),
+                _ovectordouble(c_parametricCoord, c_parametricCoord_n.value),
             )
 
         @staticmethod
@@ -2288,35 +2276,33 @@ class model:
             - `dim`: integer
             - `tag`: integer
             """
-            api_coord_, api_coord_n_ = (
+            c_coord, c_coord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
-            api_parametricCoord_, api_parametricCoord_n_ = (
+            c_parametricCoord, c_parametricCoord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
-            api_dim_ = ctypes.c_int()
-            api_tag_ = ctypes.c_int()
+            c_dim = ctypes.c_int()
+            c_tag = ctypes.c_int()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetNode(
                     ctypes.c_size_t(nodeTag),
-                    ctypes.byref(api_coord_),
-                    ctypes.byref(api_coord_n_),
-                    ctypes.byref(api_parametricCoord_),
-                    ctypes.byref(api_parametricCoord_n_),
-                    ctypes.byref(api_dim_),
-                    ctypes.byref(api_tag_),
+                    ctypes.byref(c_coord),
+                    ctypes.byref(c_coord_n),
+                    ctypes.byref(c_parametricCoord),
+                    ctypes.byref(c_parametricCoord_n),
+                    ctypes.byref(c_dim),
+                    ctypes.byref(c_tag),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectordouble(api_coord_, api_coord_n_.value),
-                _ovectordouble(
-                    api_parametricCoord_, api_parametricCoord_n_.value
-                ),
-                api_dim_.value,
-                api_tag_.value,
+                _ovectordouble(c_coord, c_coord_n.value),
+                _ovectordouble(c_parametricCoord, c_parametricCoord_n.value),
+                c_dim.value,
+                c_tag.value,
             )
 
         @staticmethod
@@ -2337,17 +2323,17 @@ class model:
             - `coord`: vector of doubles
             - `parametricCoord`: vector of doubles
             """
-            api_coord_, api_coord_n_ = _ivectordouble(coord)
-            api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
+            c_coord, c_coord_n = _ivectordouble(coord)
+            c_parametricCoord, c_parametricCoord_n = _ivectordouble(
                 parametricCoord
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshSetNode(
                     ctypes.c_size_t(nodeTag),
-                    api_coord_,
-                    api_coord_n_,
-                    api_parametricCoord_,
-                    api_parametricCoord_n_,
+                    c_coord,
+                    c_coord_n,
+                    c_parametricCoord,
+                    c_parametricCoord_n,
                     ctypes.byref(ierr),
                 )
 
@@ -2398,11 +2384,11 @@ class model:
             - `nodeTags`: vector of sizes
             - `coord`: vector of doubles
             """
-            api_nodeTags_, api_nodeTags_n_ = (
+            c_nodeTags, c_nodeTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_coord_, api_coord_n_ = (
+            c_coord, c_coord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
@@ -2410,16 +2396,16 @@ class model:
                 gmsh.lib.gmshModelMeshGetNodesForPhysicalGroup(
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
-                    ctypes.byref(api_nodeTags_),
-                    ctypes.byref(api_nodeTags_n_),
-                    ctypes.byref(api_coord_),
-                    ctypes.byref(api_coord_n_),
+                    ctypes.byref(c_nodeTags),
+                    ctypes.byref(c_nodeTags_n),
+                    ctypes.byref(c_coord),
+                    ctypes.byref(c_coord_n),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
-                _ovectordouble(api_coord_, api_coord_n_.value),
+                _ovectorsize(c_nodeTags, c_nodeTags_n.value),
+                _ovectordouble(c_coord, c_coord_n.value),
             )
 
         @staticmethod
@@ -2433,13 +2419,13 @@ class model:
             Types:
             - `maxTag`: size
             """
-            api_maxTag_ = ctypes.c_size_t()
+            c_maxTag = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetMaxNodeTag(
-                    ctypes.byref(api_maxTag_), ctypes.byref(ierr)
+                    ctypes.byref(c_maxTag), ctypes.byref(ierr)
                 )
 
-            return api_maxTag_.value
+            return c_maxTag.value
 
         @staticmethod
         def addNodes(
@@ -2468,21 +2454,21 @@ class model:
             - `coord`: vector of doubles
             - `parametricCoord`: vector of doubles
             """
-            api_nodeTags_, api_nodeTags_n_ = _ivectorsize(nodeTags)
-            api_coord_, api_coord_n_ = _ivectordouble(coord)
-            api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
+            c_nodeTags, c_nodeTags_n = _ivectorsize(nodeTags)
+            c_coord, c_coord_n = _ivectordouble(coord)
+            c_parametricCoord, c_parametricCoord_n = _ivectordouble(
                 parametricCoord
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshAddNodes(
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
-                    api_nodeTags_,
-                    api_nodeTags_n_,
-                    api_coord_,
-                    api_coord_n_,
-                    api_parametricCoord_,
-                    api_parametricCoord_n_,
+                    c_nodeTags,
+                    c_nodeTags_n,
+                    c_coord,
+                    c_coord_n,
+                    c_parametricCoord,
+                    c_parametricCoord_n,
                     ctypes.byref(ierr),
                 )
 
@@ -2545,43 +2531,41 @@ class model:
             - `dim`: integer
             - `tag`: integer
             """
-            api_elementTypes_, api_elementTypes_n_ = (
+            c_elementTypes, c_elementTypes_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
-            api_elementTags_, api_elementTags_n_, api_elementTags_nn_ = (
+            c_elementTags, c_elementTags_n, c_elementTags_nn = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_size_t))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_nodeTags_, api_nodeTags_n_, api_nodeTags_nn_ = (
+            c_nodeTags, c_nodeTags_n, c_nodeTags_nn = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_size_t))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetElements(
-                    ctypes.byref(api_elementTypes_),
-                    ctypes.byref(api_elementTypes_n_),
-                    ctypes.byref(api_elementTags_),
-                    ctypes.byref(api_elementTags_n_),
-                    ctypes.byref(api_elementTags_nn_),
-                    ctypes.byref(api_nodeTags_),
-                    ctypes.byref(api_nodeTags_n_),
-                    ctypes.byref(api_nodeTags_nn_),
+                    ctypes.byref(c_elementTypes),
+                    ctypes.byref(c_elementTypes_n),
+                    ctypes.byref(c_elementTags),
+                    ctypes.byref(c_elementTags_n),
+                    ctypes.byref(c_elementTags_nn),
+                    ctypes.byref(c_nodeTags),
+                    ctypes.byref(c_nodeTags_n),
+                    ctypes.byref(c_nodeTags_nn),
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorint(api_elementTypes_, api_elementTypes_n_.value),
+                _ovectorint(c_elementTypes, c_elementTypes_n.value),
                 _ovectorvectorsize(
-                    api_elementTags_, api_elementTags_n_, api_elementTags_nn_
+                    c_elementTags, c_elementTags_n, c_elementTags_nn
                 ),
-                _ovectorvectorsize(
-                    api_nodeTags_, api_nodeTags_n_, api_nodeTags_nn_
-                ),
+                _ovectorvectorsize(c_nodeTags, c_nodeTags_n, c_nodeTags_nn),
             )
 
         @staticmethod
@@ -2603,29 +2587,29 @@ class model:
             - `dim`: integer
             - `tag`: integer
             """
-            api_elementType_ = ctypes.c_int()
-            api_nodeTags_, api_nodeTags_n_ = (
+            c_elementType = ctypes.c_int()
+            c_nodeTags, c_nodeTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_dim_ = ctypes.c_int()
-            api_tag_ = ctypes.c_int()
+            c_dim = ctypes.c_int()
+            c_tag = ctypes.c_int()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetElement(
                     ctypes.c_size_t(elementTag),
-                    ctypes.byref(api_elementType_),
-                    ctypes.byref(api_nodeTags_),
-                    ctypes.byref(api_nodeTags_n_),
-                    ctypes.byref(api_dim_),
-                    ctypes.byref(api_tag_),
+                    ctypes.byref(c_elementType),
+                    ctypes.byref(c_nodeTags),
+                    ctypes.byref(c_nodeTags_n),
+                    ctypes.byref(c_dim),
+                    ctypes.byref(c_tag),
                     ctypes.byref(ierr),
                 )
 
             return (
-                api_elementType_.value,
-                _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
-                api_dim_.value,
-                api_tag_.value,
+                c_elementType.value,
+                _ovectorsize(c_nodeTags, c_nodeTags_n.value),
+                c_dim.value,
+                c_tag.value,
             )
 
         @staticmethod
@@ -2661,39 +2645,39 @@ class model:
             - `dim`: integer
             - `strict`: boolean
             """
-            api_elementTag_ = ctypes.c_size_t()
-            api_elementType_ = ctypes.c_int()
-            api_nodeTags_, api_nodeTags_n_ = (
+            c_elementTag = ctypes.c_size_t()
+            c_elementType = ctypes.c_int()
+            c_nodeTags, c_nodeTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_u_ = ctypes.c_double()
-            api_v_ = ctypes.c_double()
-            api_w_ = ctypes.c_double()
+            c_u = ctypes.c_double()
+            c_v = ctypes.c_double()
+            c_w = ctypes.c_double()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetElementByCoordinates(
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
-                    ctypes.byref(api_elementTag_),
-                    ctypes.byref(api_elementType_),
-                    ctypes.byref(api_nodeTags_),
-                    ctypes.byref(api_nodeTags_n_),
-                    ctypes.byref(api_u_),
-                    ctypes.byref(api_v_),
-                    ctypes.byref(api_w_),
+                    ctypes.byref(c_elementTag),
+                    ctypes.byref(c_elementType),
+                    ctypes.byref(c_nodeTags),
+                    ctypes.byref(c_nodeTags_n),
+                    ctypes.byref(c_u),
+                    ctypes.byref(c_v),
+                    ctypes.byref(c_w),
                     ctypes.c_int(dim),
                     ctypes.c_int(bool(strict)),
                     ctypes.byref(ierr),
                 )
 
             return (
-                api_elementTag_.value,
-                api_elementType_.value,
-                _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
-                api_u_.value,
-                api_v_.value,
-                api_w_.value,
+                c_elementTag.value,
+                c_elementType.value,
+                _ovectorsize(c_nodeTags, c_nodeTags_n.value),
+                c_u.value,
+                c_v.value,
+                c_w.value,
             )
 
         @staticmethod
@@ -2724,7 +2708,7 @@ class model:
             - `dim`: integer
             - `strict`: boolean
             """
-            api_elementTags_, api_elementTags_n_ = (
+            c_elementTags, c_elementTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
@@ -2733,14 +2717,14 @@ class model:
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
-                    ctypes.byref(api_elementTags_),
-                    ctypes.byref(api_elementTags_n_),
+                    ctypes.byref(c_elementTags),
+                    ctypes.byref(c_elementTags_n),
                     ctypes.c_int(dim),
                     ctypes.c_int(bool(strict)),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorsize(api_elementTags_, api_elementTags_n_.value)
+            return _ovectorsize(c_elementTags, c_elementTags_n.value)
 
         @staticmethod
         def getLocalCoordinatesInElement(
@@ -2765,22 +2749,22 @@ class model:
             - `v`: double
             - `w`: double
             """
-            api_u_ = ctypes.c_double()
-            api_v_ = ctypes.c_double()
-            api_w_ = ctypes.c_double()
+            c_u = ctypes.c_double()
+            c_v = ctypes.c_double()
+            c_w = ctypes.c_double()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetLocalCoordinatesInElement(
                     ctypes.c_size_t(elementTag),
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
-                    ctypes.byref(api_u_),
-                    ctypes.byref(api_v_),
-                    ctypes.byref(api_w_),
+                    ctypes.byref(c_u),
+                    ctypes.byref(c_v),
+                    ctypes.byref(c_w),
                     ctypes.byref(ierr),
                 )
 
-            return (api_u_.value, api_v_.value, api_w_.value)
+            return (c_u.value, c_v.value, c_w.value)
 
         @staticmethod
         def getElementTypes(dim: int = -1, tag: int = -1) -> list[int]:
@@ -2797,20 +2781,20 @@ class model:
             - `dim`: integer
             - `tag`: integer
             """
-            api_elementTypes_, api_elementTypes_n_ = (
+            c_elementTypes, c_elementTypes_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetElementTypes(
-                    ctypes.byref(api_elementTypes_),
-                    ctypes.byref(api_elementTypes_n_),
+                    ctypes.byref(c_elementTypes),
+                    ctypes.byref(c_elementTypes_n),
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorint(api_elementTypes_, api_elementTypes_n_.value)
+            return _ovectorint(c_elementTypes, c_elementTypes_n.value)
 
         @staticmethod
         def getElementType(
@@ -2861,37 +2845,35 @@ class model:
             - `localNodeCoord`: vector of doubles
             - `numPrimaryNodes`: integer
             """
-            api_elementName_ = ctypes.c_char_p()
-            api_dim_ = ctypes.c_int()
-            api_order_ = ctypes.c_int()
-            api_numNodes_ = ctypes.c_int()
-            api_localNodeCoord_, api_localNodeCoord_n_ = (
+            c_elementName = ctypes.c_char_p()
+            c_dim = ctypes.c_int()
+            c_order = ctypes.c_int()
+            c_numNodes = ctypes.c_int()
+            c_localNodeCoord, c_localNodeCoord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
-            api_numPrimaryNodes_ = ctypes.c_int()
+            c_numPrimaryNodes = ctypes.c_int()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetElementProperties(
                     ctypes.c_int(elementType),
-                    ctypes.byref(api_elementName_),
-                    ctypes.byref(api_dim_),
-                    ctypes.byref(api_order_),
-                    ctypes.byref(api_numNodes_),
-                    ctypes.byref(api_localNodeCoord_),
-                    ctypes.byref(api_localNodeCoord_n_),
-                    ctypes.byref(api_numPrimaryNodes_),
+                    ctypes.byref(c_elementName),
+                    ctypes.byref(c_dim),
+                    ctypes.byref(c_order),
+                    ctypes.byref(c_numNodes),
+                    ctypes.byref(c_localNodeCoord),
+                    ctypes.byref(c_localNodeCoord_n),
+                    ctypes.byref(c_numPrimaryNodes),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ostring(api_elementName_),
-                api_dim_.value,
-                api_order_.value,
-                api_numNodes_.value,
-                _ovectordouble(
-                    api_localNodeCoord_, api_localNodeCoord_n_.value
-                ),
-                api_numPrimaryNodes_.value,
+                _ostring(c_elementName),
+                c_dim.value,
+                c_order.value,
+                c_numNodes.value,
+                _ovectordouble(c_localNodeCoord, c_localNodeCoord_n.value),
+                c_numPrimaryNodes.value,
             )
 
         @staticmethod
@@ -2924,21 +2906,21 @@ class model:
             - `task`: size
             - `numTasks`: size
             """
-            api_elementTags_, api_elementTags_n_ = (
+            c_elementTags, c_elementTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_nodeTags_, api_nodeTags_n_ = (
+            c_nodeTags, c_nodeTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetElementsByType(
                     ctypes.c_int(elementType),
-                    ctypes.byref(api_elementTags_),
-                    ctypes.byref(api_elementTags_n_),
-                    ctypes.byref(api_nodeTags_),
-                    ctypes.byref(api_nodeTags_n_),
+                    ctypes.byref(c_elementTags),
+                    ctypes.byref(c_elementTags_n),
+                    ctypes.byref(c_nodeTags),
+                    ctypes.byref(c_nodeTags_n),
                     ctypes.c_int(tag),
                     ctypes.c_size_t(task),
                     ctypes.c_size_t(numTasks),
@@ -2946,8 +2928,8 @@ class model:
                 )
 
             return (
-                _ovectorsize(api_elementTags_, api_elementTags_n_.value),
-                _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
+                _ovectorsize(c_elementTags, c_elementTags_n.value),
+                _ovectorsize(c_nodeTags, c_nodeTags_n.value),
             )
 
         @staticmethod
@@ -2961,13 +2943,13 @@ class model:
             Types:
             - `maxTag`: size
             """
-            api_maxTag_ = ctypes.c_size_t()
+            c_maxTag = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetMaxElementTag(
-                    ctypes.byref(api_maxTag_), ctypes.byref(ierr)
+                    ctypes.byref(c_maxTag), ctypes.byref(ierr)
                 )
 
-            return api_maxTag_.value
+            return c_maxTag.value
 
         @staticmethod
         def getElementQualities(
@@ -3002,26 +2984,24 @@ class model:
             - `task`: size
             - `numTasks`: size
             """
-            api_elementTags_, api_elementTags_n_ = _ivectorsize(elementTags)
-            api_elementsQuality_, api_elementsQuality_n_ = (
+            c_elementTags, c_elementTags_n = _ivectorsize(elementTags)
+            c_elementsQuality, c_elementsQuality_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetElementQualities(
-                    api_elementTags_,
-                    api_elementTags_n_,
-                    ctypes.byref(api_elementsQuality_),
-                    ctypes.byref(api_elementsQuality_n_),
+                    c_elementTags,
+                    c_elementTags_n,
+                    ctypes.byref(c_elementsQuality),
+                    ctypes.byref(c_elementsQuality_n),
                     ctypes.c_char_p(qualityName.encode()),
                     ctypes.c_size_t(task),
                     ctypes.c_size_t(numTasks),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectordouble(
-                api_elementsQuality_, api_elementsQuality_n_.value
-            )
+            return _ovectordouble(c_elementsQuality, c_elementsQuality_n.value)
 
         @staticmethod
         def addElements(
@@ -3051,25 +3031,25 @@ class model:
             - `elementTags`: vector of vectors of integers (size)
             - `nodeTags`: vector of vectors of integers (size)
             """
-            api_elementTypes_, api_elementTypes_n_ = _ivectorint(elementTypes)
-            api_elementTags_, api_elementTags_n_, api_elementTags_nn_ = (
+            c_elementTypes, c_elementTypes_n = _ivectorint(elementTypes)
+            c_elementTags, c_elementTags_n, c_elementTags_nn = (
                 _ivectorvectorsize(elementTags)
             )
-            api_nodeTags_, api_nodeTags_n_, api_nodeTags_nn_ = (
-                _ivectorvectorsize(nodeTags)
+            c_nodeTags, c_nodeTags_n, c_nodeTags_nn = _ivectorvectorsize(
+                nodeTags
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshAddElements(
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
-                    api_elementTypes_,
-                    api_elementTypes_n_,
-                    api_elementTags_,
-                    api_elementTags_n_,
-                    api_elementTags_nn_,
-                    api_nodeTags_,
-                    api_nodeTags_n_,
-                    api_nodeTags_nn_,
+                    c_elementTypes,
+                    c_elementTypes_n,
+                    c_elementTags,
+                    c_elementTags_n,
+                    c_elementTags_nn,
+                    c_nodeTags,
+                    c_nodeTags_n,
+                    c_nodeTags_nn,
                     ctypes.byref(ierr),
                 )
 
@@ -3096,16 +3076,16 @@ class model:
             - `elementTags`: vector of sizes
             - `nodeTags`: vector of sizes
             """
-            api_elementTags_, api_elementTags_n_ = _ivectorsize(elementTags)
-            api_nodeTags_, api_nodeTags_n_ = _ivectorsize(nodeTags)
+            c_elementTags, c_elementTags_n = _ivectorsize(elementTags)
+            c_nodeTags, c_nodeTags_n = _ivectorsize(nodeTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshAddElementsByType(
                     ctypes.c_int(tag),
                     ctypes.c_int(elementType),
-                    api_elementTags_,
-                    api_elementTags_n_,
-                    api_nodeTags_,
-                    api_nodeTags_n_,
+                    c_elementTags,
+                    c_elementTags_n,
+                    c_nodeTags,
+                    c_nodeTags_n,
                     ctypes.byref(ierr),
                 )
 
@@ -3136,11 +3116,11 @@ class model:
             - `localCoord`: vector of doubles
             - `weights`: vector of doubles
             """
-            api_localCoord_, api_localCoord_n_ = (
+            c_localCoord, c_localCoord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
-            api_weights_, api_weights_n_ = (
+            c_weights, c_weights_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
@@ -3148,16 +3128,16 @@ class model:
                 gmsh.lib.gmshModelMeshGetIntegrationPoints(
                     ctypes.c_int(elementType),
                     ctypes.c_char_p(integrationType.encode()),
-                    ctypes.byref(api_localCoord_),
-                    ctypes.byref(api_localCoord_n_),
-                    ctypes.byref(api_weights_),
-                    ctypes.byref(api_weights_n_),
+                    ctypes.byref(c_localCoord),
+                    ctypes.byref(c_localCoord_n),
+                    ctypes.byref(c_weights),
+                    ctypes.byref(c_weights_n),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectordouble(api_localCoord_, api_localCoord_n_.value),
-                _ovectordouble(api_weights_, api_weights_n_.value),
+                _ovectordouble(c_localCoord, c_localCoord_n.value),
+                _ovectordouble(c_weights, c_weights_n.value),
             )
 
         @staticmethod
@@ -3199,30 +3179,30 @@ class model:
             - `task`: size
             - `numTasks`: size
             """
-            api_localCoord_, api_localCoord_n_ = _ivectordouble(localCoord)
-            api_jacobians_, api_jacobians_n_ = (
+            c_localCoord, c_localCoord_n = _ivectordouble(localCoord)
+            c_jacobians, c_jacobians_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
-            api_determinants_, api_determinants_n_ = (
+            c_determinants, c_determinants_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
-            api_coord_, api_coord_n_ = (
+            c_coord, c_coord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetJacobians(
                     ctypes.c_int(elementType),
-                    api_localCoord_,
-                    api_localCoord_n_,
-                    ctypes.byref(api_jacobians_),
-                    ctypes.byref(api_jacobians_n_),
-                    ctypes.byref(api_determinants_),
-                    ctypes.byref(api_determinants_n_),
-                    ctypes.byref(api_coord_),
-                    ctypes.byref(api_coord_n_),
+                    c_localCoord,
+                    c_localCoord_n,
+                    ctypes.byref(c_jacobians),
+                    ctypes.byref(c_jacobians_n),
+                    ctypes.byref(c_determinants),
+                    ctypes.byref(c_determinants_n),
+                    ctypes.byref(c_coord),
+                    ctypes.byref(c_coord_n),
                     ctypes.c_int(tag),
                     ctypes.c_size_t(task),
                     ctypes.c_size_t(numTasks),
@@ -3230,9 +3210,9 @@ class model:
                 )
 
             return (
-                _ovectordouble(api_jacobians_, api_jacobians_n_.value),
-                _ovectordouble(api_determinants_, api_determinants_n_.value),
-                _ovectordouble(api_coord_, api_coord_n_.value),
+                _ovectordouble(c_jacobians, c_jacobians_n.value),
+                _ovectordouble(c_determinants, c_determinants_n.value),
+                _ovectordouble(c_coord, c_coord_n.value),
             )
 
         @staticmethod
@@ -3262,37 +3242,37 @@ class model:
             - `determinants`: vector of doubles
             - `coord`: vector of doubles
             """
-            api_localCoord_, api_localCoord_n_ = _ivectordouble(localCoord)
-            api_jacobians_, api_jacobians_n_ = (
+            c_localCoord, c_localCoord_n = _ivectordouble(localCoord)
+            c_jacobians, c_jacobians_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
-            api_determinants_, api_determinants_n_ = (
+            c_determinants, c_determinants_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
-            api_coord_, api_coord_n_ = (
+            c_coord, c_coord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetJacobian(
                     ctypes.c_size_t(elementTag),
-                    api_localCoord_,
-                    api_localCoord_n_,
-                    ctypes.byref(api_jacobians_),
-                    ctypes.byref(api_jacobians_n_),
-                    ctypes.byref(api_determinants_),
-                    ctypes.byref(api_determinants_n_),
-                    ctypes.byref(api_coord_),
-                    ctypes.byref(api_coord_n_),
+                    c_localCoord,
+                    c_localCoord_n,
+                    ctypes.byref(c_jacobians),
+                    ctypes.byref(c_jacobians_n),
+                    ctypes.byref(c_determinants),
+                    ctypes.byref(c_determinants_n),
+                    ctypes.byref(c_coord),
+                    ctypes.byref(c_coord_n),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectordouble(api_jacobians_, api_jacobians_n_.value),
-                _ovectordouble(api_determinants_, api_determinants_n_.value),
-                _ovectordouble(api_coord_, api_coord_n_.value),
+                _ovectordouble(c_jacobians, c_jacobians_n.value),
+                _ovectordouble(c_determinants, c_determinants_n.value),
+                _ovectordouble(c_coord, c_coord_n.value),
             )
 
         @staticmethod
@@ -3337,37 +3317,35 @@ class model:
             - `numOrientations`: integer
             - `wantedOrientations`: vector of integers
             """
-            api_localCoord_, api_localCoord_n_ = _ivectordouble(localCoord)
-            api_numComponents_ = ctypes.c_int()
-            api_basisFunctions_, api_basisFunctions_n_ = (
+            c_localCoord, c_localCoord_n = _ivectordouble(localCoord)
+            c_numComponents = ctypes.c_int()
+            c_basisFunctions, c_basisFunctions_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
-            api_numOrientations_ = ctypes.c_int()
-            api_wantedOrientations_, api_wantedOrientations_n_ = _ivectorint(
+            c_numOrientations = ctypes.c_int()
+            c_wantedOrientations, c_wantedOrientations_n = _ivectorint(
                 wantedOrientations
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetBasisFunctions(
                     ctypes.c_int(elementType),
-                    api_localCoord_,
-                    api_localCoord_n_,
+                    c_localCoord,
+                    c_localCoord_n,
                     ctypes.c_char_p(functionSpaceType.encode()),
-                    ctypes.byref(api_numComponents_),
-                    ctypes.byref(api_basisFunctions_),
-                    ctypes.byref(api_basisFunctions_n_),
-                    ctypes.byref(api_numOrientations_),
-                    api_wantedOrientations_,
-                    api_wantedOrientations_n_,
+                    ctypes.byref(c_numComponents),
+                    ctypes.byref(c_basisFunctions),
+                    ctypes.byref(c_basisFunctions_n),
+                    ctypes.byref(c_numOrientations),
+                    c_wantedOrientations,
+                    c_wantedOrientations_n,
                     ctypes.byref(ierr),
                 )
 
             return (
-                api_numComponents_.value,
-                _ovectordouble(
-                    api_basisFunctions_, api_basisFunctions_n_.value
-                ),
-                api_numOrientations_.value,
+                c_numComponents.value,
+                _ovectordouble(c_basisFunctions, c_basisFunctions_n.value),
+                c_numOrientations.value,
             )
 
         @staticmethod
@@ -3400,16 +3378,16 @@ class model:
             - `task`: size
             - `numTasks`: size
             """
-            (
-                api_basisFunctionsOrientation_,
-                api_basisFunctionsOrientation_n_,
-            ) = ctypes.POINTER(ctypes.c_int)(), ctypes.c_size_t()
+            (c_basisFunctionsOrientation, c_basisFunctionsOrientation_n) = (
+                ctypes.POINTER(ctypes.c_int)(),
+                ctypes.c_size_t(),
+            )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetBasisFunctionsOrientation(
                     ctypes.c_int(elementType),
                     ctypes.c_char_p(functionSpaceType.encode()),
-                    ctypes.byref(api_basisFunctionsOrientation_),
-                    ctypes.byref(api_basisFunctionsOrientation_n_),
+                    ctypes.byref(c_basisFunctionsOrientation),
+                    ctypes.byref(c_basisFunctionsOrientation_n),
                     ctypes.c_int(tag),
                     ctypes.c_size_t(task),
                     ctypes.c_size_t(numTasks),
@@ -3417,8 +3395,8 @@ class model:
                 )
 
             return _ovectorint(
-                api_basisFunctionsOrientation_,
-                api_basisFunctionsOrientation_n_.value,
+                c_basisFunctionsOrientation,
+                c_basisFunctionsOrientation_n.value,
             )
 
         @staticmethod
@@ -3436,16 +3414,16 @@ class model:
             - `functionSpaceType`: string
             - `basisFunctionsOrientation`: integer
             """
-            api_basisFunctionsOrientation_ = ctypes.c_int()
+            c_basisFunctionsOrientation = ctypes.c_int()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetBasisFunctionsOrientationForElement(
                     ctypes.c_size_t(elementTag),
                     ctypes.c_char_p(functionSpaceType.encode()),
-                    ctypes.byref(api_basisFunctionsOrientation_),
+                    ctypes.byref(c_basisFunctionsOrientation),
                     ctypes.byref(ierr),
                 )
 
-            return api_basisFunctionsOrientation_.value
+            return c_basisFunctionsOrientation.value
 
         @staticmethod
         def getNumberOfOrientations(
@@ -3488,31 +3466,29 @@ class model:
             - `edgeTags`: vector of sizes
             - `edgeOrientations`: vector of integers
             """
-            api_nodeTags_, api_nodeTags_n_ = _ivectorsize(nodeTags)
-            api_edgeTags_, api_edgeTags_n_ = (
+            c_nodeTags, c_nodeTags_n = _ivectorsize(nodeTags)
+            c_edgeTags, c_edgeTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_edgeOrientations_, api_edgeOrientations_n_ = (
+            c_edgeOrientations, c_edgeOrientations_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetEdges(
-                    api_nodeTags_,
-                    api_nodeTags_n_,
-                    ctypes.byref(api_edgeTags_),
-                    ctypes.byref(api_edgeTags_n_),
-                    ctypes.byref(api_edgeOrientations_),
-                    ctypes.byref(api_edgeOrientations_n_),
+                    c_nodeTags,
+                    c_nodeTags_n,
+                    ctypes.byref(c_edgeTags),
+                    ctypes.byref(c_edgeTags_n),
+                    ctypes.byref(c_edgeOrientations),
+                    ctypes.byref(c_edgeOrientations_n),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorsize(api_edgeTags_, api_edgeTags_n_.value),
-                _ovectorint(
-                    api_edgeOrientations_, api_edgeOrientations_n_.value
-                ),
+                _ovectorsize(c_edgeTags, c_edgeTags_n.value),
+                _ovectorint(c_edgeOrientations, c_edgeOrientations_n.value),
             )
 
         @staticmethod
@@ -3535,32 +3511,30 @@ class model:
             - `faceTags`: vector of sizes
             - `faceOrientations`: vector of integers
             """
-            api_nodeTags_, api_nodeTags_n_ = _ivectorsize(nodeTags)
-            api_faceTags_, api_faceTags_n_ = (
+            c_nodeTags, c_nodeTags_n = _ivectorsize(nodeTags)
+            c_faceTags, c_faceTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_faceOrientations_, api_faceOrientations_n_ = (
+            c_faceOrientations, c_faceOrientations_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetFaces(
                     ctypes.c_int(faceType),
-                    api_nodeTags_,
-                    api_nodeTags_n_,
-                    ctypes.byref(api_faceTags_),
-                    ctypes.byref(api_faceTags_n_),
-                    ctypes.byref(api_faceOrientations_),
-                    ctypes.byref(api_faceOrientations_n_),
+                    c_nodeTags,
+                    c_nodeTags_n,
+                    ctypes.byref(c_faceTags),
+                    ctypes.byref(c_faceTags_n),
+                    ctypes.byref(c_faceOrientations),
+                    ctypes.byref(c_faceOrientations_n),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorsize(api_faceTags_, api_faceTags_n_.value),
-                _ovectorint(
-                    api_faceOrientations_, api_faceOrientations_n_.value
-                ),
+                _ovectorsize(c_faceTags, c_faceTags_n.value),
+                _ovectorint(c_faceOrientations, c_faceOrientations_n.value),
             )
 
         @staticmethod
@@ -3573,10 +3547,10 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshCreateEdges(
-                    api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                    c_dimTags, c_dimTags_n, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -3589,10 +3563,10 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshCreateFaces(
-                    api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                    c_dimTags, c_dimTags_n, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -3609,26 +3583,26 @@ class model:
             - `edgeTags`: vector of sizes
             - `edgeNodes`: vector of sizes
             """
-            api_edgeTags_, api_edgeTags_n_ = (
+            c_edgeTags, c_edgeTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_edgeNodes_, api_edgeNodes_n_ = (
+            c_edgeNodes, c_edgeNodes_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetAllEdges(
-                    ctypes.byref(api_edgeTags_),
-                    ctypes.byref(api_edgeTags_n_),
-                    ctypes.byref(api_edgeNodes_),
-                    ctypes.byref(api_edgeNodes_n_),
+                    ctypes.byref(c_edgeTags),
+                    ctypes.byref(c_edgeTags_n),
+                    ctypes.byref(c_edgeNodes),
+                    ctypes.byref(c_edgeNodes_n),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorsize(api_edgeTags_, api_edgeTags_n_.value),
-                _ovectorsize(api_edgeNodes_, api_edgeNodes_n_.value),
+                _ovectorsize(c_edgeTags, c_edgeTags_n.value),
+                _ovectorsize(c_edgeNodes, c_edgeNodes_n.value),
             )
 
         @staticmethod
@@ -3646,27 +3620,27 @@ class model:
             - `faceTags`: vector of sizes
             - `faceNodes`: vector of sizes
             """
-            api_faceTags_, api_faceTags_n_ = (
+            c_faceTags, c_faceTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_faceNodes_, api_faceNodes_n_ = (
+            c_faceNodes, c_faceNodes_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetAllFaces(
                     ctypes.c_int(faceType),
-                    ctypes.byref(api_faceTags_),
-                    ctypes.byref(api_faceTags_n_),
-                    ctypes.byref(api_faceNodes_),
-                    ctypes.byref(api_faceNodes_n_),
+                    ctypes.byref(c_faceTags),
+                    ctypes.byref(c_faceTags_n),
+                    ctypes.byref(c_faceNodes),
+                    ctypes.byref(c_faceNodes_n),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorsize(api_faceTags_, api_faceTags_n_.value),
-                _ovectorsize(api_faceNodes_, api_faceNodes_n_.value),
+                _ovectorsize(c_faceTags, c_faceTags_n.value),
+                _ovectorsize(c_faceNodes, c_faceNodes_n.value),
             )
 
         @staticmethod
@@ -3682,14 +3656,14 @@ class model:
             - `edgeTags`: vector of sizes
             - `edgeNodes`: vector of sizes
             """
-            api_edgeTags_, api_edgeTags_n_ = _ivectorsize(edgeTags)
-            api_edgeNodes_, api_edgeNodes_n_ = _ivectorsize(edgeNodes)
+            c_edgeTags, c_edgeTags_n = _ivectorsize(edgeTags)
+            c_edgeNodes, c_edgeNodes_n = _ivectorsize(edgeNodes)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshAddEdges(
-                    api_edgeTags_,
-                    api_edgeTags_n_,
-                    api_edgeNodes_,
-                    api_edgeNodes_n_,
+                    c_edgeTags,
+                    c_edgeTags_n,
+                    c_edgeNodes,
+                    c_edgeNodes_n,
                     ctypes.byref(ierr),
                 )
 
@@ -3707,15 +3681,15 @@ class model:
             - `faceTags`: vector of sizes
             - `faceNodes`: vector of sizes
             """
-            api_faceTags_, api_faceTags_n_ = _ivectorsize(faceTags)
-            api_faceNodes_, api_faceNodes_n_ = _ivectorsize(faceNodes)
+            c_faceTags, c_faceTags_n = _ivectorsize(faceTags)
+            c_faceNodes, c_faceNodes_n = _ivectorsize(faceNodes)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshAddFaces(
                     ctypes.c_int(faceType),
-                    api_faceTags_,
-                    api_faceTags_n_,
-                    api_faceNodes_,
-                    api_faceNodes_n_,
+                    c_faceTags,
+                    c_faceTags_n,
+                    c_faceNodes,
+                    c_faceNodes_n,
                     ctypes.byref(ierr),
                 )
 
@@ -3748,15 +3722,15 @@ class model:
             - `tag`: integer
             - `returnCoord`: boolean
             """
-            api_typeKeys_, api_typeKeys_n_ = (
+            c_typeKeys, c_typeKeys_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
-            api_entityKeys_, api_entityKeys_n_ = (
+            c_entityKeys, c_entityKeys_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_coord_, api_coord_n_ = (
+            c_coord, c_coord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
@@ -3764,21 +3738,21 @@ class model:
                 gmsh.lib.gmshModelMeshGetKeys(
                     ctypes.c_int(elementType),
                     ctypes.c_char_p(functionSpaceType.encode()),
-                    ctypes.byref(api_typeKeys_),
-                    ctypes.byref(api_typeKeys_n_),
-                    ctypes.byref(api_entityKeys_),
-                    ctypes.byref(api_entityKeys_n_),
-                    ctypes.byref(api_coord_),
-                    ctypes.byref(api_coord_n_),
+                    ctypes.byref(c_typeKeys),
+                    ctypes.byref(c_typeKeys_n),
+                    ctypes.byref(c_entityKeys),
+                    ctypes.byref(c_entityKeys_n),
+                    ctypes.byref(c_coord),
+                    ctypes.byref(c_coord_n),
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(returnCoord)),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorint(api_typeKeys_, api_typeKeys_n_.value),
-                _ovectorsize(api_entityKeys_, api_entityKeys_n_.value),
-                _ovectordouble(api_coord_, api_coord_n_.value),
+                _ovectorint(c_typeKeys, c_typeKeys_n.value),
+                _ovectorsize(c_entityKeys, c_entityKeys_n.value),
+                _ovectordouble(c_coord, c_coord_n.value),
             )
 
         @staticmethod
@@ -3802,15 +3776,15 @@ class model:
             - `coord`: vector of doubles
             - `returnCoord`: boolean
             """
-            api_typeKeys_, api_typeKeys_n_ = (
+            c_typeKeys, c_typeKeys_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
-            api_entityKeys_, api_entityKeys_n_ = (
+            c_entityKeys, c_entityKeys_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_coord_, api_coord_n_ = (
+            c_coord, c_coord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
@@ -3818,20 +3792,20 @@ class model:
                 gmsh.lib.gmshModelMeshGetKeysForElement(
                     ctypes.c_size_t(elementTag),
                     ctypes.c_char_p(functionSpaceType.encode()),
-                    ctypes.byref(api_typeKeys_),
-                    ctypes.byref(api_typeKeys_n_),
-                    ctypes.byref(api_entityKeys_),
-                    ctypes.byref(api_entityKeys_n_),
-                    ctypes.byref(api_coord_),
-                    ctypes.byref(api_coord_n_),
+                    ctypes.byref(c_typeKeys),
+                    ctypes.byref(c_typeKeys_n),
+                    ctypes.byref(c_entityKeys),
+                    ctypes.byref(c_entityKeys_n),
+                    ctypes.byref(c_coord),
+                    ctypes.byref(c_coord_n),
                     ctypes.c_int(bool(returnCoord)),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorint(api_typeKeys_, api_typeKeys_n_.value),
-                _ovectorsize(api_entityKeys_, api_entityKeys_n_.value),
-                _ovectordouble(api_coord_, api_coord_n_.value),
+                _ovectorint(c_typeKeys, c_typeKeys_n.value),
+                _ovectorsize(c_entityKeys, c_entityKeys_n.value),
+                _ovectordouble(c_coord, c_coord_n.value),
             )
 
         @staticmethod
@@ -3880,26 +3854,26 @@ class model:
             - `functionSpaceType`: string
             - `infoKeys`: vector of pairs of integers
             """
-            api_typeKeys_, api_typeKeys_n_ = _ivectorint(typeKeys)
-            api_entityKeys_, api_entityKeys_n_ = _ivectorsize(entityKeys)
-            api_infoKeys_, api_infoKeys_n_ = (
+            c_typeKeys, c_typeKeys_n = _ivectorint(typeKeys)
+            c_entityKeys, c_entityKeys_n = _ivectorsize(entityKeys)
+            c_infoKeys, c_infoKeys_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetKeysInformation(
-                    api_typeKeys_,
-                    api_typeKeys_n_,
-                    api_entityKeys_,
-                    api_entityKeys_n_,
+                    c_typeKeys,
+                    c_typeKeys_n,
+                    c_entityKeys,
+                    c_entityKeys_n,
                     ctypes.c_int(elementType),
                     ctypes.c_char_p(functionSpaceType.encode()),
-                    ctypes.byref(api_infoKeys_),
-                    ctypes.byref(api_infoKeys_n_),
+                    ctypes.byref(c_infoKeys),
+                    ctypes.byref(c_infoKeys_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_infoKeys_, api_infoKeys_n_.value)
+            return _ovectorpair(c_infoKeys, c_infoKeys_n.value)
 
         @staticmethod
         def getBarycenters(
@@ -3933,7 +3907,7 @@ class model:
             - `task`: size
             - `numTasks`: size
             """
-            api_barycenters_, api_barycenters_n_ = (
+            c_barycenters, c_barycenters_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
@@ -3943,14 +3917,14 @@ class model:
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(fast)),
                     ctypes.c_int(bool(primary)),
-                    ctypes.byref(api_barycenters_),
-                    ctypes.byref(api_barycenters_n_),
+                    ctypes.byref(c_barycenters),
+                    ctypes.byref(c_barycenters_n),
                     ctypes.c_size_t(task),
                     ctypes.c_size_t(numTasks),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectordouble(api_barycenters_, api_barycenters_n_.value)
+            return _ovectordouble(c_barycenters, c_barycenters_n.value)
 
         @staticmethod
         def getElementEdgeNodes(
@@ -3982,15 +3956,15 @@ class model:
             - `task`: size
             - `numTasks`: size
             """
-            api_nodeTags_, api_nodeTags_n_ = (
+            c_nodeTags, c_nodeTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetElementEdgeNodes(
                     ctypes.c_int(elementType),
-                    ctypes.byref(api_nodeTags_),
-                    ctypes.byref(api_nodeTags_n_),
+                    ctypes.byref(c_nodeTags),
+                    ctypes.byref(c_nodeTags_n),
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(primary)),
                     ctypes.c_size_t(task),
@@ -3998,7 +3972,7 @@ class model:
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorsize(api_nodeTags_, api_nodeTags_n_.value)
+            return _ovectorsize(c_nodeTags, c_nodeTags_n.value)
 
         @staticmethod
         def getElementFaceNodes(
@@ -4033,7 +4007,7 @@ class model:
             - `task`: size
             - `numTasks`: size
             """
-            api_nodeTags_, api_nodeTags_n_ = (
+            c_nodeTags, c_nodeTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
@@ -4041,8 +4015,8 @@ class model:
                 gmsh.lib.gmshModelMeshGetElementFaceNodes(
                     ctypes.c_int(elementType),
                     ctypes.c_int(faceType),
-                    ctypes.byref(api_nodeTags_),
-                    ctypes.byref(api_nodeTags_n_),
+                    ctypes.byref(c_nodeTags),
+                    ctypes.byref(c_nodeTags_n),
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(primary)),
                     ctypes.c_size_t(task),
@@ -4050,7 +4024,7 @@ class model:
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorsize(api_nodeTags_, api_nodeTags_n_.value)
+            return _ovectorsize(c_nodeTags, c_nodeTags_n.value)
 
         @staticmethod
         def getGhostElements(
@@ -4069,11 +4043,11 @@ class model:
             - `elementTags`: vector of sizes
             - `partitions`: vector of integers
             """
-            api_elementTags_, api_elementTags_n_ = (
+            c_elementTags, c_elementTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_partitions_, api_partitions_n_ = (
+            c_partitions, c_partitions_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
@@ -4081,16 +4055,16 @@ class model:
                 gmsh.lib.gmshModelMeshGetGhostElements(
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
-                    ctypes.byref(api_elementTags_),
-                    ctypes.byref(api_elementTags_n_),
-                    ctypes.byref(api_partitions_),
-                    ctypes.byref(api_partitions_n_),
+                    ctypes.byref(c_elementTags),
+                    ctypes.byref(c_elementTags_n),
+                    ctypes.byref(c_partitions),
+                    ctypes.byref(c_partitions_n),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorsize(api_elementTags_, api_elementTags_n_.value),
-                _ovectorint(api_partitions_, api_partitions_n_.value),
+                _ovectorsize(c_elementTags, c_elementTags_n.value),
+                _ovectorint(c_partitions, c_partitions_n.value),
             )
 
         @staticmethod
@@ -4105,11 +4079,11 @@ class model:
             - `dimTags`: vector of pairs of integers
             - `size`: double
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshSetSize(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(size),
                     ctypes.byref(ierr),
                 )
@@ -4129,21 +4103,21 @@ class model:
             - `dimTags`: vector of pairs of integers
             - `sizes`: vector of doubles
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_sizes_, api_sizes_n_ = (
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
+            c_sizes, c_sizes_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetSizes(
-                    api_dimTags_,
-                    api_dimTags_n_,
-                    ctypes.byref(api_sizes_),
-                    ctypes.byref(api_sizes_n_),
+                    c_dimTags,
+                    c_dimTags_n,
+                    ctypes.byref(c_sizes),
+                    ctypes.byref(c_sizes_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectordouble(api_sizes_, api_sizes_n_.value)
+            return _ovectordouble(c_sizes, c_sizes_n.value)
 
         @staticmethod
         def setSizeAtParametricPoints(
@@ -4164,18 +4138,18 @@ class model:
             - `parametricCoord`: vector of doubles
             - `sizes`: vector of doubles
             """
-            api_parametricCoord_, api_parametricCoord_n_ = _ivectordouble(
+            c_parametricCoord, c_parametricCoord_n = _ivectordouble(
                 parametricCoord
             )
-            api_sizes_, api_sizes_n_ = _ivectordouble(sizes)
+            c_sizes, c_sizes_n = _ivectordouble(sizes)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshSetSizeAtParametricPoints(
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
-                    api_parametricCoord_,
-                    api_parametricCoord_n_,
-                    api_sizes_,
-                    api_sizes_n_,
+                    c_parametricCoord,
+                    c_parametricCoord_n,
+                    c_sizes,
+                    c_sizes_n,
                     ctypes.byref(ierr),
                 )
 
@@ -4200,7 +4174,7 @@ class model:
             """
             # TODO: tidy this global mutation?
             #   https://github.com/Rupt/tmsh/issues/14
-            gmsh.api_callback_type_ = ctypes.CFUNCTYPE(
+            gmsh.c_callback_type = ctypes.CFUNCTYPE(
                 ctypes.c_double,
                 ctypes.c_int,
                 ctypes.c_int,
@@ -4210,14 +4184,14 @@ class model:
                 ctypes.c_double,
                 ctypes.c_void_p,
             )
-            gmsh.api_callback_ = gmsh.api_callback_type_(
+            gmsh.c_callback = gmsh.c_callback_type(
                 lambda dim, tag, x, y, z, lc, _: callback(
                     dim, tag, x, y, z, lc
                 )
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshSetSizeCallback(
-                    gmsh.api_callback_, None, ctypes.byref(ierr)
+                    gmsh.c_callback, None, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -4281,13 +4255,13 @@ class model:
             - `arrangement`: string
             - `cornerTags`: vector of integers
             """
-            api_cornerTags_, api_cornerTags_n_ = _ivectorint(cornerTags)
+            c_cornerTags, c_cornerTags_n = _ivectorint(cornerTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshSetTransfiniteSurface(
                     ctypes.c_int(tag),
                     ctypes.c_char_p(arrangement.encode()),
-                    api_cornerTags_,
-                    api_cornerTags_n_,
+                    c_cornerTags,
+                    c_cornerTags_n,
                     ctypes.byref(ierr),
                 )
 
@@ -4305,12 +4279,12 @@ class model:
             - `tag`: integer
             - `cornerTags`: vector of integers
             """
-            api_cornerTags_, api_cornerTags_n_ = _ivectorint(cornerTags)
+            c_cornerTags, c_cornerTags_n = _ivectorint(cornerTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshSetTransfiniteVolume(
                     ctypes.c_int(tag),
-                    api_cornerTags_,
-                    api_cornerTags_n_,
+                    c_cornerTags,
+                    c_cornerTags_n,
                     ctypes.byref(ierr),
                 )
 
@@ -4337,11 +4311,11 @@ class model:
             - `cornerAngle`: double
             - `recombine`: boolean
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshSetTransfiniteAutomatic(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(cornerAngle),
                     ctypes.c_int(bool(recombine)),
                     ctypes.byref(ierr),
@@ -4466,13 +4440,10 @@ class model:
             - `dim`: integer
             - `tags`: vector of integers
             """
-            api_tags_, api_tags_n_ = _ivectorint(tags)
+            c_tags, c_tags_n = _ivectorint(tags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshSetCompound(
-                    ctypes.c_int(dim),
-                    api_tags_,
-                    api_tags_n_,
-                    ctypes.byref(ierr),
+                    ctypes.c_int(dim), c_tags, c_tags_n, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -4503,10 +4474,10 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshRemoveConstraints(
-                    api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                    c_dimTags, c_dimTags_n, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -4531,12 +4502,12 @@ class model:
             - `inDim`: integer
             - `inTag`: integer
             """
-            api_tags_, api_tags_n_ = _ivectorint(tags)
+            c_tags, c_tags_n = _ivectorint(tags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshEmbed(
                     ctypes.c_int(dim),
-                    api_tags_,
-                    api_tags_n_,
+                    c_tags,
+                    c_tags_n,
                     ctypes.c_int(inDim),
                     ctypes.c_int(inTag),
                     ctypes.byref(ierr),
@@ -4556,11 +4527,11 @@ class model:
             - `dimTags`: vector of pairs of integers
             - `dim`: integer
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshRemoveEmbedded(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_int(dim),
                     ctypes.byref(ierr),
                 )
@@ -4579,7 +4550,7 @@ class model:
             - `tag`: integer
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = (
+            c_dimTags, c_dimTags_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
@@ -4587,12 +4558,12 @@ class model:
                 gmsh.lib.gmshModelMeshGetEmbedded(
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
-                    ctypes.byref(api_dimTags_),
-                    ctypes.byref(api_dimTags_n_),
+                    ctypes.byref(c_dimTags),
+                    ctypes.byref(c_dimTags_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
+            return _ovectorpair(c_dimTags, c_dimTags_n.value)
 
         @staticmethod
         def reorderElements(
@@ -4608,13 +4579,13 @@ class model:
             - `tag`: integer
             - `ordering`: vector of sizes
             """
-            api_ordering_, api_ordering_n_ = _ivectorsize(ordering)
+            c_ordering, c_ordering_n = _ivectorsize(ordering)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshReorderElements(
                     ctypes.c_int(elementType),
                     ctypes.c_int(tag),
-                    api_ordering_,
-                    api_ordering_n_,
+                    c_ordering,
+                    c_ordering_n,
                     ctypes.byref(ierr),
                 )
 
@@ -4640,30 +4611,30 @@ class model:
             - `method`: string
             - `elementTags`: vector of sizes
             """
-            api_oldTags_, api_oldTags_n_ = (
+            c_oldTags, c_oldTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_newTags_, api_newTags_n_ = (
+            c_newTags, c_newTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_elementTags_, api_elementTags_n_ = _ivectorsize(elementTags)
+            c_elementTags, c_elementTags_n = _ivectorsize(elementTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshComputeRenumbering(
-                    ctypes.byref(api_oldTags_),
-                    ctypes.byref(api_oldTags_n_),
-                    ctypes.byref(api_newTags_),
-                    ctypes.byref(api_newTags_n_),
+                    ctypes.byref(c_oldTags),
+                    ctypes.byref(c_oldTags_n),
+                    ctypes.byref(c_newTags),
+                    ctypes.byref(c_newTags_n),
                     ctypes.c_char_p(method.encode()),
-                    api_elementTags_,
-                    api_elementTags_n_,
+                    c_elementTags,
+                    c_elementTags_n,
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorsize(api_oldTags_, api_oldTags_n_.value),
-                _ovectorsize(api_newTags_, api_newTags_n_.value),
+                _ovectorsize(c_oldTags, c_oldTags_n.value),
+                _ovectorsize(c_newTags, c_newTags_n.value),
             )
 
         @staticmethod
@@ -4681,14 +4652,14 @@ class model:
             - `oldTags`: vector of sizes
             - `newTags`: vector of sizes
             """
-            api_oldTags_, api_oldTags_n_ = _ivectorsize(oldTags)
-            api_newTags_, api_newTags_n_ = _ivectorsize(newTags)
+            c_oldTags, c_oldTags_n = _ivectorsize(oldTags)
+            c_newTags, c_newTags_n = _ivectorsize(newTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshRenumberNodes(
-                    api_oldTags_,
-                    api_oldTags_n_,
-                    api_newTags_,
-                    api_newTags_n_,
+                    c_oldTags,
+                    c_oldTags_n,
+                    c_newTags,
+                    c_newTags_n,
                     ctypes.byref(ierr),
                 )
 
@@ -4708,14 +4679,14 @@ class model:
             - `oldTags`: vector of sizes
             - `newTags`: vector of sizes
             """
-            api_oldTags_, api_oldTags_n_ = _ivectorsize(oldTags)
-            api_newTags_, api_newTags_n_ = _ivectorsize(newTags)
+            c_oldTags, c_oldTags_n = _ivectorsize(oldTags)
+            c_newTags, c_newTags_n = _ivectorsize(newTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshRenumberElements(
-                    api_oldTags_,
-                    api_oldTags_n_,
-                    api_newTags_,
-                    api_newTags_n_,
+                    c_oldTags,
+                    c_oldTags_n,
+                    c_newTags,
+                    c_newTags_n,
                     ctypes.byref(ierr),
                 )
 
@@ -4743,20 +4714,20 @@ class model:
             - `tagsMaster`: vector of integers
             - `affineTransform`: vector of doubles
             """
-            api_tags_, api_tags_n_ = _ivectorint(tags)
-            api_tagsMaster_, api_tagsMaster_n_ = _ivectorint(tagsMaster)
-            api_affineTransform_, api_affineTransform_n_ = _ivectordouble(
+            c_tags, c_tags_n = _ivectorint(tags)
+            c_tagsMaster, c_tagsMaster_n = _ivectorint(tagsMaster)
+            c_affineTransform, c_affineTransform_n = _ivectordouble(
                 affineTransform
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshSetPeriodic(
                     ctypes.c_int(dim),
-                    api_tags_,
-                    api_tags_n_,
-                    api_tagsMaster_,
-                    api_tagsMaster_n_,
-                    api_affineTransform_,
-                    api_affineTransform_n_,
+                    c_tags,
+                    c_tags_n,
+                    c_tagsMaster,
+                    c_tagsMaster_n,
+                    c_affineTransform,
+                    c_affineTransform_n,
                     ctypes.byref(ierr),
                 )
 
@@ -4774,22 +4745,22 @@ class model:
             - `tags`: vector of integers
             - `tagMaster`: vector of integers
             """
-            api_tags_, api_tags_n_ = _ivectorint(tags)
-            api_tagMaster_, api_tagMaster_n_ = (
+            c_tags, c_tags_n = _ivectorint(tags)
+            c_tagMaster, c_tagMaster_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetPeriodic(
                     ctypes.c_int(dim),
-                    api_tags_,
-                    api_tags_n_,
-                    ctypes.byref(api_tagMaster_),
-                    ctypes.byref(api_tagMaster_n_),
+                    c_tags,
+                    c_tags_n,
+                    ctypes.byref(c_tagMaster),
+                    ctypes.byref(c_tagMaster_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorint(api_tagMaster_, api_tagMaster_n_.value)
+            return _ovectorint(c_tagMaster, c_tagMaster_n.value)
 
         @staticmethod
         def getPeriodicNodes(
@@ -4814,16 +4785,16 @@ class model:
             - `affineTransform`: vector of doubles
             - `includeHighOrderNodes`: boolean
             """
-            api_tagMaster_ = ctypes.c_int()
-            api_nodeTags_, api_nodeTags_n_ = (
+            c_tagMaster = ctypes.c_int()
+            c_nodeTags, c_nodeTags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_nodeTagsMaster_, api_nodeTagsMaster_n_ = (
+            c_nodeTagsMaster, c_nodeTagsMaster_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_affineTransform_, api_affineTransform_n_ = (
+            c_affineTransform, c_affineTransform_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
@@ -4831,24 +4802,22 @@ class model:
                 gmsh.lib.gmshModelMeshGetPeriodicNodes(
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
-                    ctypes.byref(api_tagMaster_),
-                    ctypes.byref(api_nodeTags_),
-                    ctypes.byref(api_nodeTags_n_),
-                    ctypes.byref(api_nodeTagsMaster_),
-                    ctypes.byref(api_nodeTagsMaster_n_),
-                    ctypes.byref(api_affineTransform_),
-                    ctypes.byref(api_affineTransform_n_),
+                    ctypes.byref(c_tagMaster),
+                    ctypes.byref(c_nodeTags),
+                    ctypes.byref(c_nodeTags_n),
+                    ctypes.byref(c_nodeTagsMaster),
+                    ctypes.byref(c_nodeTagsMaster_n),
+                    ctypes.byref(c_affineTransform),
+                    ctypes.byref(c_affineTransform_n),
                     ctypes.c_int(bool(includeHighOrderNodes)),
                     ctypes.byref(ierr),
                 )
 
             return (
-                api_tagMaster_.value,
-                _ovectorsize(api_nodeTags_, api_nodeTags_n_.value),
-                _ovectorsize(api_nodeTagsMaster_, api_nodeTagsMaster_n_.value),
-                _ovectordouble(
-                    api_affineTransform_, api_affineTransform_n_.value
-                ),
+                c_tagMaster.value,
+                _ovectorsize(c_nodeTags, c_nodeTags_n.value),
+                _ovectorsize(c_nodeTagsMaster, c_nodeTagsMaster_n.value),
+                _ovectordouble(c_affineTransform, c_affineTransform_n.value),
             )
 
         @staticmethod
@@ -4891,28 +4860,28 @@ class model:
             - `coordMaster`: vector of doubles
             - `returnCoord`: boolean
             """
-            api_tagMaster_ = ctypes.c_int()
-            api_typeKeys_, api_typeKeys_n_ = (
+            c_tagMaster = ctypes.c_int()
+            c_typeKeys, c_typeKeys_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
-            api_typeKeysMaster_, api_typeKeysMaster_n_ = (
+            c_typeKeysMaster, c_typeKeysMaster_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
-            api_entityKeys_, api_entityKeys_n_ = (
+            c_entityKeys, c_entityKeys_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_entityKeysMaster_, api_entityKeysMaster_n_ = (
+            c_entityKeysMaster, c_entityKeysMaster_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_coord_, api_coord_n_ = (
+            c_coord, c_coord_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
-            api_coordMaster_, api_coordMaster_n_ = (
+            c_coordMaster, c_coordMaster_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
@@ -4921,33 +4890,31 @@ class model:
                     ctypes.c_int(elementType),
                     ctypes.c_char_p(functionSpaceType.encode()),
                     ctypes.c_int(tag),
-                    ctypes.byref(api_tagMaster_),
-                    ctypes.byref(api_typeKeys_),
-                    ctypes.byref(api_typeKeys_n_),
-                    ctypes.byref(api_typeKeysMaster_),
-                    ctypes.byref(api_typeKeysMaster_n_),
-                    ctypes.byref(api_entityKeys_),
-                    ctypes.byref(api_entityKeys_n_),
-                    ctypes.byref(api_entityKeysMaster_),
-                    ctypes.byref(api_entityKeysMaster_n_),
-                    ctypes.byref(api_coord_),
-                    ctypes.byref(api_coord_n_),
-                    ctypes.byref(api_coordMaster_),
-                    ctypes.byref(api_coordMaster_n_),
+                    ctypes.byref(c_tagMaster),
+                    ctypes.byref(c_typeKeys),
+                    ctypes.byref(c_typeKeys_n),
+                    ctypes.byref(c_typeKeysMaster),
+                    ctypes.byref(c_typeKeysMaster_n),
+                    ctypes.byref(c_entityKeys),
+                    ctypes.byref(c_entityKeys_n),
+                    ctypes.byref(c_entityKeysMaster),
+                    ctypes.byref(c_entityKeysMaster_n),
+                    ctypes.byref(c_coord),
+                    ctypes.byref(c_coord_n),
+                    ctypes.byref(c_coordMaster),
+                    ctypes.byref(c_coordMaster_n),
                     ctypes.c_int(bool(returnCoord)),
                     ctypes.byref(ierr),
                 )
 
             return (
-                api_tagMaster_.value,
-                _ovectorint(api_typeKeys_, api_typeKeys_n_.value),
-                _ovectorint(api_typeKeysMaster_, api_typeKeysMaster_n_.value),
-                _ovectorsize(api_entityKeys_, api_entityKeys_n_.value),
-                _ovectorsize(
-                    api_entityKeysMaster_, api_entityKeysMaster_n_.value
-                ),
-                _ovectordouble(api_coord_, api_coord_n_.value),
-                _ovectordouble(api_coordMaster_, api_coordMaster_n_.value),
+                c_tagMaster.value,
+                _ovectorint(c_typeKeys, c_typeKeys_n.value),
+                _ovectorint(c_typeKeysMaster, c_typeKeysMaster_n.value),
+                _ovectorsize(c_entityKeys, c_entityKeys_n.value),
+                _ovectorsize(c_entityKeysMaster, c_entityKeysMaster_n.value),
+                _ovectordouble(c_coord, c_coord_n.value),
+                _ovectordouble(c_coordMaster, c_coordMaster_n.value),
             )
 
         @staticmethod
@@ -4975,21 +4942,21 @@ class model:
             - `tags`: vector of sizes
             - `dimTags`: vector of pairs of integers
             """
-            api_tags_, api_tags_n_ = (
+            c_tags, c_tags_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetDuplicateNodes(
-                    ctypes.byref(api_tags_),
-                    ctypes.byref(api_tags_n_),
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    ctypes.byref(c_tags),
+                    ctypes.byref(c_tags_n),
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorsize(api_tags_, api_tags_n_.value)
+            return _ovectorsize(c_tags, c_tags_n.value)
 
         @staticmethod
         def removeDuplicateNodes(
@@ -5003,10 +4970,10 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshRemoveDuplicateNodes(
-                    api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                    c_dimTags, c_dimTags_n, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -5022,10 +4989,10 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshRemoveDuplicateElements(
-                    api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                    c_dimTags, c_dimTags_n, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -5056,11 +5023,11 @@ class model:
             - `elementTags`: vector of sizes
             - `value`: integer
             """
-            api_elementTags_, api_elementTags_n_ = _ivectorsize(elementTags)
+            c_elementTags, c_elementTags_n = _ivectorsize(elementTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshSetVisibility(
-                    api_elementTags_,
-                    api_elementTags_n_,
+                    c_elementTags,
+                    c_elementTags_n,
                     ctypes.c_int(value),
                     ctypes.byref(ierr),
                 )
@@ -5077,21 +5044,21 @@ class model:
             - `elementTags`: vector of sizes
             - `values`: vector of integers
             """
-            api_elementTags_, api_elementTags_n_ = _ivectorsize(elementTags)
-            api_values_, api_values_n_ = (
+            c_elementTags, c_elementTags_n = _ivectorsize(elementTags)
+            c_values, c_values_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetVisibility(
-                    api_elementTags_,
-                    api_elementTags_n_,
-                    ctypes.byref(api_values_),
-                    ctypes.byref(api_values_n_),
+                    c_elementTags,
+                    c_elementTags_n,
+                    ctypes.byref(c_values),
+                    ctypes.byref(c_values_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorint(api_values_, api_values_n_.value)
+            return _ovectorint(c_values, c_values_n.value)
 
         @staticmethod
         def classifySurfaces(
@@ -5143,10 +5110,10 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshCreateGeometry(
-                    api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                    c_dimTags, c_dimTags_n, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -5201,20 +5168,18 @@ class model:
             - `subdomainTags`: vector of integers
             - `dims`: vector of integers
             """
-            api_domainTags_, api_domainTags_n_ = _ivectorint(domainTags)
-            api_subdomainTags_, api_subdomainTags_n_ = _ivectorint(
-                subdomainTags
-            )
-            api_dims_, api_dims_n_ = _ivectorint(dims)
+            c_domainTags, c_domainTags_n = _ivectorint(domainTags)
+            c_subdomainTags, c_subdomainTags_n = _ivectorint(subdomainTags)
+            c_dims, c_dims_n = _ivectorint(dims)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshAddHomologyRequest(
                     ctypes.c_char_p(type.encode()),
-                    api_domainTags_,
-                    api_domainTags_n_,
-                    api_subdomainTags_,
-                    api_subdomainTags_n_,
-                    api_dims_,
-                    api_dims_n_,
+                    c_domainTags,
+                    c_domainTags_n,
+                    c_subdomainTags,
+                    c_subdomainTags_n,
+                    c_dims,
+                    c_dims_n,
                     ctypes.byref(ierr),
                 )
 
@@ -5240,18 +5205,18 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = (
+            c_dimTags, c_dimTags_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshComputeHomology(
-                    ctypes.byref(api_dimTags_),
-                    ctypes.byref(api_dimTags_n_),
+                    ctypes.byref(c_dimTags),
+                    ctypes.byref(c_dimTags_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
+            return _ovectorpair(c_dimTags, c_dimTags_n.value)
 
         @staticmethod
         def computeCrossField() -> list[int]:
@@ -5266,18 +5231,18 @@ class model:
             Types:
             - `viewTags`: vector of integers
             """
-            api_viewTags_, api_viewTags_n_ = (
+            c_viewTags, c_viewTags_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshComputeCrossField(
-                    ctypes.byref(api_viewTags_),
-                    ctypes.byref(api_viewTags_n_),
+                    ctypes.byref(c_viewTags),
+                    ctypes.byref(c_viewTags_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorint(api_viewTags_, api_viewTags_n_.value)
+            return _ovectorint(c_viewTags, c_viewTags_n.value)
 
         @staticmethod
         def triangulate(coord: Sequence[float]) -> list[int]:
@@ -5293,21 +5258,21 @@ class model:
             - `coord`: vector of doubles
             - `tri`: vector of sizes
             """
-            api_coord_, api_coord_n_ = _ivectordouble(coord)
-            api_tri_, api_tri_n_ = (
+            c_coord, c_coord_n = _ivectordouble(coord)
+            c_tri, c_tri_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshTriangulate(
-                    api_coord_,
-                    api_coord_n_,
-                    ctypes.byref(api_tri_),
-                    ctypes.byref(api_tri_n_),
+                    c_coord,
+                    c_coord_n,
+                    ctypes.byref(c_tri),
+                    ctypes.byref(c_tri_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorsize(api_tri_, api_tri_n_.value)
+            return _ovectorsize(c_tri, c_tri_n.value)
 
         @staticmethod
         def tetrahedralize(coord: Sequence[float]) -> list[int]:
@@ -5323,21 +5288,21 @@ class model:
             - `coord`: vector of doubles
             - `tetra`: vector of sizes
             """
-            api_coord_, api_coord_n_ = _ivectordouble(coord)
-            api_tetra_, api_tetra_n_ = (
+            c_coord, c_coord_n = _ivectordouble(coord)
+            c_tetra, c_tetra_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshTetrahedralize(
-                    api_coord_,
-                    api_coord_n_,
-                    ctypes.byref(api_tetra_),
-                    ctypes.byref(api_tetra_n_),
+                    c_coord,
+                    c_coord_n,
+                    ctypes.byref(c_tetra),
+                    ctypes.byref(c_tetra_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorsize(api_tetra_, api_tetra_n_.value)
+            return _ovectorsize(c_tetra, c_tetra_n.value)
 
         class field:
             """Mesh size field functions"""
@@ -5390,18 +5355,18 @@ class model:
                 Types:
                 - `tags`: vector of integers
                 """
-                api_tags_, api_tags_n_ = (
+                c_tags, c_tags_n = (
                     ctypes.POINTER(ctypes.c_int)(),
                     ctypes.c_size_t(),
                 )
                 with _ErrorCode() as ierr:
                     gmsh.lib.gmshModelMeshFieldList(
-                        ctypes.byref(api_tags_),
-                        ctypes.byref(api_tags_n_),
+                        ctypes.byref(c_tags),
+                        ctypes.byref(c_tags_n),
                         ctypes.byref(ierr),
                     )
 
-                return _ovectorint(api_tags_, api_tags_n_.value)
+                return _ovectorint(c_tags, c_tags_n.value)
 
             @staticmethod
             def getType(tag: int) -> str:
@@ -5415,15 +5380,15 @@ class model:
                 - `tag`: integer
                 - `fileType`: string
                 """
-                api_fileType_ = ctypes.c_char_p()
+                c_fileType = ctypes.c_char_p()
                 with _ErrorCode() as ierr:
                     gmsh.lib.gmshModelMeshFieldGetType(
                         ctypes.c_int(tag),
-                        ctypes.byref(api_fileType_),
+                        ctypes.byref(c_fileType),
                         ctypes.byref(ierr),
                     )
 
-                return _ostring(api_fileType_)
+                return _ostring(c_fileType)
 
             @staticmethod
             def setNumber(tag: int, option: str, value: float) -> None:
@@ -5457,16 +5422,16 @@ class model:
                 - `option`: string
                 - `value`: double
                 """
-                api_value_ = ctypes.c_double()
+                c_value = ctypes.c_double()
                 with _ErrorCode() as ierr:
                     gmsh.lib.gmshModelMeshFieldGetNumber(
                         ctypes.c_int(tag),
                         ctypes.c_char_p(option.encode()),
-                        ctypes.byref(api_value_),
+                        ctypes.byref(c_value),
                         ctypes.byref(ierr),
                     )
 
-                return api_value_.value
+                return c_value.value
 
             @staticmethod
             def setString(tag: int, option: str, value: str) -> None:
@@ -5500,16 +5465,16 @@ class model:
                 - `option`: string
                 - `value`: string
                 """
-                api_value_ = ctypes.c_char_p()
+                c_value = ctypes.c_char_p()
                 with _ErrorCode() as ierr:
                     gmsh.lib.gmshModelMeshFieldGetString(
                         ctypes.c_int(tag),
                         ctypes.c_char_p(option.encode()),
-                        ctypes.byref(api_value_),
+                        ctypes.byref(c_value),
                         ctypes.byref(ierr),
                     )
 
-                return _ostring(api_value_)
+                return _ostring(c_value)
 
             @staticmethod
             def setNumbers(
@@ -5524,13 +5489,13 @@ class model:
                 - `option`: string
                 - `values`: vector of doubles
                 """
-                api_values_, api_values_n_ = _ivectordouble(values)
+                c_values, c_values_n = _ivectordouble(values)
                 with _ErrorCode() as ierr:
                     gmsh.lib.gmshModelMeshFieldSetNumbers(
                         ctypes.c_int(tag),
                         ctypes.c_char_p(option.encode()),
-                        api_values_,
-                        api_values_n_,
+                        c_values,
+                        c_values_n,
                         ctypes.byref(ierr),
                     )
 
@@ -5547,7 +5512,7 @@ class model:
                 - `option`: string
                 - `values`: vector of doubles
                 """
-                api_values_, api_values_n_ = (
+                c_values, c_values_n = (
                     ctypes.POINTER(ctypes.c_double)(),
                     ctypes.c_size_t(),
                 )
@@ -5555,12 +5520,12 @@ class model:
                     gmsh.lib.gmshModelMeshFieldGetNumbers(
                         ctypes.c_int(tag),
                         ctypes.c_char_p(option.encode()),
-                        ctypes.byref(api_values_),
-                        ctypes.byref(api_values_n_),
+                        ctypes.byref(c_values),
+                        ctypes.byref(c_values_n),
                         ctypes.byref(ierr),
                     )
 
-                return _ovectordouble(api_values_, api_values_n_.value)
+                return _ovectordouble(c_values, c_values_n.value)
 
             @staticmethod
             def setAsBackgroundMesh(tag: int) -> None:
@@ -5759,11 +5724,11 @@ class model:
             - `pointTags`: vector of integers
             - `tag`: integer
             """
-            api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
+            c_pointTags, c_pointTags_n = _ivectorint(pointTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddSpline(
-                    api_pointTags_,
-                    api_pointTags_n_,
+                    c_pointTags,
+                    c_pointTags_n,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
@@ -5784,11 +5749,11 @@ class model:
             - `pointTags`: vector of integers
             - `tag`: integer
             """
-            api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
+            c_pointTags, c_pointTags_n = _ivectorint(pointTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddBSpline(
-                    api_pointTags_,
-                    api_pointTags_n_,
+                    c_pointTags,
+                    c_pointTags_n,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
@@ -5807,11 +5772,11 @@ class model:
             - `pointTags`: vector of integers
             - `tag`: integer
             """
-            api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
+            c_pointTags, c_pointTags_n = _ivectorint(pointTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddBezier(
-                    api_pointTags_,
-                    api_pointTags_n_,
+                    c_pointTags,
+                    c_pointTags_n,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
@@ -5831,11 +5796,11 @@ class model:
             - `pointTags`: vector of integers
             - `tag`: integer
             """
-            api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
+            c_pointTags, c_pointTags_n = _ivectorint(pointTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddPolyline(
-                    api_pointTags_,
-                    api_pointTags_n_,
+                    c_pointTags,
+                    c_pointTags_n,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
@@ -5859,11 +5824,11 @@ class model:
             - `numIntervals`: integer
             - `tag`: integer
             """
-            api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
+            c_curveTags, c_curveTags_n = _ivectorint(curveTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddCompoundSpline(
-                    api_curveTags_,
-                    api_curveTags_n_,
+                    c_curveTags,
+                    c_curveTags_n,
                     ctypes.c_int(numIntervals),
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
@@ -5888,11 +5853,11 @@ class model:
             - `numIntervals`: integer
             - `tag`: integer
             """
-            api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
+            c_curveTags, c_curveTags_n = _ivectorint(curveTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddCompoundBSpline(
-                    api_curveTags_,
-                    api_curveTags_n_,
+                    c_curveTags,
+                    c_curveTags_n,
                     ctypes.c_int(numIntervals),
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
@@ -5919,11 +5884,11 @@ class model:
             - `tag`: integer
             - `reorient`: boolean
             """
-            api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
+            c_curveTags, c_curveTags_n = _ivectorint(curveTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddCurveLoop(
-                    api_curveTags_,
-                    api_curveTags_n_,
+                    c_curveTags,
+                    c_curveTags_n,
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(reorient)),
                     ctypes.byref(ierr),
@@ -5942,19 +5907,19 @@ class model:
             - `curveTags`: vector of integers
             - `tags`: vector of integers
             """
-            api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
-            api_tags_ = ctypes.POINTER(ctypes.c_int)()
-            api_tags_n_ = ctypes.c_size_t()
+            c_curveTags, c_curveTags_n = _ivectorint(curveTags)
+            c_tags = ctypes.POINTER(ctypes.c_int)()
+            c_tags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoAddCurveLoops(
-                    api_curveTags_,
-                    api_curveTags_n_,
-                    ctypes.byref(api_tags_),
-                    ctypes.byref(api_tags_n_),
+                    c_curveTags,
+                    c_curveTags_n,
+                    ctypes.byref(c_tags),
+                    ctypes.byref(c_tags_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorint(api_tags_, api_tags_n_.value)
+            return _ovectorint(c_tags, c_tags_n.value)
 
         @staticmethod
         def addPlaneSurface(wireTags: Sequence[int], *, tag: int = -1) -> int:
@@ -5972,11 +5937,11 @@ class model:
             - `wireTags`: vector of integers
             - `tag`: integer
             """
-            api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
+            c_wireTags, c_wireTags_n = _ivectorint(wireTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddPlaneSurface(
-                    api_wireTags_,
-                    api_wireTags_n_,
+                    c_wireTags,
+                    c_wireTags_n,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
@@ -6003,11 +5968,11 @@ class model:
             - `tag`: integer
             - `sphereCenterTag`: integer
             """
-            api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
+            c_wireTags, c_wireTags_n = _ivectorint(wireTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddSurfaceFilling(
-                    api_wireTags_,
-                    api_wireTags_n_,
+                    c_wireTags,
+                    c_wireTags_n,
                     ctypes.c_int(tag),
                     ctypes.c_int(sphereCenterTag),
                     ctypes.byref(ierr),
@@ -6023,11 +5988,11 @@ class model:
             built-in CAD representation. If `tag` is positive, set the tag
             explicitly; otherwise a new tag is selected automatically.
             """
-            api_surfaceTags_, api_surfaceTags_n_ = _ivectorint(surfaceTags)
+            c_surfaceTags, c_surfaceTags_n = _ivectorint(surfaceTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddSurfaceLoop(
-                    api_surfaceTags_,
-                    api_surfaceTags_n_,
+                    c_surfaceTags,
+                    c_surfaceTags_n,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
@@ -6042,11 +6007,11 @@ class model:
             `tag` is positive, set the tag explicitly; otherwise a new tag is
             selected automatically.
             """
-            api_shellTags_, api_shellTags_n_ = _ivectorint(shellTags)
+            c_shellTags, c_shellTags_n = _ivectorint(shellTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddVolume(
-                    api_shellTags_,
-                    api_shellTags_n_,
+                    c_shellTags,
+                    c_shellTags_n,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
@@ -6077,15 +6042,15 @@ class model:
             - `strings`: vector of strings
             - `tag`: integer
             """
-            api_numbers_, api_numbers_n_ = _ivectordouble(numbers)
-            api_strings_, api_strings_n_ = _ivectorstring(strings)
+            c_numbers, c_numbers_n = _ivectordouble(numbers)
+            c_strings, c_strings_n = _ivectorstring(strings)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddGeometry(
                     ctypes.c_char_p(geometry.encode()),
-                    api_numbers_,
-                    api_numbers_n_,
-                    api_strings_,
-                    api_strings_n_,
+                    c_numbers,
+                    c_numbers_n,
+                    c_strings,
+                    c_strings_n,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
@@ -6162,29 +6127,29 @@ class model:
             - `heights`: vector of doubles
             - `recombine`: boolean
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
-            api_numElements_, api_numElements_n_ = _ivectorint(numElements)
-            api_heights_, api_heights_n_ = _ivectordouble(heights)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
+            c_numElements, c_numElements_n = _ivectorint(numElements)
+            c_heights, c_heights_n = _ivectordouble(heights)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoExtrude(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(dx),
                     ctypes.c_double(dy),
                     ctypes.c_double(dz),
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
-                    api_numElements_,
-                    api_numElements_n_,
-                    api_heights_,
-                    api_heights_n_,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
+                    c_numElements,
+                    c_numElements_n,
+                    c_heights,
+                    c_heights_n,
                     ctypes.c_int(bool(recombine)),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def revolve(
@@ -6229,15 +6194,15 @@ class model:
             - `heights`: vector of doubles
             - `recombine`: boolean
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
-            api_numElements_, api_numElements_n_ = _ivectorint(numElements)
-            api_heights_, api_heights_n_ = _ivectordouble(heights)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
+            c_numElements, c_numElements_n = _ivectorint(numElements)
+            c_heights, c_heights_n = _ivectordouble(heights)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoRevolve(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -6245,17 +6210,17 @@ class model:
                     ctypes.c_double(ay),
                     ctypes.c_double(az),
                     ctypes.c_double(angle),
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
-                    api_numElements_,
-                    api_numElements_n_,
-                    api_heights_,
-                    api_heights_n_,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
+                    c_numElements,
+                    c_numElements_n,
+                    c_heights,
+                    c_heights_n,
                     ctypes.c_int(bool(recombine)),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def twist(
@@ -6307,15 +6272,15 @@ class model:
             - `heights`: vector of doubles
             - `recombine`: boolean
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
-            api_numElements_, api_numElements_n_ = _ivectorint(numElements)
-            api_heights_, api_heights_n_ = _ivectordouble(heights)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
+            c_numElements, c_numElements_n = _ivectorint(numElements)
+            c_heights, c_heights_n = _ivectordouble(heights)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoTwist(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -6326,17 +6291,17 @@ class model:
                     ctypes.c_double(ay),
                     ctypes.c_double(az),
                     ctypes.c_double(angle),
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
-                    api_numElements_,
-                    api_numElements_n_,
-                    api_heights_,
-                    api_heights_n_,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
+                    c_numElements,
+                    c_numElements_n,
+                    c_heights,
+                    c_heights_n,
                     ctypes.c_int(bool(recombine)),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def extrudeBoundaryLayer(
@@ -6372,28 +6337,28 @@ class model:
             - `second`: boolean
             - `viewIndex`: integer
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
-            api_numElements_, api_numElements_n_ = _ivectorint(numElements)
-            api_heights_, api_heights_n_ = _ivectordouble(heights)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
+            c_numElements, c_numElements_n = _ivectorint(numElements)
+            c_heights, c_heights_n = _ivectordouble(heights)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoExtrudeBoundaryLayer(
-                    api_dimTags_,
-                    api_dimTags_n_,
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
-                    api_numElements_,
-                    api_numElements_n_,
-                    api_heights_,
-                    api_heights_n_,
+                    c_dimTags,
+                    c_dimTags_n,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
+                    c_numElements,
+                    c_numElements_n,
+                    c_heights,
+                    c_heights_n,
                     ctypes.c_int(bool(recombine)),
                     ctypes.c_int(bool(second)),
                     ctypes.c_int(viewIndex),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def translate(
@@ -6410,11 +6375,11 @@ class model:
             - `dy`: double
             - `dz`: double
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoTranslate(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(dx),
                     ctypes.c_double(dy),
                     ctypes.c_double(dz),
@@ -6449,11 +6414,11 @@ class model:
             - `az`: double
             - `angle`: double
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoRotate(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -6490,11 +6455,11 @@ class model:
             - `b`: double
             - `c`: double
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoDilate(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -6525,11 +6490,11 @@ class model:
             - `c`: double
             - `d`: double
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoMirror(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(a),
                     ctypes.c_double(b),
                     ctypes.c_double(c),
@@ -6559,11 +6524,11 @@ class model:
             - `c`: double
             - `d`: double
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoSymmetrize(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(a),
                     ctypes.c_double(b),
                     ctypes.c_double(c),
@@ -6584,19 +6549,19 @@ class model:
             - `dimTags`: vector of pairs of integers
             - `outDimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoCopy(
-                    api_dimTags_,
-                    api_dimTags_n_,
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
+                    c_dimTags,
+                    c_dimTags_n,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def remove(
@@ -6613,11 +6578,11 @@ class model:
             - `dimTags`: vector of pairs of integers
             - `recursive`: boolean
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoRemove(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_int(bool(recursive)),
                     ctypes.byref(ierr),
                 )
@@ -6648,20 +6613,20 @@ class model:
             - `pointTags`: vector of integers
             - `curveTags`: vector of integers
             """
-            api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
-            api_curveTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_curveTags_n_ = ctypes.c_size_t()
+            c_pointTags, c_pointTags_n = _ivectorint(pointTags)
+            c_curveTags = ctypes.POINTER(ctypes.c_int)()
+            c_curveTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoSplitCurve(
                     ctypes.c_int(tag),
-                    api_pointTags_,
-                    api_pointTags_n_,
-                    ctypes.byref(api_curveTags_),
-                    ctypes.byref(api_curveTags_n_),
+                    c_pointTags,
+                    c_pointTags_n,
+                    ctypes.byref(c_curveTags),
+                    ctypes.byref(c_curveTags_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorint(api_curveTags_, api_curveTags_n_.value)
+            return _ovectorint(c_curveTags, c_curveTags_n.value)
 
         @staticmethod
         def getMaxTag(dim: int) -> int:
@@ -6715,12 +6680,12 @@ class model:
             - `tag`: integer
             - `name`: string
             """
-            api_tags_, api_tags_n_ = _ivectorint(tags)
+            c_tags, c_tags_n = _ivectorint(tags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelGeoAddPhysicalGroup(
                     ctypes.c_int(dim),
-                    api_tags_,
-                    api_tags_n_,
+                    c_tags,
+                    c_tags_n,
                     ctypes.c_int(tag),
                     ctypes.c_char_p(name.encode()),
                     ctypes.byref(ierr),
@@ -6739,10 +6704,10 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelGeoRemovePhysicalGroups(
-                    api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                    c_dimTags, c_dimTags_n, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -6776,11 +6741,11 @@ class model:
                 - `dimTags`: vector of pairs of integers
                 - `size`: double
                 """
-                api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+                c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
                 with _ErrorCode() as ierr:
                     gmsh.lib.gmshModelGeoMeshSetSize(
-                        api_dimTags_,
-                        api_dimTags_n_,
+                        c_dimTags,
+                        c_dimTags_n,
                         ctypes.c_double(size),
                         ctypes.byref(ierr),
                     )
@@ -6838,13 +6803,13 @@ class model:
                 - `arrangement`: string
                 - `cornerTags`: vector of integers
                 """
-                api_cornerTags_, api_cornerTags_n_ = _ivectorint(cornerTags)
+                c_cornerTags, c_cornerTags_n = _ivectorint(cornerTags)
                 with _ErrorCode() as ierr:
                     gmsh.lib.gmshModelGeoMeshSetTransfiniteSurface(
                         ctypes.c_int(tag),
                         ctypes.c_char_p(arrangement.encode()),
-                        api_cornerTags_,
-                        api_cornerTags_n_,
+                        c_cornerTags,
+                        c_cornerTags_n,
                         ctypes.byref(ierr),
                     )
 
@@ -6862,12 +6827,12 @@ class model:
                 - `tag`: integer
                 - `cornerTags`: vector of integers
                 """
-                api_cornerTags_, api_cornerTags_n_ = _ivectorint(cornerTags)
+                c_cornerTags, c_cornerTags_n = _ivectorint(cornerTags)
                 with _ErrorCode() as ierr:
                     gmsh.lib.gmshModelGeoMeshSetTransfiniteVolume(
                         ctypes.c_int(tag),
-                        api_cornerTags_,
-                        api_cornerTags_n_,
+                        c_cornerTags,
+                        c_cornerTags_n,
                         ctypes.byref(ierr),
                     )
 
@@ -7117,8 +7082,8 @@ class model:
             - `zAxis`: vector of doubles
             - `xAxis`: vector of doubles
             """
-            api_zAxis_, api_zAxis_n_ = _ivectordouble(zAxis)
-            api_xAxis_, api_xAxis_n_ = _ivectordouble(xAxis)
+            c_zAxis, c_zAxis_n = _ivectordouble(zAxis)
+            c_xAxis, c_xAxis_n = _ivectordouble(xAxis)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddCircle(
                     ctypes.c_double(x),
@@ -7128,10 +7093,10 @@ class model:
                     ctypes.c_int(tag),
                     ctypes.c_double(angle1),
                     ctypes.c_double(angle2),
-                    api_zAxis_,
-                    api_zAxis_n_,
-                    api_xAxis_,
-                    api_xAxis_n_,
+                    c_zAxis,
+                    c_zAxis_n,
+                    c_xAxis,
+                    c_xAxis_n,
                     ctypes.byref(ierr),
                 )
 
@@ -7211,12 +7176,8 @@ class model:
             - `zAxis`: vector of doubles
             - `xAxis`: vector of doubles
             """
-            api_zAxis_, api_zAxis_n_ = _ivectordouble(
-                () if zAxis is None else zAxis
-            )
-            api_xAxis_, api_xAxis_n_ = _ivectordouble(
-                () if xAxis is None else xAxis
-            )
+            c_zAxis, c_zAxis_n = _ivectordouble(() if zAxis is None else zAxis)
+            c_xAxis, c_xAxis_n = _ivectordouble(() if xAxis is None else xAxis)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddEllipse(
                     ctypes.c_double(x),
@@ -7227,10 +7188,10 @@ class model:
                     ctypes.c_int(tag),
                     ctypes.c_double(angle1),
                     ctypes.c_double(angle2),
-                    api_zAxis_,
-                    api_zAxis_n_,
-                    api_xAxis_,
-                    api_xAxis_n_,
+                    c_zAxis,
+                    c_zAxis_n,
+                    c_xAxis,
+                    c_xAxis_n,
                     ctypes.byref(ierr),
                 )
 
@@ -7260,15 +7221,15 @@ class model:
             - `tag`: integer
             - `tangents`: vector of doubles
             """
-            api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
-            api_tangents_, api_tangents_n_ = _ivectordouble(tangents)
+            c_pointTags, c_pointTags_n = _ivectorint(pointTags)
+            c_tangents, c_tangents_n = _ivectordouble(tangents)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddSpline(
-                    api_pointTags_,
-                    api_pointTags_n_,
+                    c_pointTags,
+                    c_pointTags_n,
                     ctypes.c_int(tag),
-                    api_tangents_,
-                    api_tangents_n_,
+                    c_tangents,
+                    c_tangents_n,
                     ctypes.byref(ierr),
                 )
 
@@ -7301,24 +7262,22 @@ class model:
             - `knots`: vector of doubles
             - `multiplicities`: vector of integers
             """
-            api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
-            api_weights_, api_weights_n_ = _ivectordouble(weights)
-            api_knots_, api_knots_n_ = _ivectordouble(knots)
-            api_multiplicities_, api_multiplicities_n_ = _ivectorint(
-                multiplicities
-            )
+            c_pointTags, c_pointTags_n = _ivectorint(pointTags)
+            c_weights, c_weights_n = _ivectordouble(weights)
+            c_knots, c_knots_n = _ivectordouble(knots)
+            c_multiplicities, c_multiplicities_n = _ivectorint(multiplicities)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddBSpline(
-                    api_pointTags_,
-                    api_pointTags_n_,
+                    c_pointTags,
+                    c_pointTags_n,
                     ctypes.c_int(tag),
                     ctypes.c_int(degree),
-                    api_weights_,
-                    api_weights_n_,
-                    api_knots_,
-                    api_knots_n_,
-                    api_multiplicities_,
-                    api_multiplicities_n_,
+                    c_weights,
+                    c_weights_n,
+                    c_knots,
+                    c_knots_n,
+                    c_multiplicities,
+                    c_multiplicities_n,
                     ctypes.byref(ierr),
                 )
 
@@ -7336,11 +7295,11 @@ class model:
             - `pointTags`: vector of integers
             - `tag`: integer
             """
-            api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
+            c_pointTags, c_pointTags_n = _ivectorint(pointTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddBezier(
-                    api_pointTags_,
-                    api_pointTags_n_,
+                    c_pointTags,
+                    c_pointTags_n,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
@@ -7367,11 +7326,11 @@ class model:
             - `tag`: integer
             - `checkClosed`: boolean
             """
-            api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
+            c_curveTags, c_curveTags_n = _ivectorint(curveTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddWire(
-                    api_curveTags_,
-                    api_curveTags_n_,
+                    c_curveTags,
+                    c_curveTags_n,
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(checkClosed)),
                     ctypes.byref(ierr),
@@ -7397,11 +7356,11 @@ class model:
             - `curveTags`: vector of integers
             - `tag`: integer
             """
-            api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
+            c_curveTags, c_curveTags_n = _ivectorint(curveTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddCurveLoop(
-                    api_curveTags_,
-                    api_curveTags_n_,
+                    c_curveTags,
+                    c_curveTags_n,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
@@ -7482,12 +7441,8 @@ class model:
             - `zAxis`: vector of doubles
             - `xAxis`: vector of doubles
             """
-            api_zAxis_, api_zAxis_n_ = _ivectordouble(
-                () if zAxis is None else zAxis
-            )
-            api_xAxis_, api_xAxis_n_ = _ivectordouble(
-                () if xAxis is None else xAxis
-            )
+            c_zAxis, c_zAxis_n = _ivectordouble(() if zAxis is None else zAxis)
+            c_xAxis, c_xAxis_n = _ivectordouble(() if xAxis is None else xAxis)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddDisk(
                     ctypes.c_double(xc),
@@ -7496,10 +7451,10 @@ class model:
                     ctypes.c_double(rx),
                     ctypes.c_double(ry),
                     ctypes.c_int(tag),
-                    api_zAxis_,
-                    api_zAxis_n_,
-                    api_xAxis_,
-                    api_xAxis_n_,
+                    c_zAxis,
+                    c_zAxis_n,
+                    c_xAxis,
+                    c_xAxis_n,
                     ctypes.byref(ierr),
                 )
 
@@ -7519,11 +7474,11 @@ class model:
             - `wireTags`: vector of integers
             - `tag`: integer
             """
-            api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
+            c_wireTags, c_wireTags_n = _ivectorint(wireTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddPlaneSurface(
-                    api_wireTags_,
-                    api_wireTags_n_,
+                    c_wireTags,
+                    c_wireTags_n,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
@@ -7583,13 +7538,13 @@ class model:
             - `maxDegree`: integer
             - `maxSegments`: integer
             """
-            api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
+            c_pointTags, c_pointTags_n = _ivectorint(pointTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddSurfaceFilling(
                     ctypes.c_int(wireTag),
                     ctypes.c_int(tag),
-                    api_pointTags_,
-                    api_pointTags_n_,
+                    c_pointTags,
+                    c_pointTags_n,
                     ctypes.c_int(degree),
                     ctypes.c_int(numPointsOnCurves),
                     ctypes.c_int(numIter),
@@ -7713,37 +7668,37 @@ class model:
             - `wireTags`: vector of integers
             - `wire3D`: boolean
             """
-            api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
-            api_weights_, api_weights_n_ = _ivectordouble(weights)
-            api_knotsU_, api_knotsU_n_ = _ivectordouble(knotsU)
-            api_knotsV_, api_knotsV_n_ = _ivectordouble(knotsV)
-            api_multiplicitiesU_, api_multiplicitiesU_n_ = _ivectorint(
+            c_pointTags, c_pointTags_n = _ivectorint(pointTags)
+            c_weights, c_weights_n = _ivectordouble(weights)
+            c_knotsU, c_knotsU_n = _ivectordouble(knotsU)
+            c_knotsV, c_knotsV_n = _ivectordouble(knotsV)
+            c_multiplicitiesU, c_multiplicitiesU_n = _ivectorint(
                 multiplicitiesU
             )
-            api_multiplicitiesV_, api_multiplicitiesV_n_ = _ivectorint(
+            c_multiplicitiesV, c_multiplicitiesV_n = _ivectorint(
                 multiplicitiesV
             )
-            api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
+            c_wireTags, c_wireTags_n = _ivectorint(wireTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddBSplineSurface(
-                    api_pointTags_,
-                    api_pointTags_n_,
+                    c_pointTags,
+                    c_pointTags_n,
                     ctypes.c_int(numPointsU),
                     ctypes.c_int(tag),
                     ctypes.c_int(degreeU),
                     ctypes.c_int(degreeV),
-                    api_weights_,
-                    api_weights_n_,
-                    api_knotsU_,
-                    api_knotsU_n_,
-                    api_knotsV_,
-                    api_knotsV_n_,
-                    api_multiplicitiesU_,
-                    api_multiplicitiesU_n_,
-                    api_multiplicitiesV_,
-                    api_multiplicitiesV_n_,
-                    api_wireTags_,
-                    api_wireTags_n_,
+                    c_weights,
+                    c_weights_n,
+                    c_knotsU,
+                    c_knotsU_n,
+                    c_knotsV,
+                    c_knotsV_n,
+                    c_multiplicitiesU,
+                    c_multiplicitiesU_n,
+                    c_multiplicitiesV,
+                    c_multiplicitiesV_n,
+                    c_wireTags,
+                    c_wireTags_n,
                     ctypes.c_int(bool(wire3D)),
                     ctypes.byref(ierr),
                 )
@@ -7778,16 +7733,16 @@ class model:
             - `wireTags`: vector of integers
             - `wire3D`: boolean
             """
-            api_pointTags_, api_pointTags_n_ = _ivectorint(pointTags)
-            api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
+            c_pointTags, c_pointTags_n = _ivectorint(pointTags)
+            c_wireTags, c_wireTags_n = _ivectorint(wireTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddBezierSurface(
-                    api_pointTags_,
-                    api_pointTags_n_,
+                    c_pointTags,
+                    c_pointTags_n,
                     ctypes.c_int(numPointsU),
                     ctypes.c_int(tag),
-                    api_wireTags_,
-                    api_wireTags_n_,
+                    c_wireTags,
+                    c_wireTags_n,
                     ctypes.c_int(bool(wire3D)),
                     ctypes.byref(ierr),
                 )
@@ -7818,12 +7773,12 @@ class model:
             - `wire3D`: boolean
             - `tag`: integer
             """
-            api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
+            c_wireTags, c_wireTags_n = _ivectorint(wireTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddTrimmedSurface(
                     ctypes.c_int(surfaceTag),
-                    api_wireTags_,
-                    api_wireTags_n_,
+                    c_wireTags,
+                    c_wireTags_n,
                     ctypes.c_int(bool(wire3D)),
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
@@ -7848,11 +7803,11 @@ class model:
             - `tag`: integer
             - `sewing`: boolean
             """
-            api_surfaceTags_, api_surfaceTags_n_ = _ivectorint(surfaceTags)
+            c_surfaceTags, c_surfaceTags_n = _ivectorint(surfaceTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddSurfaceLoop(
-                    api_surfaceTags_,
-                    api_surfaceTags_n_,
+                    c_surfaceTags,
+                    c_surfaceTags_n,
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(sewing)),
                     ctypes.byref(ierr),
@@ -7874,11 +7829,11 @@ class model:
             - `shellTags`: vector of integers
             - `tag`: integer
             """
-            api_shellTags_, api_shellTags_n_ = _ivectorint(shellTags)
+            c_shellTags, c_shellTags_n = _ivectorint(shellTags)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddVolume(
-                    api_shellTags_,
-                    api_shellTags_n_,
+                    c_shellTags,
+                    c_shellTags_n,
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
@@ -8107,9 +8062,7 @@ class model:
             - `ltx`: double
             - `zAxis`: vector of doubles
             """
-            api_zAxis_, api_zAxis_n_ = _ivectordouble(
-                () if zAxis is None else zAxis
-            )
+            c_zAxis, c_zAxis_n = _ivectordouble(() if zAxis is None else zAxis)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddWedge(
                     ctypes.c_double(x),
@@ -8120,8 +8073,8 @@ class model:
                     ctypes.c_double(dz),
                     ctypes.c_int(tag),
                     ctypes.c_double(ltx),
-                    api_zAxis_,
-                    api_zAxis_n_,
+                    c_zAxis,
+                    c_zAxis_n,
                     ctypes.byref(ierr),
                 )
 
@@ -8158,9 +8111,7 @@ class model:
             - `angle`: double
             - `zAxis`: vector of doubles
             """
-            api_zAxis_, api_zAxis_n_ = _ivectordouble(
-                () if zAxis is None else zAxis
-            )
+            c_zAxis, c_zAxis_n = _ivectordouble(() if zAxis is None else zAxis)
             with _ErrorCode() as ierr:
                 return gmsh.lib.gmshModelOccAddTorus(
                     ctypes.c_double(x),
@@ -8170,8 +8121,8 @@ class model:
                     ctypes.c_double(r2),
                     ctypes.c_int(tag),
                     ctypes.c_double(angle),
-                    api_zAxis_,
-                    api_zAxis_n_,
+                    c_zAxis,
+                    c_zAxis_n,
                     ctypes.byref(ierr),
                 )
 
@@ -8215,15 +8166,15 @@ class model:
             - `parametrization`: string
             - `smoothing`: boolean
             """
-            api_wireTags_, api_wireTags_n_ = _ivectorint(wireTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
+            c_wireTags, c_wireTags_n = _ivectorint(wireTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccAddThruSections(
-                    api_wireTags_,
-                    api_wireTags_n_,
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
+                    c_wireTags,
+                    c_wireTags_n,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(makeSolid)),
                     ctypes.c_int(bool(makeRuled)),
@@ -8234,7 +8185,7 @@ class model:
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def addThickSolid(
@@ -8262,24 +8213,24 @@ class model:
             - `outDimTags`: vector of pairs of integers
             - `tag`: integer
             """
-            api_excludeSurfaceTags_, api_excludeSurfaceTags_n_ = _ivectorint(
+            c_excludeSurfaceTags, c_excludeSurfaceTags_n = _ivectorint(
                 excludeSurfaceTags
             )
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccAddThickSolid(
                     ctypes.c_int(volumeTag),
-                    api_excludeSurfaceTags_,
-                    api_excludeSurfaceTags_n_,
+                    c_excludeSurfaceTags,
+                    c_excludeSurfaceTags_n,
                     ctypes.c_double(offset),
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
                     ctypes.c_int(tag),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def extrude(
@@ -8314,29 +8265,29 @@ class model:
             - `heights`: vector of doubles
             - `recombine`: boolean
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
-            api_numElements_, api_numElements_n_ = _ivectorint(numElements)
-            api_heights_, api_heights_n_ = _ivectordouble(heights)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
+            c_numElements, c_numElements_n = _ivectorint(numElements)
+            c_heights, c_heights_n = _ivectordouble(heights)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccExtrude(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(dx),
                     ctypes.c_double(dy),
                     ctypes.c_double(dz),
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
-                    api_numElements_,
-                    api_numElements_n_,
-                    api_heights_,
-                    api_heights_n_,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
+                    c_numElements,
+                    c_numElements_n,
+                    c_heights,
+                    c_heights_n,
                     ctypes.c_int(bool(recombine)),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def revolve(
@@ -8382,15 +8333,15 @@ class model:
             - `heights`: vector of doubles
             - `recombine`: boolean
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
-            api_numElements_, api_numElements_n_ = _ivectorint(numElements)
-            api_heights_, api_heights_n_ = _ivectordouble(heights)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
+            c_numElements, c_numElements_n = _ivectorint(numElements)
+            c_heights, c_heights_n = _ivectordouble(heights)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccRevolve(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -8398,17 +8349,17 @@ class model:
                     ctypes.c_double(ay),
                     ctypes.c_double(az),
                     ctypes.c_double(angle),
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
-                    api_numElements_,
-                    api_numElements_n_,
-                    api_heights_,
-                    api_heights_n_,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
+                    c_numElements,
+                    c_numElements_n,
+                    c_heights,
+                    c_heights_n,
                     ctypes.c_int(bool(recombine)),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def addPipe(
@@ -8435,21 +8386,21 @@ class model:
             - `outDimTags`: vector of pairs of integers
             - `trihedron`: string
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccAddPipe(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_int(wireTag),
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
                     ctypes.c_char_p(trihedron.encode()),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def fillet(
@@ -8477,26 +8428,26 @@ class model:
             - `outDimTags`: vector of pairs of integers
             - `removeVolume`: boolean
             """
-            api_volumeTags_, api_volumeTags_n_ = _ivectorint(volumeTags)
-            api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
-            api_radii_, api_radii_n_ = _ivectordouble(radii)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
+            c_volumeTags, c_volumeTags_n = _ivectorint(volumeTags)
+            c_curveTags, c_curveTags_n = _ivectorint(curveTags)
+            c_radii, c_radii_n = _ivectordouble(radii)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccFillet(
-                    api_volumeTags_,
-                    api_volumeTags_n_,
-                    api_curveTags_,
-                    api_curveTags_n_,
-                    api_radii_,
-                    api_radii_n_,
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
+                    c_volumeTags,
+                    c_volumeTags_n,
+                    c_curveTags,
+                    c_curveTags_n,
+                    c_radii,
+                    c_radii_n,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
                     ctypes.c_int(bool(removeVolume)),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def chamfer(
@@ -8528,29 +8479,29 @@ class model:
             - `outDimTags`: vector of pairs of integers
             - `removeVolume`: boolean
             """
-            api_volumeTags_, api_volumeTags_n_ = _ivectorint(volumeTags)
-            api_curveTags_, api_curveTags_n_ = _ivectorint(curveTags)
-            api_surfaceTags_, api_surfaceTags_n_ = _ivectorint(surfaceTags)
-            api_distances_, api_distances_n_ = _ivectordouble(distances)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
+            c_volumeTags, c_volumeTags_n = _ivectorint(volumeTags)
+            c_curveTags, c_curveTags_n = _ivectorint(curveTags)
+            c_surfaceTags, c_surfaceTags_n = _ivectorint(surfaceTags)
+            c_distances, c_distances_n = _ivectordouble(distances)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccChamfer(
-                    api_volumeTags_,
-                    api_volumeTags_n_,
-                    api_curveTags_,
-                    api_curveTags_n_,
-                    api_surfaceTags_,
-                    api_surfaceTags_n_,
-                    api_distances_,
-                    api_distances_n_,
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
+                    c_volumeTags,
+                    c_volumeTags_n,
+                    c_curveTags,
+                    c_curveTags_n,
+                    c_surfaceTags,
+                    c_surfaceTags_n,
+                    c_distances,
+                    c_distances_n,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
                     ctypes.c_int(bool(removeVolume)),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def defeature(
@@ -8573,23 +8524,23 @@ class model:
             - `outDimTags`: vector of pairs of integers
             - `removeVolume`: boolean
             """
-            api_volumeTags_, api_volumeTags_n_ = _ivectorint(volumeTags)
-            api_surfaceTags_, api_surfaceTags_n_ = _ivectorint(surfaceTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
+            c_volumeTags, c_volumeTags_n = _ivectorint(volumeTags)
+            c_surfaceTags, c_surfaceTags_n = _ivectorint(surfaceTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccDefeature(
-                    api_volumeTags_,
-                    api_volumeTags_n_,
-                    api_surfaceTags_,
-                    api_surfaceTags_n_,
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
+                    c_volumeTags,
+                    c_volumeTags_n,
+                    c_surfaceTags,
+                    c_surfaceTags_n,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
                     ctypes.c_int(bool(removeVolume)),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def fillet2D(
@@ -8670,18 +8621,18 @@ class model:
             - `offset`: double
             - `outDimTags`: vector of pairs of integers
             """
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccOffsetCurve(
                     ctypes.c_int(curveLoopTag),
                     ctypes.c_double(offset),
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def getDistance(
@@ -8709,37 +8660,37 @@ class model:
             - `y2`: double
             - `z2`: double
             """
-            api_distance_ = ctypes.c_double()
-            api_x1_ = ctypes.c_double()
-            api_y1_ = ctypes.c_double()
-            api_z1_ = ctypes.c_double()
-            api_x2_ = ctypes.c_double()
-            api_y2_ = ctypes.c_double()
-            api_z2_ = ctypes.c_double()
+            c_distance = ctypes.c_double()
+            c_x1 = ctypes.c_double()
+            c_y1 = ctypes.c_double()
+            c_z1 = ctypes.c_double()
+            c_x2 = ctypes.c_double()
+            c_y2 = ctypes.c_double()
+            c_z2 = ctypes.c_double()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccGetDistance(
                     ctypes.c_int(dim1),
                     ctypes.c_int(tag1),
                     ctypes.c_int(dim2),
                     ctypes.c_int(tag2),
-                    ctypes.byref(api_distance_),
-                    ctypes.byref(api_x1_),
-                    ctypes.byref(api_y1_),
-                    ctypes.byref(api_z1_),
-                    ctypes.byref(api_x2_),
-                    ctypes.byref(api_y2_),
-                    ctypes.byref(api_z2_),
+                    ctypes.byref(c_distance),
+                    ctypes.byref(c_x1),
+                    ctypes.byref(c_y1),
+                    ctypes.byref(c_z1),
+                    ctypes.byref(c_x2),
+                    ctypes.byref(c_y2),
+                    ctypes.byref(c_z2),
                     ctypes.byref(ierr),
                 )
 
             return (
-                api_distance_.value,
-                api_x1_.value,
-                api_y1_.value,
-                api_z1_.value,
-                api_x2_.value,
-                api_y2_.value,
-                api_z2_.value,
+                c_distance.value,
+                c_x1.value,
+                c_y1.value,
+                c_z1.value,
+                c_x2.value,
+                c_y2.value,
+                c_z2.value,
             )
 
         @staticmethod
@@ -8771,28 +8722,26 @@ class model:
             - `removeObject`: boolean
             - `removeTool`: boolean
             """
-            api_objectDimTags_, api_objectDimTags_n_ = _ivectorpair(
-                objectDimTags
-            )
-            api_toolDimTags_, api_toolDimTags_n_ = _ivectorpair(toolDimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
-            api_outDimTagsMap_, api_outDimTagsMap_n_, api_outDimTagsMap_nn_ = (
+            c_objectDimTags, c_objectDimTags_n = _ivectorpair(objectDimTags)
+            c_toolDimTags, c_toolDimTags_n = _ivectorpair(toolDimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
+            c_outDimTagsMap, c_outDimTagsMap_n, c_outDimTagsMap_nn = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_int))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccFuse(
-                    api_objectDimTags_,
-                    api_objectDimTags_n_,
-                    api_toolDimTags_,
-                    api_toolDimTags_n_,
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
-                    ctypes.byref(api_outDimTagsMap_),
-                    ctypes.byref(api_outDimTagsMap_n_),
-                    ctypes.byref(api_outDimTagsMap_nn_),
+                    c_objectDimTags,
+                    c_objectDimTags_n,
+                    c_toolDimTags,
+                    c_toolDimTags_n,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
+                    ctypes.byref(c_outDimTagsMap),
+                    ctypes.byref(c_outDimTagsMap_n),
+                    ctypes.byref(c_outDimTagsMap_nn),
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(removeObject)),
                     ctypes.c_int(bool(removeTool)),
@@ -8800,11 +8749,9 @@ class model:
                 )
 
             return (
-                _ovectorpair(api_outDimTags_, api_outDimTags_n_.value),
+                _ovectorpair(c_outDimTags, c_outDimTags_n.value),
                 _ovectorvectorpair(
-                    api_outDimTagsMap_,
-                    api_outDimTagsMap_n_,
-                    api_outDimTagsMap_nn_,
+                    c_outDimTagsMap, c_outDimTagsMap_n, c_outDimTagsMap_nn
                 ),
             )
 
@@ -8837,28 +8784,26 @@ class model:
             - `removeObject`: boolean
             - `removeTool`: boolean
             """
-            api_objectDimTags_, api_objectDimTags_n_ = _ivectorpair(
-                objectDimTags
-            )
-            api_toolDimTags_, api_toolDimTags_n_ = _ivectorpair(toolDimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
-            api_outDimTagsMap_, api_outDimTagsMap_n_, api_outDimTagsMap_nn_ = (
+            c_objectDimTags, c_objectDimTags_n = _ivectorpair(objectDimTags)
+            c_toolDimTags, c_toolDimTags_n = _ivectorpair(toolDimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
+            c_outDimTagsMap, c_outDimTagsMap_n, c_outDimTagsMap_nn = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_int))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccIntersect(
-                    api_objectDimTags_,
-                    api_objectDimTags_n_,
-                    api_toolDimTags_,
-                    api_toolDimTags_n_,
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
-                    ctypes.byref(api_outDimTagsMap_),
-                    ctypes.byref(api_outDimTagsMap_n_),
-                    ctypes.byref(api_outDimTagsMap_nn_),
+                    c_objectDimTags,
+                    c_objectDimTags_n,
+                    c_toolDimTags,
+                    c_toolDimTags_n,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
+                    ctypes.byref(c_outDimTagsMap),
+                    ctypes.byref(c_outDimTagsMap_n),
+                    ctypes.byref(c_outDimTagsMap_nn),
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(removeObject)),
                     ctypes.c_int(bool(removeTool)),
@@ -8866,11 +8811,9 @@ class model:
                 )
 
             return (
-                _ovectorpair(api_outDimTags_, api_outDimTags_n_.value),
+                _ovectorpair(c_outDimTags, c_outDimTags_n.value),
                 _ovectorvectorpair(
-                    api_outDimTagsMap_,
-                    api_outDimTagsMap_n_,
-                    api_outDimTagsMap_nn_,
+                    c_outDimTagsMap, c_outDimTagsMap_n, c_outDimTagsMap_nn
                 ),
             )
 
@@ -8903,28 +8846,26 @@ class model:
             - `removeObject`: boolean
             - `removeTool`: boolean
             """
-            api_objectDimTags_, api_objectDimTags_n_ = _ivectorpair(
-                objectDimTags
-            )
-            api_toolDimTags_, api_toolDimTags_n_ = _ivectorpair(toolDimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
-            api_outDimTagsMap_, api_outDimTagsMap_n_, api_outDimTagsMap_nn_ = (
+            c_objectDimTags, c_objectDimTags_n = _ivectorpair(objectDimTags)
+            c_toolDimTags, c_toolDimTags_n = _ivectorpair(toolDimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
+            c_outDimTagsMap, c_outDimTagsMap_n, c_outDimTagsMap_nn = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_int))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccCut(
-                    api_objectDimTags_,
-                    api_objectDimTags_n_,
-                    api_toolDimTags_,
-                    api_toolDimTags_n_,
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
-                    ctypes.byref(api_outDimTagsMap_),
-                    ctypes.byref(api_outDimTagsMap_n_),
-                    ctypes.byref(api_outDimTagsMap_nn_),
+                    c_objectDimTags,
+                    c_objectDimTags_n,
+                    c_toolDimTags,
+                    c_toolDimTags_n,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
+                    ctypes.byref(c_outDimTagsMap),
+                    ctypes.byref(c_outDimTagsMap_n),
+                    ctypes.byref(c_outDimTagsMap_nn),
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(removeObject)),
                     ctypes.c_int(bool(removeTool)),
@@ -8932,11 +8873,9 @@ class model:
                 )
 
             return (
-                _ovectorpair(api_outDimTags_, api_outDimTags_n_.value),
+                _ovectorpair(c_outDimTags, c_outDimTags_n.value),
                 _ovectorvectorpair(
-                    api_outDimTagsMap_,
-                    api_outDimTagsMap_n_,
-                    api_outDimTagsMap_nn_,
+                    c_outDimTagsMap, c_outDimTagsMap_n, c_outDimTagsMap_nn
                 ),
             )
 
@@ -8973,28 +8912,26 @@ class model:
             - `removeObject`: boolean
             - `removeTool`: boolean
             """
-            api_objectDimTags_, api_objectDimTags_n_ = _ivectorpair(
-                objectDimTags
-            )
-            api_toolDimTags_, api_toolDimTags_n_ = _ivectorpair(toolDimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
-            api_outDimTagsMap_, api_outDimTagsMap_n_, api_outDimTagsMap_nn_ = (
+            c_objectDimTags, c_objectDimTags_n = _ivectorpair(objectDimTags)
+            c_toolDimTags, c_toolDimTags_n = _ivectorpair(toolDimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
+            c_outDimTagsMap, c_outDimTagsMap_n, c_outDimTagsMap_nn = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_int))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccFragment(
-                    api_objectDimTags_,
-                    api_objectDimTags_n_,
-                    api_toolDimTags_,
-                    api_toolDimTags_n_,
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
-                    ctypes.byref(api_outDimTagsMap_),
-                    ctypes.byref(api_outDimTagsMap_n_),
-                    ctypes.byref(api_outDimTagsMap_nn_),
+                    c_objectDimTags,
+                    c_objectDimTags_n,
+                    c_toolDimTags,
+                    c_toolDimTags_n,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
+                    ctypes.byref(c_outDimTagsMap),
+                    ctypes.byref(c_outDimTagsMap_n),
+                    ctypes.byref(c_outDimTagsMap_nn),
                     ctypes.c_int(tag),
                     ctypes.c_int(bool(removeObject)),
                     ctypes.c_int(bool(removeTool)),
@@ -9002,11 +8939,9 @@ class model:
                 )
 
             return (
-                _ovectorpair(api_outDimTags_, api_outDimTags_n_.value),
+                _ovectorpair(c_outDimTags, c_outDimTags_n.value),
                 _ovectorvectorpair(
-                    api_outDimTagsMap_,
-                    api_outDimTagsMap_n_,
-                    api_outDimTagsMap_nn_,
+                    c_outDimTagsMap, c_outDimTagsMap_n, c_outDimTagsMap_nn
                 ),
             )
 
@@ -9025,11 +8960,11 @@ class model:
             - `dy`: double
             - `dz`: double
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccTranslate(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(dx),
                     ctypes.c_double(dy),
                     ctypes.c_double(dz),
@@ -9064,11 +8999,11 @@ class model:
             - `az`: double
             - `angle`: double
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccRotate(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -9105,11 +9040,11 @@ class model:
             - `b`: double
             - `c`: double
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccDilate(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(x),
                     ctypes.c_double(y),
                     ctypes.c_double(z),
@@ -9140,11 +9075,11 @@ class model:
             - `c`: double
             - `d`: double
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccMirror(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(a),
                     ctypes.c_double(b),
                     ctypes.c_double(c),
@@ -9174,11 +9109,11 @@ class model:
             - `c`: double
             - `d`: double
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccSymmetrize(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(a),
                     ctypes.c_double(b),
                     ctypes.c_double(c),
@@ -9202,16 +9137,16 @@ class model:
             - `dimTags`: vector of pairs of integers
             - `affineTransform`: vector of doubles
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_affineTransform_, api_affineTransform_n_ = _ivectordouble(
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
+            c_affineTransform, c_affineTransform_n = _ivectordouble(
                 affineTransform
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccAffineTransform(
-                    api_dimTags_,
-                    api_dimTags_n_,
-                    api_affineTransform_,
-                    api_affineTransform_n_,
+                    c_dimTags,
+                    c_dimTags_n,
+                    c_affineTransform,
+                    c_affineTransform_n,
                     ctypes.byref(ierr),
                 )
 
@@ -9228,19 +9163,19 @@ class model:
             - `dimTags`: vector of pairs of integers
             - `outDimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccCopy(
-                    api_dimTags_,
-                    api_dimTags_n_,
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
+                    c_dimTags,
+                    c_dimTags_n,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def remove(
@@ -9257,11 +9192,11 @@ class model:
             - `dimTags`: vector of pairs of integers
             - `recursive`: boolean
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccRemove(
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_int(bool(recursive)),
                     ctypes.byref(ierr),
                 )
@@ -9307,15 +9242,15 @@ class model:
             - `sewFaces`: boolean
             - `makeSolids`: boolean
             """
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccHealShapes(
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
-                    api_dimTags_,
-                    api_dimTags_n_,
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
+                    c_dimTags,
+                    c_dimTags_n,
                     ctypes.c_double(tolerance),
                     ctypes.c_int(bool(fixDegenerated)),
                     ctypes.c_int(bool(fixSmallEdges)),
@@ -9325,7 +9260,7 @@ class model:
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def convertToNURBS(dimTags: Sequence[tuple[int, int]]) -> None:
@@ -9336,10 +9271,10 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+            c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccConvertToNURBS(
-                    api_dimTags_, api_dimTags_n_, ctypes.byref(ierr)
+                    c_dimTags, c_dimTags_n, ctypes.byref(ierr)
                 )
 
         @staticmethod
@@ -9366,19 +9301,19 @@ class model:
             - `highestDimOnly`: boolean
             - `format`: string
             """
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccImportShapes(
                     ctypes.c_char_p(fileName.encode()),
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
                     ctypes.c_int(bool(highestDimOnly)),
                     ctypes.c_char_p(format.encode()),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def importShapesNativePointer(
@@ -9403,18 +9338,18 @@ class model:
             - `outDimTags`: vector of pairs of integers
             - `highestDimOnly`: boolean
             """
-            api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
-            api_outDimTags_n_ = ctypes.c_size_t()
+            c_outDimTags = ctypes.POINTER(ctypes.c_int)()
+            c_outDimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccImportShapesNativePointer(
                     ctypes.c_void_p(shape),
-                    ctypes.byref(api_outDimTags_),
-                    ctypes.byref(api_outDimTags_n_),
+                    ctypes.byref(c_outDimTags),
+                    ctypes.byref(c_outDimTags_n),
                     ctypes.c_int(bool(highestDimOnly)),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_outDimTags_, api_outDimTags_n_.value)
+            return _ovectorpair(c_outDimTags, c_outDimTags_n.value)
 
         @staticmethod
         def getEntities(dim: int = -1) -> list[tuple[int, int]]:
@@ -9430,19 +9365,19 @@ class model:
             - `dimTags`: vector of pairs of integers
             - `dim`: integer
             """
-            api_dimTags_, api_dimTags_n_ = (
+            c_dimTags, c_dimTags_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccGetEntities(
-                    ctypes.byref(api_dimTags_),
-                    ctypes.byref(api_dimTags_n_),
+                    ctypes.byref(c_dimTags),
+                    ctypes.byref(c_dimTags_n),
                     ctypes.c_int(dim),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
+            return _ovectorpair(c_dimTags, c_dimTags_n.value)
 
         @staticmethod
         def getEntitiesInBoundingBox(
@@ -9474,7 +9409,7 @@ class model:
             - `dimTags`: vector of pairs of integers
             - `dim`: integer
             """
-            api_dimTags_, api_dimTags_n_ = (
+            c_dimTags, c_dimTags_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
@@ -9486,13 +9421,13 @@ class model:
                     ctypes.c_double(xmax),
                     ctypes.c_double(ymax),
                     ctypes.c_double(zmax),
-                    ctypes.byref(api_dimTags_),
-                    ctypes.byref(api_dimTags_n_),
+                    ctypes.byref(c_dimTags),
+                    ctypes.byref(c_dimTags_n),
                     ctypes.c_int(dim),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectorpair(api_dimTags_, api_dimTags_n_.value)
+            return _ovectorpair(c_dimTags, c_dimTags_n.value)
 
         @staticmethod
         def getBoundingBox(
@@ -9515,32 +9450,32 @@ class model:
             - `ymax`: double
             - `zmax`: double
             """
-            api_xmin_ = ctypes.c_double()
-            api_ymin_ = ctypes.c_double()
-            api_zmin_ = ctypes.c_double()
-            api_xmax_ = ctypes.c_double()
-            api_ymax_ = ctypes.c_double()
-            api_zmax_ = ctypes.c_double()
+            c_xmin = ctypes.c_double()
+            c_ymin = ctypes.c_double()
+            c_zmin = ctypes.c_double()
+            c_xmax = ctypes.c_double()
+            c_ymax = ctypes.c_double()
+            c_zmax = ctypes.c_double()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccGetBoundingBox(
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
-                    ctypes.byref(api_xmin_),
-                    ctypes.byref(api_ymin_),
-                    ctypes.byref(api_zmin_),
-                    ctypes.byref(api_xmax_),
-                    ctypes.byref(api_ymax_),
-                    ctypes.byref(api_zmax_),
+                    ctypes.byref(c_xmin),
+                    ctypes.byref(c_ymin),
+                    ctypes.byref(c_zmin),
+                    ctypes.byref(c_xmax),
+                    ctypes.byref(c_ymax),
+                    ctypes.byref(c_zmax),
                     ctypes.byref(ierr),
                 )
 
             return (
-                api_xmin_.value,
-                api_ymin_.value,
-                api_zmin_.value,
-                api_xmax_.value,
-                api_ymax_.value,
-                api_zmax_.value,
+                c_xmin.value,
+                c_ymin.value,
+                c_zmin.value,
+                c_xmax.value,
+                c_ymax.value,
+                c_zmax.value,
             )
 
         @staticmethod
@@ -9560,11 +9495,11 @@ class model:
             - `curveLoopTags`: vector of integers
             - `curveTags`: vector of vectors of integers
             """
-            api_curveLoopTags_, api_curveLoopTags_n_ = (
+            c_curveLoopTags, c_curveLoopTags_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
-            api_curveTags_, api_curveTags_n_, api_curveTags_nn_ = (
+            c_curveTags, c_curveTags_n, c_curveTags_nn = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_int))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
@@ -9572,19 +9507,17 @@ class model:
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccGetCurveLoops(
                     ctypes.c_int(surfaceTag),
-                    ctypes.byref(api_curveLoopTags_),
-                    ctypes.byref(api_curveLoopTags_n_),
-                    ctypes.byref(api_curveTags_),
-                    ctypes.byref(api_curveTags_n_),
-                    ctypes.byref(api_curveTags_nn_),
+                    ctypes.byref(c_curveLoopTags),
+                    ctypes.byref(c_curveLoopTags_n),
+                    ctypes.byref(c_curveTags),
+                    ctypes.byref(c_curveTags_n),
+                    ctypes.byref(c_curveTags_nn),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorint(api_curveLoopTags_, api_curveLoopTags_n_.value),
-                _ovectorvectorint(
-                    api_curveTags_, api_curveTags_n_, api_curveTags_nn_
-                ),
+                _ovectorint(c_curveLoopTags, c_curveLoopTags_n.value),
+                _ovectorvectorint(c_curveTags, c_curveTags_n, c_curveTags_nn),
             )
 
         @staticmethod
@@ -9604,11 +9537,11 @@ class model:
             - `surfaceLoopTags`: vector of integers
             - `surfaceTags`: vector of vectors of integers
             """
-            api_surfaceLoopTags_, api_surfaceLoopTags_n_ = (
+            c_surfaceLoopTags, c_surfaceLoopTags_n = (
                 ctypes.POINTER(ctypes.c_int)(),
                 ctypes.c_size_t(),
             )
-            api_surfaceTags_, api_surfaceTags_n_, api_surfaceTags_nn_ = (
+            c_surfaceTags, c_surfaceTags_n, c_surfaceTags_nn = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_int))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
@@ -9616,20 +9549,18 @@ class model:
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccGetSurfaceLoops(
                     ctypes.c_int(volumeTag),
-                    ctypes.byref(api_surfaceLoopTags_),
-                    ctypes.byref(api_surfaceLoopTags_n_),
-                    ctypes.byref(api_surfaceTags_),
-                    ctypes.byref(api_surfaceTags_n_),
-                    ctypes.byref(api_surfaceTags_nn_),
+                    ctypes.byref(c_surfaceLoopTags),
+                    ctypes.byref(c_surfaceLoopTags_n),
+                    ctypes.byref(c_surfaceTags),
+                    ctypes.byref(c_surfaceTags_n),
+                    ctypes.byref(c_surfaceTags_nn),
                     ctypes.byref(ierr),
                 )
 
             return (
-                _ovectorint(
-                    api_surfaceLoopTags_, api_surfaceLoopTags_n_.value
-                ),
+                _ovectorint(c_surfaceLoopTags, c_surfaceLoopTags_n.value),
                 _ovectorvectorint(
-                    api_surfaceTags_, api_surfaceTags_n_, api_surfaceTags_nn_
+                    c_surfaceTags, c_surfaceTags_n, c_surfaceTags_nn
                 ),
             )
 
@@ -9648,16 +9579,16 @@ class model:
             - `tag`: integer
             - `mass`: double
             """
-            api_mass_ = ctypes.c_double()
+            c_mass = ctypes.c_double()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccGetMass(
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
-                    ctypes.byref(api_mass_),
+                    ctypes.byref(c_mass),
                     ctypes.byref(ierr),
                 )
 
-            return api_mass_.value
+            return c_mass.value
 
         @staticmethod
         def getCenterOfMass(dim: int, tag: int) -> tuple[float, float, float]:
@@ -9675,20 +9606,20 @@ class model:
             - `y`: double
             - `z`: double
             """
-            api_x_ = ctypes.c_double()
-            api_y_ = ctypes.c_double()
-            api_z_ = ctypes.c_double()
+            c_x = ctypes.c_double()
+            c_y = ctypes.c_double()
+            c_z = ctypes.c_double()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccGetCenterOfMass(
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
-                    ctypes.byref(api_x_),
-                    ctypes.byref(api_y_),
-                    ctypes.byref(api_z_),
+                    ctypes.byref(c_x),
+                    ctypes.byref(c_y),
+                    ctypes.byref(c_z),
                     ctypes.byref(ierr),
                 )
 
-            return (api_x_.value, api_y_.value, api_z_.value)
+            return (c_x.value, c_y.value, c_z.value)
 
         @staticmethod
         def getMatrixOfInertia(dim: int, tag: int) -> list[float]:
@@ -9704,7 +9635,7 @@ class model:
             - `tag`: integer
             - `mat`: vector of doubles
             """
-            api_mat_, api_mat_n_ = (
+            c_mat, c_mat_n = (
                 ctypes.POINTER(ctypes.c_double)(),
                 ctypes.c_size_t(),
             )
@@ -9712,12 +9643,12 @@ class model:
                 gmsh.lib.gmshModelOccGetMatrixOfInertia(
                     ctypes.c_int(dim),
                     ctypes.c_int(tag),
-                    ctypes.byref(api_mat_),
-                    ctypes.byref(api_mat_n_),
+                    ctypes.byref(c_mat),
+                    ctypes.byref(c_mat_n),
                     ctypes.byref(ierr),
                 )
 
-            return _ovectordouble(api_mat_, api_mat_n_.value)
+            return _ovectordouble(c_mat, c_mat_n.value)
 
         @staticmethod
         def getMaxTag(dim: int) -> int:
@@ -9783,11 +9714,11 @@ class model:
                 - `dimTags`: vector of pairs of integers
                 - `size`: double
                 """
-                api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
+                c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
                 with _ErrorCode() as ierr:
                     gmsh.lib.gmshModelOccMeshSetSize(
-                        api_dimTags_,
-                        api_dimTags_n_,
+                        c_dimTags,
+                        c_dimTags_n,
                         ctypes.c_double(size),
                         ctypes.byref(ierr),
                     )
@@ -9858,17 +9789,14 @@ class view:
         Types:
         - `tags`: vector of integers
         """
-        api_tags_, api_tags_n_ = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        c_tags, c_tags_n = (ctypes.POINTER(ctypes.c_int)(), ctypes.c_size_t())
         with _ErrorCode() as ierr:
             gmsh.lib.gmshViewGetTags(
-                ctypes.byref(api_tags_),
-                ctypes.byref(api_tags_n_),
+                ctypes.byref(c_tags),
+                ctypes.byref(c_tags_n),
                 ctypes.byref(ierr),
             )
-        return _ovectorint(api_tags_, api_tags_n_.value)
+        return _ovectorint(c_tags, c_tags_n.value)
 
     @staticmethod
     def addModelData(
@@ -9909,19 +9837,19 @@ class view:
         - `numComponents`: integer
         - `partition`: integer
         """
-        api_tags_, api_tags_n_ = _ivectorsize(tags)
-        api_data_, api_data_n_, api_data_nn_ = _ivectorvectordouble(data)
+        c_tags, c_tags_n = _ivectorsize(tags)
+        c_data, c_data_n, c_data_nn = _ivectorvectordouble(data)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshViewAddModelData(
                 ctypes.c_int(tag),
                 ctypes.c_int(step),
                 ctypes.c_char_p(modelName.encode()),
                 ctypes.c_char_p(dataType.encode()),
-                api_tags_,
-                api_tags_n_,
-                api_data_,
-                api_data_n_,
-                api_data_nn_,
+                c_tags,
+                c_tags_n,
+                c_data,
+                c_data_n,
+                c_data_nn,
                 ctypes.c_double(time),
                 ctypes.c_int(numComponents),
                 ctypes.c_int(partition),
@@ -9960,18 +9888,18 @@ class view:
         - `numComponents`: integer
         - `partition`: integer
         """
-        api_tags_, api_tags_n_ = _ivectorsize(tags)
-        api_data_, api_data_n_ = _ivectordouble(data)
+        c_tags, c_tags_n = _ivectorsize(tags)
+        c_data, c_data_n = _ivectordouble(data)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshViewAddHomogeneousModelData(
                 ctypes.c_int(tag),
                 ctypes.c_int(step),
                 ctypes.c_char_p(modelName.encode()),
                 ctypes.c_char_p(dataType.encode()),
-                api_tags_,
-                api_tags_n_,
-                api_data_,
-                api_data_n_,
+                c_tags,
+                c_tags_n,
+                c_data,
+                c_data_n,
                 ctypes.c_double(time),
                 ctypes.c_int(numComponents),
                 ctypes.c_int(partition),
@@ -10000,38 +9928,38 @@ class view:
         - `time`: double
         - `numComponents`: integer
         """
-        api_dataType_ = ctypes.c_char_p()
-        api_tags_, api_tags_n_ = (
+        c_dataType = ctypes.c_char_p()
+        c_tags, c_tags_n = (
             ctypes.POINTER(ctypes.c_size_t)(),
             ctypes.c_size_t(),
         )
-        api_data_, api_data_n_, api_data_nn_ = (
+        c_data, c_data_n, c_data_nn = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_double))(),
             ctypes.POINTER(ctypes.c_size_t)(),
             ctypes.c_size_t(),
         )
-        api_time_ = ctypes.c_double()
-        api_numComponents_ = ctypes.c_int()
+        c_time = ctypes.c_double()
+        c_numComponents = ctypes.c_int()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshViewGetModelData(
                 ctypes.c_int(tag),
                 ctypes.c_int(step),
-                ctypes.byref(api_dataType_),
-                ctypes.byref(api_tags_),
-                ctypes.byref(api_tags_n_),
-                ctypes.byref(api_data_),
-                ctypes.byref(api_data_n_),
-                ctypes.byref(api_data_nn_),
-                ctypes.byref(api_time_),
-                ctypes.byref(api_numComponents_),
+                ctypes.byref(c_dataType),
+                ctypes.byref(c_tags),
+                ctypes.byref(c_tags_n),
+                ctypes.byref(c_data),
+                ctypes.byref(c_data_n),
+                ctypes.byref(c_data_nn),
+                ctypes.byref(c_time),
+                ctypes.byref(c_numComponents),
                 ctypes.byref(ierr),
             )
         return (
-            _ostring(api_dataType_),
-            _ovectorsize(api_tags_, api_tags_n_.value),
-            _ovectorvectordouble(api_data_, api_data_n_, api_data_nn_),
-            api_time_.value,
-            api_numComponents_.value,
+            _ostring(c_dataType),
+            _ovectorsize(c_tags, c_tags_n.value),
+            _ovectorvectordouble(c_data, c_data_n, c_data_nn),
+            c_time.value,
+            c_numComponents.value,
         )
 
     @staticmethod
@@ -10056,36 +9984,36 @@ class view:
         - `time`: double
         - `numComponents`: integer
         """
-        api_dataType_ = ctypes.c_char_p()
-        api_tags_, api_tags_n_ = (
+        c_dataType = ctypes.c_char_p()
+        c_tags, c_tags_n = (
             ctypes.POINTER(ctypes.c_size_t)(),
             ctypes.c_size_t(),
         )
-        api_data_, api_data_n_ = (
+        c_data, c_data_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
-        api_time_ = ctypes.c_double()
-        api_numComponents_ = ctypes.c_int()
+        c_time = ctypes.c_double()
+        c_numComponents = ctypes.c_int()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshViewGetHomogeneousModelData(
                 ctypes.c_int(tag),
                 ctypes.c_int(step),
-                ctypes.byref(api_dataType_),
-                ctypes.byref(api_tags_),
-                ctypes.byref(api_tags_n_),
-                ctypes.byref(api_data_),
-                ctypes.byref(api_data_n_),
-                ctypes.byref(api_time_),
-                ctypes.byref(api_numComponents_),
+                ctypes.byref(c_dataType),
+                ctypes.byref(c_tags),
+                ctypes.byref(c_tags_n),
+                ctypes.byref(c_data),
+                ctypes.byref(c_data_n),
+                ctypes.byref(c_time),
+                ctypes.byref(c_numComponents),
                 ctypes.byref(ierr),
             )
         return (
-            _ostring(api_dataType_),
-            _ovectorsize(api_tags_, api_tags_n_.value),
-            _ovectordouble(api_data_, api_data_n_.value),
-            api_time_.value,
-            api_numComponents_.value,
+            _ostring(c_dataType),
+            _ovectorsize(c_tags, c_tags_n.value),
+            _ovectordouble(c_data, c_data_n.value),
+            c_time.value,
+            c_numComponents.value,
         )
 
     @staticmethod
@@ -10111,14 +10039,14 @@ class view:
         - `numEle`: integer
         - `data`: vector of doubles
         """
-        api_data_, api_data_n_ = _ivectordouble(data)
+        c_data, c_data_n = _ivectordouble(data)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshViewAddListData(
                 ctypes.c_int(tag),
                 ctypes.c_char_p(dataType.encode()),
                 ctypes.c_int(numEle),
-                api_data_,
-                api_data_n_,
+                c_data,
+                c_data_n,
                 ctypes.byref(ierr),
             )
 
@@ -10142,15 +10070,15 @@ class view:
         - `data`: vector of vectors of doubles
         - `returnAdaptive`: boolean
         """
-        api_dataType_, api_dataType_n_ = (
+        c_dataType, c_dataType_n = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
-        api_numElements_, api_numElements_n_ = (
+        c_numElements, c_numElements_n = (
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
-        api_data_, api_data_n_, api_data_nn_ = (
+        c_data, c_data_n, c_data_nn = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_double))(),
             ctypes.POINTER(ctypes.c_size_t)(),
             ctypes.c_size_t(),
@@ -10158,20 +10086,20 @@ class view:
         with _ErrorCode() as ierr:
             gmsh.lib.gmshViewGetListData(
                 ctypes.c_int(tag),
-                ctypes.byref(api_dataType_),
-                ctypes.byref(api_dataType_n_),
-                ctypes.byref(api_numElements_),
-                ctypes.byref(api_numElements_n_),
-                ctypes.byref(api_data_),
-                ctypes.byref(api_data_n_),
-                ctypes.byref(api_data_nn_),
+                ctypes.byref(c_dataType),
+                ctypes.byref(c_dataType_n),
+                ctypes.byref(c_numElements),
+                ctypes.byref(c_numElements_n),
+                ctypes.byref(c_data),
+                ctypes.byref(c_data_n),
+                ctypes.byref(c_data_nn),
                 ctypes.c_int(bool(returnAdaptive)),
                 ctypes.byref(ierr),
             )
         return (
-            _ovectorstring(api_dataType_, api_dataType_n_.value),
-            _ovectorint(api_numElements_, api_numElements_n_.value),
-            _ovectorvectordouble(api_data_, api_data_n_, api_data_nn_),
+            _ovectorstring(c_dataType, c_dataType_n.value),
+            _ovectorint(c_numElements, c_numElements_n.value),
+            _ovectorvectordouble(c_data, c_data_n, c_data_nn),
         )
 
     @staticmethod
@@ -10204,18 +10132,18 @@ class view:
         - `data`: vector of strings
         - `style`: vector of strings
         """
-        api_coord_, api_coord_n_ = _ivectordouble(coord)
-        api_data_, api_data_n_ = _ivectorstring(data)
-        api_style_, api_style_n_ = _ivectorstring(style)
+        c_coord, c_coord_n = _ivectordouble(coord)
+        c_data, c_data_n = _ivectorstring(data)
+        c_style, c_style_n = _ivectorstring(style)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshViewAddListDataString(
                 ctypes.c_int(tag),
-                api_coord_,
-                api_coord_n_,
-                api_data_,
-                api_data_n_,
-                api_style_,
-                api_style_n_,
+                c_coord,
+                c_coord_n,
+                c_data,
+                c_data_n,
+                c_style,
+                c_style_n,
                 ctypes.byref(ierr),
             )
 
@@ -10238,15 +10166,15 @@ class view:
         - `data`: vector of strings
         - `style`: vector of strings
         """
-        api_coord_, api_coord_n_ = (
+        c_coord, c_coord_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
-        api_data_, api_data_n_ = (
+        c_data, c_data_n = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
-        api_style_, api_style_n_ = (
+        c_style, c_style_n = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
@@ -10254,18 +10182,18 @@ class view:
             gmsh.lib.gmshViewGetListDataStrings(
                 ctypes.c_int(tag),
                 ctypes.c_int(dim),
-                ctypes.byref(api_coord_),
-                ctypes.byref(api_coord_n_),
-                ctypes.byref(api_data_),
-                ctypes.byref(api_data_n_),
-                ctypes.byref(api_style_),
-                ctypes.byref(api_style_n_),
+                ctypes.byref(c_coord),
+                ctypes.byref(c_coord_n),
+                ctypes.byref(c_data),
+                ctypes.byref(c_data_n),
+                ctypes.byref(c_style),
+                ctypes.byref(c_style_n),
                 ctypes.byref(ierr),
             )
         return (
-            _ovectordouble(api_coord_, api_coord_n_.value),
-            _ovectorstring(api_data_, api_data_n_.value),
-            _ovectorstring(api_style_, api_style_n_.value),
+            _ovectordouble(c_coord, c_coord_n.value),
+            _ovectorstring(c_data, c_data_n.value),
+            _ovectorstring(c_style, c_style_n.value),
         )
 
     @staticmethod
@@ -10304,24 +10232,24 @@ class view:
         - `coefGeo`: vector of doubles
         - `expGeo`: vector of doubles
         """
-        api_coef_, api_coef_n_ = _ivectordouble(coef)
-        api_exp_, api_exp_n_ = _ivectordouble(exp)
-        api_coefGeo_, api_coefGeo_n_ = _ivectordouble(coefGeo)
-        api_expGeo_, api_expGeo_n_ = _ivectordouble(expGeo)
+        c_coef, c_coef_n = _ivectordouble(coef)
+        c_exp, c_exp_n = _ivectordouble(exp)
+        c_coefGeo, c_coefGeo_n = _ivectordouble(coefGeo)
+        c_expGeo, c_expGeo_n = _ivectordouble(expGeo)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshViewSetInterpolationMatrices(
                 ctypes.c_int(tag),
                 ctypes.c_char_p(type.encode()),
                 ctypes.c_int(d),
-                api_coef_,
-                api_coef_n_,
-                api_exp_,
-                api_exp_n_,
+                c_coef,
+                c_coef_n,
+                c_exp,
+                c_exp_n,
                 ctypes.c_int(dGeo),
-                api_coefGeo_,
-                api_coefGeo_n_,
-                api_expGeo_,
-                api_expGeo_n_,
+                c_coefGeo,
+                c_coefGeo_n,
+                c_expGeo,
+                c_expGeo_n,
                 ctypes.byref(ierr),
             )
 
@@ -10427,40 +10355,37 @@ class view:
         - `zElemCoord`: vector of doubles
         - `dim`: integer
         """
-        api_values_, api_values_n_ = (
+        c_values, c_values_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
-        api_distance_ = ctypes.c_double()
-        api_xElemCoord_, api_xElemCoord_n_ = _ivectordouble(xElemCoord)
-        api_yElemCoord_, api_yElemCoord_n_ = _ivectordouble(yElemCoord)
-        api_zElemCoord_, api_zElemCoord_n_ = _ivectordouble(zElemCoord)
+        c_distance = ctypes.c_double()
+        c_xElemCoord, c_xElemCoord_n = _ivectordouble(xElemCoord)
+        c_yElemCoord, c_yElemCoord_n = _ivectordouble(yElemCoord)
+        c_zElemCoord, c_zElemCoord_n = _ivectordouble(zElemCoord)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshViewProbe(
                 ctypes.c_int(tag),
                 ctypes.c_double(x),
                 ctypes.c_double(y),
                 ctypes.c_double(z),
-                ctypes.byref(api_values_),
-                ctypes.byref(api_values_n_),
-                ctypes.byref(api_distance_),
+                ctypes.byref(c_values),
+                ctypes.byref(c_values_n),
+                ctypes.byref(c_distance),
                 ctypes.c_int(step),
                 ctypes.c_int(numComp),
                 ctypes.c_int(bool(gradient)),
                 ctypes.c_double(distanceMax),
-                api_xElemCoord_,
-                api_xElemCoord_n_,
-                api_yElemCoord_,
-                api_yElemCoord_n_,
-                api_zElemCoord_,
-                api_zElemCoord_n_,
+                c_xElemCoord,
+                c_xElemCoord_n,
+                c_yElemCoord,
+                c_yElemCoord_n,
+                c_zElemCoord,
+                c_zElemCoord_n,
                 ctypes.c_int(dim),
                 ctypes.byref(ierr),
             )
-        return (
-            _ovectordouble(api_values_, api_values_n_.value),
-            api_distance_.value,
-        )
+        return (_ovectordouble(c_values, c_values_n.value), c_distance.value)
 
     @staticmethod
     def write(tag: int, fileName: str, *, append: bool = False) -> None:
@@ -10540,16 +10465,16 @@ class view:
             - `name`: string
             - `value`: double
             """
-            api_value_ = ctypes.c_double()
+            c_value = ctypes.c_double()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshViewOptionGetNumber(
                     ctypes.c_int(tag),
                     ctypes.c_char_p(name.encode()),
-                    ctypes.byref(api_value_),
+                    ctypes.byref(c_value),
                     ctypes.byref(ierr),
                 )
 
-            return api_value_.value
+            return c_value.value
 
         @staticmethod
         def setString(tag: int, name: str, value: str) -> None:
@@ -10583,16 +10508,16 @@ class view:
             - `name`: string
             - `value`: string
             """
-            api_value_ = ctypes.c_char_p()
+            c_value = ctypes.c_char_p()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshViewOptionGetString(
                     ctypes.c_int(tag),
                     ctypes.c_char_p(name.encode()),
-                    ctypes.byref(api_value_),
+                    ctypes.byref(c_value),
                     ctypes.byref(ierr),
                 )
 
-            return _ostring(api_value_)
+            return _ostring(c_value)
 
         @staticmethod
         def setColor(
@@ -10640,22 +10565,22 @@ class view:
             - `b`: integer
             - `a`: integer
             """
-            api_r_ = ctypes.c_int()
-            api_g_ = ctypes.c_int()
-            api_b_ = ctypes.c_int()
-            api_a_ = ctypes.c_int()
+            c_r = ctypes.c_int()
+            c_g = ctypes.c_int()
+            c_b = ctypes.c_int()
+            c_a = ctypes.c_int()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshViewOptionGetColor(
                     ctypes.c_int(tag),
                     ctypes.c_char_p(name.encode()),
-                    ctypes.byref(api_r_),
-                    ctypes.byref(api_g_),
-                    ctypes.byref(api_b_),
-                    ctypes.byref(api_a_),
+                    ctypes.byref(c_r),
+                    ctypes.byref(c_g),
+                    ctypes.byref(c_b),
+                    ctypes.byref(c_a),
                     ctypes.byref(ierr),
                 )
 
-            return (api_r_.value, api_g_.value, api_b_.value, api_a_.value)
+            return (c_r.value, c_g.value, c_b.value, c_a.value)
 
         @staticmethod
         def copy(refTag: int, tag: int) -> None:
@@ -10874,18 +10799,18 @@ class fltk:
         - `dimTags`: vector of pairs of integers
         - `dim`: integer
         """
-        api_dimTags_, api_dimTags_n_ = (
+        c_dimTags, c_dimTags_n = (
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
-            api_result_ = gmsh.lib.gmshFltkSelectEntities(
-                ctypes.byref(api_dimTags_),
-                ctypes.byref(api_dimTags_n_),
+            c_result = gmsh.lib.gmshFltkSelectEntities(
+                ctypes.byref(c_dimTags),
+                ctypes.byref(c_dimTags_n),
                 ctypes.c_int(dim),
                 ctypes.byref(ierr),
             )
-        return (api_result_, _ovectorpair(api_dimTags_, api_dimTags_n_.value))
+        return (c_result, _ovectorpair(c_dimTags, c_dimTags_n.value))
 
     @staticmethod
     def selectElements() -> tuple[int, list[int]]:
@@ -10898,20 +10823,17 @@ class fltk:
         Types:
         - `elementTags`: vector of sizes
         """
-        api_elementTags_, api_elementTags_n_ = (
+        c_elementTags, c_elementTags_n = (
             ctypes.POINTER(ctypes.c_size_t)(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
-            api_result_ = gmsh.lib.gmshFltkSelectElements(
-                ctypes.byref(api_elementTags_),
-                ctypes.byref(api_elementTags_n_),
+            c_result = gmsh.lib.gmshFltkSelectElements(
+                ctypes.byref(c_elementTags),
+                ctypes.byref(c_elementTags_n),
                 ctypes.byref(ierr),
             )
-        return (
-            api_result_,
-            _ovectorsize(api_elementTags_, api_elementTags_n_.value),
-        )
+        return (c_result, _ovectorsize(c_elementTags, c_elementTags_n.value))
 
     @staticmethod
     def selectViews() -> tuple[int, list[int]]:
@@ -10924,17 +10846,17 @@ class fltk:
         Types:
         - `viewTags`: vector of integers
         """
-        api_viewTags_, api_viewTags_n_ = (
+        c_viewTags, c_viewTags_n = (
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
-            api_result_ = gmsh.lib.gmshFltkSelectViews(
-                ctypes.byref(api_viewTags_),
-                ctypes.byref(api_viewTags_n_),
+            c_result = gmsh.lib.gmshFltkSelectViews(
+                ctypes.byref(c_viewTags),
+                ctypes.byref(c_viewTags_n),
                 ctypes.byref(ierr),
             )
-        return (api_result_, _ovectorint(api_viewTags_, api_viewTags_n_.value))
+        return (c_result, _ovectorint(c_viewTags, c_viewTags_n.value))
 
     @staticmethod
     def splitCurrentWindow(how: str = "v", ratio: float = 0.5) -> None:
@@ -11049,18 +10971,18 @@ class parser:
         - `names`: vector of strings
         - `search`: string
         """
-        api_names_, api_names_n_ = (
+        c_names, c_names_n = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshParserGetNames(
-                ctypes.byref(api_names_),
-                ctypes.byref(api_names_n_),
+                ctypes.byref(c_names),
+                ctypes.byref(c_names_n),
                 ctypes.c_char_p(search.encode()),
                 ctypes.byref(ierr),
             )
-        return _ovectorstring(api_names_, api_names_n_.value)
+        return _ovectorstring(c_names, c_names_n.value)
 
     @staticmethod
     def setNumber(name: str, value: Sequence[float]) -> None:
@@ -11073,12 +10995,12 @@ class parser:
         - `name`: string
         - `value`: vector of doubles
         """
-        api_value_, api_value_n_ = _ivectordouble(value)
+        c_value, c_value_n = _ivectordouble(value)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshParserSetNumber(
                 ctypes.c_char_p(name.encode()),
-                api_value_,
-                api_value_n_,
+                c_value,
+                c_value_n,
                 ctypes.byref(ierr),
             )
 
@@ -11093,12 +11015,12 @@ class parser:
         - `name`: string
         - `value`: vector of strings
         """
-        api_value_, api_value_n_ = _ivectorstring(value)
+        c_value, c_value_n = _ivectorstring(value)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshParserSetString(
                 ctypes.c_char_p(name.encode()),
-                api_value_,
-                api_value_n_,
+                c_value,
+                c_value_n,
                 ctypes.byref(ierr),
             )
 
@@ -11115,18 +11037,18 @@ class parser:
         - `name`: string
         - `value`: vector of doubles
         """
-        api_value_, api_value_n_ = (
+        c_value, c_value_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshParserGetNumber(
                 ctypes.c_char_p(name.encode()),
-                ctypes.byref(api_value_),
-                ctypes.byref(api_value_n_),
+                ctypes.byref(c_value),
+                ctypes.byref(c_value_n),
                 ctypes.byref(ierr),
             )
-        return _ovectordouble(api_value_, api_value_n_.value)
+        return _ovectordouble(c_value, c_value_n.value)
 
     @staticmethod
     def getString(name: str) -> list[str]:
@@ -11141,18 +11063,18 @@ class parser:
         - `name`: string
         - `value`: vector of strings
         """
-        api_value_, api_value_n_ = (
+        c_value, c_value_n = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshParserGetString(
                 ctypes.c_char_p(name.encode()),
-                ctypes.byref(api_value_),
-                ctypes.byref(api_value_n_),
+                ctypes.byref(c_value),
+                ctypes.byref(c_value_n),
                 ctypes.byref(ierr),
             )
-        return _ovectorstring(api_value_, api_value_n_.value)
+        return _ovectorstring(c_value, c_value_n.value)
 
     @staticmethod
     def clear(name: str = "") -> None:
@@ -11218,15 +11140,15 @@ class onelab:
         - `name`: string
         - `format`: string
         """
-        api_data_ = ctypes.c_char_p()
+        c_data = ctypes.c_char_p()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshOnelabGet(
-                ctypes.byref(api_data_),
+                ctypes.byref(c_data),
                 ctypes.c_char_p(name.encode()),
                 ctypes.c_char_p(format.encode()),
                 ctypes.byref(ierr),
             )
-        return _ostring(api_data_)
+        return _ostring(c_data)
 
     @staticmethod
     def getNames(search: str = "") -> list[str]:
@@ -11241,18 +11163,18 @@ class onelab:
         - `names`: vector of strings
         - `search`: string
         """
-        api_names_, api_names_n_ = (
+        c_names, c_names_n = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshOnelabGetNames(
-                ctypes.byref(api_names_),
-                ctypes.byref(api_names_n_),
+                ctypes.byref(c_names),
+                ctypes.byref(c_names_n),
                 ctypes.c_char_p(search.encode()),
                 ctypes.byref(ierr),
             )
-        return _ovectorstring(api_names_, api_names_n_.value)
+        return _ovectorstring(c_names, c_names_n.value)
 
     @staticmethod
     def setNumber(name: str, value: Sequence[float]) -> None:
@@ -11266,12 +11188,12 @@ class onelab:
         - `name`: string
         - `value`: vector of doubles
         """
-        api_value_, api_value_n_ = _ivectordouble(value)
+        c_value, c_value_n = _ivectordouble(value)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshOnelabSetNumber(
                 ctypes.c_char_p(name.encode()),
-                api_value_,
-                api_value_n_,
+                c_value,
+                c_value_n,
                 ctypes.byref(ierr),
             )
 
@@ -11287,12 +11209,12 @@ class onelab:
         - `name`: string
         - `value`: vector of strings
         """
-        api_value_, api_value_n_ = _ivectorstring(value)
+        c_value, c_value_n = _ivectorstring(value)
         with _ErrorCode() as ierr:
             gmsh.lib.gmshOnelabSetString(
                 ctypes.c_char_p(name.encode()),
-                api_value_,
-                api_value_n_,
+                c_value,
+                c_value_n,
                 ctypes.byref(ierr),
             )
 
@@ -11309,18 +11231,18 @@ class onelab:
         - `name`: string
         - `value`: vector of doubles
         """
-        api_value_, api_value_n_ = (
+        c_value, c_value_n = (
             ctypes.POINTER(ctypes.c_double)(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshOnelabGetNumber(
                 ctypes.c_char_p(name.encode()),
-                ctypes.byref(api_value_),
-                ctypes.byref(api_value_n_),
+                ctypes.byref(c_value),
+                ctypes.byref(c_value_n),
                 ctypes.byref(ierr),
             )
-        return _ovectordouble(api_value_, api_value_n_.value)
+        return _ovectordouble(c_value, c_value_n.value)
 
     @staticmethod
     def getString(name: str) -> list[str]:
@@ -11335,18 +11257,18 @@ class onelab:
         - `name`: string
         - `value`: vector of strings
         """
-        api_value_, api_value_n_ = (
+        c_value, c_value_n = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshOnelabGetString(
                 ctypes.c_char_p(name.encode()),
-                ctypes.byref(api_value_),
-                ctypes.byref(api_value_n_),
+                ctypes.byref(c_value),
+                ctypes.byref(c_value_n),
                 ctypes.byref(ierr),
             )
-        return _ovectorstring(api_value_, api_value_n_.value)
+        return _ovectorstring(c_value, c_value_n.value)
 
     @staticmethod
     def getChanged(name: str) -> str:
@@ -11457,17 +11379,15 @@ class logger:
         Types:
         - `log`: vector of strings
         """
-        api_log_, api_log_n_ = (
+        c_log, c_log_n = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
         with _ErrorCode() as ierr:
             gmsh.lib.gmshLoggerGet(
-                ctypes.byref(api_log_),
-                ctypes.byref(api_log_n_),
-                ctypes.byref(ierr),
+                ctypes.byref(c_log), ctypes.byref(c_log_n), ctypes.byref(ierr)
             )
-        return _ovectorstring(api_log_, api_log_n_.value)
+        return _ovectorstring(c_log, c_log_n.value)
 
     @staticmethod
     def stop() -> None:
@@ -11537,15 +11457,15 @@ class logger:
         Types:
         - `error`: string
         """
-        api_error_ = ctypes.c_char_p()
+        c_error = ctypes.c_char_p()
         ierr = ctypes.c_int()
         gmsh.lib.gmshLoggerGetLastError(
-            ctypes.byref(api_error_), ctypes.byref(ierr)
+            ctypes.byref(c_error), ctypes.byref(ierr)
         )
         if ierr.value != 0:
             msg = "Could not get last error"
             raise RuntimeError(msg)
-        return _ostring(api_error_)
+        return _ostring(c_error)
 
 
 def _ostring(s: c_char_p) -> str:
