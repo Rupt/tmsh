@@ -1021,8 +1021,6 @@ class model:
         of the entities on the boundary of the discrete entity, if any. Specifying
         `boundary` allows Gmsh to construct the topology of the overall model.
 
-        Return an integer.
-
         Types:
         - `dim`: integer
         - `tag`: integer
@@ -1471,8 +1469,6 @@ class model:
         dimension `dim` and tag `tag`, and return the number of points inside. This
         feature is only available for a subset of entities, depending on the
         underlying geometrical representation.
-
-        Return an integer.
 
         Types:
         - `dim`: integer
@@ -9553,8 +9549,6 @@ class view:
         it (and remove the view with that tag if it already exists), otherwise
         associate a new tag. Return the view tag.
 
-        Return an integer.
-
         Types:
         - `name`: string
         - `tag`: integer
@@ -9585,8 +9579,6 @@ class view:
         Get the index of the view with tag `tag` in the list of currently loaded
         views. This dynamic index (it can change when views are removed) is used to
         access view options.
-
-        Return an integer.
 
         Types:
         - `tag`: integer
@@ -10078,8 +10070,6 @@ class view:
         If `tag` is positive use it (and remove the view with that tag if it
         already exists), otherwise associate a new tag. Return the view tag.
 
-        Return an integer.
-
         Types:
         - `refTag`: integer
         - `copyOptions`: boolean
@@ -10467,8 +10457,6 @@ class plugin:
         chapter of the Gmsh reference manual
         (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-plugins).
 
-        Return an integer.
-
         Types:
         - `name`: string
         """
@@ -10591,8 +10579,6 @@ class fltk:
 
         Check if the user interface is available (e.g. to detect if it has been
         closed).
-
-        Return an integer.
         """
         with _ErrorCode() as ierr:
             return gmsh.lib.gmshFltkIsAvailable(ctypes.byref(ierr))
@@ -11079,13 +11065,11 @@ class onelab:
         return _ovectorstring(c_value, c_value_n.value)
 
     @staticmethod
-    def getChanged(name: str) -> str:
+    def getChanged(name: str) -> int:
         """gmsh.onelab.getChanged(name)
 
         Check if any parameters in the ONELAB database used by the client `name`
         have been changed.
-
-        Return an integer.
 
         Types:
         - `name`: string
