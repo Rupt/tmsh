@@ -878,29 +878,18 @@ class model:
     def getAdjacencies(
         dim: int, tag: int
     ) -> tuple[builtins.list[int], builtins.list[int]]:
-        """gmsh.model.getAdjacencies(dim, tag)
+        """Return the 'upward' and 'downward' adjacencies to entity (dim, tag).
 
-        Get the upward and downward adjacencies of the model entity of dimension
-        `dim` and tag `tag`. The `upward` vector returns the tags of adjacent
-        entities of dimension `dim` + 1; the `downward` vector returns the tags of
-        adjacent entities of dimension `dim` - 1.
-
-        Return `upward`, `downward`.
-
-        Types:
-        - `dim`: integer
-        - `tag`: integer
-        - `upward`: vector of integers
-        - `downward`: vector of integers
+        Returns:
+            tuple (upward, downward), containing (dim, tag) pairs of selected
+            entities. The `upward` vector returns the tags of adjacent entities
+            of dimension `dim` + 1; the `downward` vector returns the tags of
+            adjacent entities of dimension `dim` - 1.
         """
-        api_upward_, api_upward_n_ = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
-        api_downward_, api_downward_n_ = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        api_upward_ = ctypes.POINTER(ctypes.c_int)()
+        api_upward_n_ = ctypes.c_size_t()
+        api_downward_ = ctypes.POINTER(ctypes.c_int)()
+        api_downward_n_ = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetAdjacencies(
                 ctypes.c_int(dim),

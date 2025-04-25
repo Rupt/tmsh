@@ -200,6 +200,15 @@ class Model(unittest.TestCase):
             set(face_boundary), set(face_boundary_0) | set(face_boundary_1)
         )
 
+    @tests.initialized
+    def test_get_adjacencies(self) -> None:
+        tet = _tetrahedron()
+        upward, downward = tmsh.model.getAdjacencies(2, tet.surfaces[0])
+        self.assertEqual(len(upward), 1)
+        self.assertEqual(upward, [tet.volume])
+        self.assertEqual(len(downward), 3)
+        self.assertLess(set(downward), set(tet.surfaces))
+
 
 class _Tetrahedron(typing.NamedTuple):
     points: tuple[int, int, int, int]
