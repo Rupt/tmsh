@@ -1954,10 +1954,8 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            c_dimTags, c_dimTags_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_dimTags = ctypes.POINTER(ctypes.c_int)()
+            c_dimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetLastEntityError(
                     ctypes.byref(c_dimTags),
@@ -2479,10 +2477,8 @@ class model:
             - `dim`: integer
             - `tag`: integer
             """
-            c_elementTypes, c_elementTypes_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_elementTypes = ctypes.POINTER(ctypes.c_int)()
+            c_elementTypes_n = ctypes.c_size_t()
             c_elementTags, c_elementTags_n, c_elementTags_nn = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_size_t))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
@@ -2729,10 +2725,8 @@ class model:
             - `dim`: integer
             - `tag`: integer
             """
-            c_elementTypes, c_elementTypes_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_elementTypes = ctypes.POINTER(ctypes.c_int)()
+            c_elementTypes_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetElementTypes(
                     ctypes.byref(c_elementTypes),
@@ -3393,10 +3387,8 @@ class model:
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            c_edgeOrientations, c_edgeOrientations_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_edgeOrientations = ctypes.POINTER(ctypes.c_int)()
+            c_edgeOrientations_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetEdges(
                     c_nodeTags,
@@ -3438,10 +3430,8 @@ class model:
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            c_faceOrientations, c_faceOrientations_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_faceOrientations = ctypes.POINTER(ctypes.c_int)()
+            c_faceOrientations_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetFaces(
                     ctypes.c_int(faceType),
@@ -3644,10 +3634,8 @@ class model:
             - `tag`: integer
             - `returnCoord`: boolean
             """
-            c_typeKeys, c_typeKeys_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_typeKeys = ctypes.POINTER(ctypes.c_int)()
+            c_typeKeys_n = ctypes.c_size_t()
             c_entityKeys, c_entityKeys_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
@@ -3696,10 +3684,8 @@ class model:
             - `coord`: vector of doubles
             - `returnCoord`: boolean
             """
-            c_typeKeys, c_typeKeys_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_typeKeys = ctypes.POINTER(ctypes.c_int)()
+            c_typeKeys_n = ctypes.c_size_t()
             c_entityKeys, c_entityKeys_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
@@ -3772,10 +3758,8 @@ class model:
             """
             c_typeKeys, c_typeKeys_n = _ivectorint(typeKeys)
             c_entityKeys, c_entityKeys_n = _ivectorsize(entityKeys)
-            c_infoKeys, c_infoKeys_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_infoKeys = ctypes.POINTER(ctypes.c_int)()
+            c_infoKeys_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetKeysInformation(
                     c_typeKeys,
@@ -3961,10 +3945,8 @@ class model:
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            c_partitions, c_partitions_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_partitions = ctypes.POINTER(ctypes.c_int)()
+            c_partitions_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetGhostElements(
                     ctypes.c_int(dim),
@@ -4462,10 +4444,8 @@ class model:
             - `tag`: integer
             - `dimTags`: vector of pairs of integers
             """
-            c_dimTags, c_dimTags_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_dimTags = ctypes.POINTER(ctypes.c_int)()
+            c_dimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetEmbedded(
                     ctypes.c_int(dim),
@@ -4658,10 +4638,8 @@ class model:
             - `tagMaster`: vector of integers
             """
             c_tags, c_tags_n = _ivectorint(tags)
-            c_tagMaster, c_tagMaster_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_tagMaster = ctypes.POINTER(ctypes.c_int)()
+            c_tagMaster_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetPeriodic(
                     ctypes.c_int(dim),
@@ -4771,14 +4749,10 @@ class model:
             - `returnCoord`: boolean
             """
             c_tagMaster = ctypes.c_int()
-            c_typeKeys, c_typeKeys_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
-            c_typeKeysMaster, c_typeKeysMaster_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_typeKeys = ctypes.POINTER(ctypes.c_int)()
+            c_typeKeys_n = ctypes.c_size_t()
+            c_typeKeysMaster = ctypes.POINTER(ctypes.c_int)()
+            c_typeKeysMaster_n = ctypes.c_size_t()
             c_entityKeys, c_entityKeys_n = (
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
@@ -4951,10 +4925,8 @@ class model:
             - `values`: vector of integers
             """
             c_elementTags, c_elementTags_n = _ivectorsize(elementTags)
-            c_values, c_values_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_values = ctypes.POINTER(ctypes.c_int)()
+            c_values_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetVisibility(
                     c_elementTags,
@@ -5111,10 +5083,8 @@ class model:
             Types:
             - `dimTags`: vector of pairs of integers
             """
-            c_dimTags, c_dimTags_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_dimTags = ctypes.POINTER(ctypes.c_int)()
+            c_dimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshComputeHomology(
                     ctypes.byref(c_dimTags),
@@ -5137,10 +5107,8 @@ class model:
             Types:
             - `viewTags`: vector of integers
             """
-            c_viewTags, c_viewTags_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_viewTags = ctypes.POINTER(ctypes.c_int)()
+            c_viewTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshComputeCrossField(
                     ctypes.byref(c_viewTags),
@@ -9173,10 +9141,8 @@ class model:
             - `dimTags`: vector of pairs of integers
             - `dim`: integer
             """
-            c_dimTags, c_dimTags_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_dimTags = ctypes.POINTER(ctypes.c_int)()
+            c_dimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccGetEntities(
                     ctypes.byref(c_dimTags),
@@ -9217,10 +9183,8 @@ class model:
             - `dimTags`: vector of pairs of integers
             - `dim`: integer
             """
-            c_dimTags, c_dimTags_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_dimTags = ctypes.POINTER(ctypes.c_int)()
+            c_dimTags_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccGetEntitiesInBoundingBox(
                     ctypes.c_double(xmin),
@@ -9303,10 +9267,8 @@ class model:
             - `curveLoopTags`: vector of integers
             - `curveTags`: vector of vectors of integers
             """
-            c_curveLoopTags, c_curveLoopTags_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_curveLoopTags = ctypes.POINTER(ctypes.c_int)()
+            c_curveLoopTags_n = ctypes.c_size_t()
             c_curveTags, c_curveTags_n, c_curveTags_nn = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_int))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
@@ -9345,10 +9307,8 @@ class model:
             - `surfaceLoopTags`: vector of integers
             - `surfaceTags`: vector of vectors of integers
             """
-            c_surfaceLoopTags, c_surfaceLoopTags_n = (
-                ctypes.POINTER(ctypes.c_int)(),
-                ctypes.c_size_t(),
-            )
+            c_surfaceLoopTags = ctypes.POINTER(ctypes.c_int)()
+            c_surfaceLoopTags_n = ctypes.c_size_t()
             c_surfaceTags, c_surfaceTags_n, c_surfaceTags_nn = (
                 ctypes.POINTER(ctypes.POINTER(ctypes.c_int))(),
                 ctypes.POINTER(ctypes.c_size_t)(),
