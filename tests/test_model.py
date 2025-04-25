@@ -164,6 +164,20 @@ class Model(unittest.TestCase):
         tmsh.model.removePhysicalName(name)
         self.assertEqual(tmsh.model.getPhysicalName(0, group), "")
 
+    @tests.initialized
+    def test_set_tag(self) -> None:
+        tag = tmsh.model.geo.addPoint(0.0, 0.0, 0.0)
+        tmsh.model.geo.synchronize()
+        type_ = tmsh.model.getType(0, tag)
+        bounds = tmsh.model.getBoundingBox(0, tag)
+        new_tag = tag + 1
+        tmsh.model.setTag(0, tag, new_tag)
+        self.assertEqual(tmsh.model.getType(0, new_tag), type_)
+        self.assertEqual(tmsh.model.getBoundingBox(0, new_tag), bounds)
+        tmsh.option.setNumber("General.Verbosity", 0)
+        with self.assertRaisesRegex(RuntimeError, "does not exist"):
+            self.assertEqual(tmsh.model.getType(0, tag), type_)
+
 
 class _Tetrahedron(typing.NamedTuple):
     points: tuple[int, int, int, int]

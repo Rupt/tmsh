@@ -826,16 +826,7 @@ class model:
 
     @staticmethod
     def setTag(dim: int, tag: int, newTag: int) -> None:
-        """gmsh.model.setTag(dim, tag, newTag)
-
-        Set the tag of the entity of dimension `dim` and tag `tag` to the new value
-        `newTag`.
-
-        Types:
-        - `dim`: integer
-        - `tag`: integer
-        - `newTag`: integer
-        """
+        """Move the tag of the entity identified by (dim, tag) to `newTag`."""
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelSetTag(
                 ctypes.c_int(dim),
