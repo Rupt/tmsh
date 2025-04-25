@@ -5436,10 +5436,8 @@ class model:
                 - `option`: string
                 - `values`: vector of doubles
                 """
-                c_values, c_values_n = (
-                    ctypes.POINTER(ctypes.c_double)(),
-                    ctypes.c_size_t(),
-                )
+                c_values = ctypes.POINTER(ctypes.c_double)()
+                c_values_n = ctypes.c_size_t()
                 with _ErrorCode() as ierr:
                     gmsh.lib.gmshModelMeshFieldGetNumbers(
                         ctypes.c_int(tag),
