@@ -1162,10 +1162,8 @@ class model:
         c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        c_coord, c_coord_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_coord = ctypes.POINTER(ctypes.c_double)()
+        c_coord_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetValue(
                 ctypes.c_int(dim),
@@ -1205,10 +1203,8 @@ class model:
         c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        c_derivatives, c_derivatives_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_derivatives = ctypes.POINTER(ctypes.c_double)()
+        c_derivatives_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetDerivative(
                 ctypes.c_int(dim),
@@ -1250,10 +1246,8 @@ class model:
         c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        c_derivatives, c_derivatives_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_derivatives = ctypes.POINTER(ctypes.c_double)()
+        c_derivatives_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetSecondDerivative(
                 ctypes.c_int(dim),
@@ -1289,10 +1283,8 @@ class model:
         c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        c_curvatures, c_curvatures_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_curvatures = ctypes.POINTER(ctypes.c_double)()
+        c_curvatures_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetCurvature(
                 ctypes.c_int(dim),
@@ -1334,22 +1326,14 @@ class model:
         c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        c_curvatureMax, c_curvatureMax_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
-        c_curvatureMin, c_curvatureMin_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
-        c_directionMax, c_directionMax_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
-        c_directionMin, c_directionMin_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_curvatureMax = ctypes.POINTER(ctypes.c_double)()
+        c_curvatureMax_n = ctypes.c_size_t()
+        c_curvatureMin = ctypes.POINTER(ctypes.c_double)()
+        c_curvatureMin_n = ctypes.c_size_t()
+        c_directionMax = ctypes.POINTER(ctypes.c_double)()
+        c_directionMax_n = ctypes.c_size_t()
+        c_directionMin = ctypes.POINTER(ctypes.c_double)()
+        c_directionMin_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetPrincipalCurvatures(
                 ctypes.c_int(tag),
@@ -1393,10 +1377,8 @@ class model:
         c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        c_normals, c_normals_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_normals = ctypes.POINTER(ctypes.c_double)()
+        c_normals_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetNormal(
                 ctypes.c_int(tag),
@@ -1430,10 +1412,8 @@ class model:
         - `parametricCoord`: vector of doubles
         """
         c_coord, c_coord_n = _ivectordouble(coord)
-        c_parametricCoord, c_parametricCoord_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_parametricCoord = ctypes.POINTER(ctypes.c_double)()
+        c_parametricCoord_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetParametrization(
                 ctypes.c_int(dim),
@@ -1534,14 +1514,10 @@ class model:
         - `parametricCoord`: vector of doubles
         """
         c_coord, c_coord_n = _ivectordouble(coord)
-        c_closestCoord, c_closestCoord_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
-        c_parametricCoord, c_parametricCoord_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_closestCoord = ctypes.POINTER(ctypes.c_double)()
+        c_closestCoord_n = ctypes.c_size_t()
+        c_parametricCoord = ctypes.POINTER(ctypes.c_double)()
+        c_parametricCoord_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetClosestPoint(
                 ctypes.c_int(dim),
@@ -1590,10 +1566,8 @@ class model:
         c_parametricCoord, c_parametricCoord_n = _ivectordouble(
             parametricCoord
         )
-        c_surfaceParametricCoord, c_surfaceParametricCoord_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_surfaceParametricCoord = ctypes.POINTER(ctypes.c_double)()
+        c_surfaceParametricCoord_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelReparametrizeOnSurface(
                 ctypes.c_int(dim),
@@ -9989,10 +9963,8 @@ class view:
             ctypes.POINTER(ctypes.c_size_t)(),
             ctypes.c_size_t(),
         )
-        c_data, c_data_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_data = ctypes.POINTER(ctypes.c_double)()
+        c_data_n = ctypes.c_size_t()
         c_time = ctypes.c_double()
         c_numComponents = ctypes.c_int()
         with _ErrorCode() as ierr:
@@ -10166,10 +10138,8 @@ class view:
         - `data`: vector of strings
         - `style`: vector of strings
         """
-        c_coord, c_coord_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_coord = ctypes.POINTER(ctypes.c_double)()
+        c_coord_n = ctypes.c_size_t()
         c_data, c_data_n = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
@@ -10355,10 +10325,8 @@ class view:
         - `zElemCoord`: vector of doubles
         - `dim`: integer
         """
-        c_values, c_values_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_values = ctypes.POINTER(ctypes.c_double)()
+        c_values_n = ctypes.c_size_t()
         c_distance = ctypes.c_double()
         c_xElemCoord, c_xElemCoord_n = _ivectordouble(xElemCoord)
         c_yElemCoord, c_yElemCoord_n = _ivectordouble(yElemCoord)
@@ -11037,10 +11005,8 @@ class parser:
         - `name`: string
         - `value`: vector of doubles
         """
-        c_value, c_value_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_value = ctypes.POINTER(ctypes.c_double)()
+        c_value_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshParserGetNumber(
                 ctypes.c_char_p(name.encode()),
@@ -11231,10 +11197,8 @@ class onelab:
         - `name`: string
         - `value`: vector of doubles
         """
-        c_value, c_value_n = (
-            ctypes.POINTER(ctypes.c_double)(),
-            ctypes.c_size_t(),
-        )
+        c_value = ctypes.POINTER(ctypes.c_double)()
+        c_value_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshOnelabGetNumber(
                 ctypes.c_char_p(name.encode()),
