@@ -843,14 +843,19 @@ class model:
         oriented: bool = True,
         recursive: bool = False,
     ) -> builtins.list[tuple[int, int]]:
-        """gmsh.model.getBoundary(dimTags, combined=True, oriented=True, recursive=False)
+        """Return the (dim, tag) pairs of entities bounding the given entities.
 
-        Get the boundary of the model entities `dimTags`, given as a vector of
-        (dim, tag) pairs. Return in `outDimTags` the boundary of the individual
-        entities (if `combined` is false) or the boundary of the combined
-        geometrical shape formed by all input entities (if `combined` is true).
-        Return tags multiplied by the sign of the boundary entity if `oriented` is
-        true. Apply the boundary operator recursively down to dimension 0 (i.e. to
+        Extract the boundary of the model entities `dimTags`, given as a vector
+        of (dim, tag) pairs.
+
+        Return the boundary of the individual entities (if `combined` is false)
+        or the boundary of the combined geometrical shape formed by all input
+        entities (if `combined` is true).
+
+        Return tags multiplied by the sign of the boundary entity if `oriented`
+        is true.
+
+        Apply the boundary operator recursively down to dimension 0 (i.e. to
         points) if `recursive` is true.
         """
         api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
