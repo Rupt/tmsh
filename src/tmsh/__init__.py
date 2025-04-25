@@ -2767,8 +2767,6 @@ class model:
             and polynomial order `order`. If `serendip` is true, return the
             corresponding serendip element type (element without interior nodes).
 
-            Return an integer.
-
             Types:
             - `familyName`: string
             - `order`: integer
@@ -3372,8 +3370,6 @@ class model:
             Get the number of possible orientations for elements of type `elementType`
             and function space named `functionSpaceType`.
 
-            Return an integer.
-
             Types:
             - `elementType`: integer
             - `functionSpaceType`: string
@@ -3748,8 +3744,6 @@ class model:
 
             Get the number of keys by elements of type `elementType` for function space
             named `functionSpaceType`.
-
-            Return an integer.
 
             Types:
             - `elementType`: integer
@@ -5498,8 +5492,6 @@ class model:
             will be added in the current model only after `synchronize` is called. This
             behavior holds for all the entities added in the geo module.)
 
-            Return an integer.
-
             Types:
             - `x`: double
             - `y`: double
@@ -5525,8 +5517,6 @@ class model:
             two points with tags `startTag` and `endTag`. If `tag` is positive, set the
             tag explicitly; otherwise a new tag is selected automatically. Return the
             tag of the line.
-
-            Return an integer.
 
             Types:
             - `startTag`: integer
@@ -5560,8 +5550,6 @@ class model:
             otherwise a new tag is selected automatically. If (`nx`, `ny`, `nz`) != (0,
             0, 0), explicitly set the plane of the circle arc. Return the tag of the
             circle arc.
-
-            Return an integer.
 
             Types:
             - `startTag`: integer
@@ -5605,8 +5593,6 @@ class model:
             (`nx`, `ny`, `nz`) != (0, 0, 0), explicitly set the plane of the circle
             arc. Return the tag of the ellipse arc.
 
-            Return an integer.
-
             Types:
             - `startTag`: integer
             - `centerTag`: integer
@@ -5640,8 +5626,6 @@ class model:
             periodic curve if the first and last points are the same. Return the tag of
             the spline curve.
 
-            Return an integer.
-
             Types:
             - `pointTags`: vector of integers
             - `tag`: integer
@@ -5665,8 +5649,6 @@ class model:
             the first and last points are the same. Return the tag of the b-spline
             curve.
 
-            Return an integer.
-
             Types:
             - `pointTags`: vector of integers
             - `tag`: integer
@@ -5687,8 +5669,6 @@ class model:
             Add a Bezier curve in the built-in CAD representation, with `pointTags`
             control points. If `tag` is positive, set the tag explicitly; otherwise a
             new tag is selected automatically.  Return the tag of the Bezier curve.
-
-            Return an integer.
 
             Types:
             - `pointTags`: vector of integers
@@ -5711,8 +5691,6 @@ class model:
             points `pointTags`. If `tag` is positive, set the tag explicitly; otherwise
             a new tag is selected automatically. Create a periodic curve if the first
             and last points are the same. Return the tag of the polyline curve.
-
-            Return an integer.
 
             Types:
             - `pointTags`: vector of integers
@@ -5738,8 +5716,6 @@ class model:
             points on each curve is governed by `numIntervals`. If `tag` is positive,
             set the tag explicitly; otherwise a new tag is selected automatically.
             Return the tag of the spline.
-
-            Return an integer.
 
             Types:
             - `curveTags`: vector of integers
@@ -5767,8 +5743,6 @@ class model:
             on each curve is governed by `numIntervals`. If `tag` is positive, set the
             tag explicitly; otherwise a new tag is selected automatically. Return the
             tag of the b-spline.
-
-            Return an integer.
 
             Types:
             - `curveTags`: vector of integers
@@ -5798,8 +5772,6 @@ class model:
             orientation. If `tag` is positive, set the tag explicitly; otherwise a new
             tag is selected automatically. If `reorient` is set, automatically reorient
             the curves if necessary. Return the tag of the curve loop.
-
-            Return an integer.
 
             Types:
             - `curveTags`: vector of integers
@@ -5853,8 +5825,6 @@ class model:
             tag explicitly; otherwise a new tag is selected automatically. Return the
             tag of the surface.
 
-            Return an integer.
-
             Types:
             - `wireTags`: vector of integers
             - `tag`: integer
@@ -5882,8 +5852,6 @@ class model:
             curve loop is supported; this curve loop should be composed by 3 or 4
             curves only. If `tag` is positive, set the tag explicitly; otherwise a new
             tag is selected automatically. Return the tag of the surface.
-
-            Return an integer.
 
             Types:
             - `wireTags`: vector of integers
@@ -5956,8 +5924,6 @@ class model:
             geometry explicitly; otherwise a new tag is selected automatically. Return
             the tag of the geometry.
 
-            Return an integer.
-
             Types:
             - `geometry`: string
             - `numbers`: vector of doubles
@@ -5994,8 +5960,6 @@ class model:
             constraint at that point. If `tag` is positive, set the tag explicitly;
             otherwise a new tag is selected automatically. Return the tag of the point.
             For surface geometries, only the `x` and `y` coordinates are used.
-
-            Return an integer.
 
             Types:
             - `geometryTag`: integer
@@ -6557,8 +6521,6 @@ class model:
             Get the maximum tag of entities of dimension `dim` in the built-in CAD
             representation.
 
-            Return an integer.
-
             Types:
             - `dim`: integer
             """
@@ -6593,8 +6555,6 @@ class model:
             `tags` in the built-in CAD representation. Return the tag of the physical
             group, equal to `tag` if `tag` is positive, or a new tag if `tag` < 0. Set
             the name of the physical group if `name` is not empty.
-
-            Return an integer.
 
             Types:
             - `dim`: integer
@@ -6888,8 +6848,6 @@ class model:
             the point will be added in the current model only after `synchronize` is
             called. This behavior holds for all the entities added in the occ module.)
 
-            Return an integer.
-
             Types:
             - `x`: double
             - `y`: double
@@ -6915,8 +6873,6 @@ class model:
             the two points with tags `startTag` and `endTag`. If `tag` is positive, set
             the tag explicitly; otherwise a new tag is selected automatically. Return
             the tag of the line.
-
-            Return an integer.
 
             Types:
             - `startTag`: integer
@@ -6948,8 +6904,6 @@ class model:
             the circle goes through the middle point. If `tag` is positive, set the tag
             explicitly; otherwise a new tag is selected automatically. Return the tag
             of the circle arc.
-
-            Return an integer.
 
             Types:
             - `startTag`: integer
@@ -6990,8 +6944,6 @@ class model:
             of size 3 is provided, use it as the normal to the circle plane (z-axis).
             If a vector `xAxis` of size 3 is provided in addition to `zAxis`, use it to
             define the x-axis. Return the tag of the circle.
-
-            Return an integer.
 
             Types:
             - `x`: double
@@ -7040,8 +6992,6 @@ class model:
             that OpenCASCADE does not allow creating ellipse arcs with the major radius
             smaller than the minor radius.
 
-            Return an integer.
-
             Types:
             - `startTag`: integer
             - `centerTag`: integer
@@ -7083,8 +7033,6 @@ class model:
             is provided, use it as the normal to the ellipse plane (z-axis). If a
             vector `xAxis` of size 3 is provided in addition to `zAxis`, use it to
             define the x-axis. Return the tag of the ellipse.
-
-            Return an integer.
 
             Types:
             - `x`: double
@@ -7136,8 +7084,6 @@ class model:
             use them as concatenated x, y, z components of the tangents at each point,
             unless the norm of the tangent is zero.
 
-            Return an integer.
-
             Types:
             - `pointTags`: vector of integers
             - `tag`: integer
@@ -7174,8 +7120,6 @@ class model:
             new tag is selected automatically. Create a periodic curve if the first and
             last points are the same. Return the tag of the b-spline curve.
 
-            Return an integer.
-
             Types:
             - `pointTags`: vector of integers
             - `tag`: integer
@@ -7211,8 +7155,6 @@ class model:
             control points. If `tag` is positive, set the tag explicitly; otherwise a
             new tag is selected automatically. Return the tag of the Bezier curve.
 
-            Return an integer.
-
             Types:
             - `pointTags`: vector of integers
             - `tag`: integer
@@ -7240,8 +7182,6 @@ class model:
             curves that share geometrically identical (but topologically different)
             points. If `tag` is positive, set the tag explicitly; otherwise a new tag
             is selected automatically. Return the tag of the wire.
-
-            Return an integer.
 
             Types:
             - `curveTags`: vector of integers
@@ -7271,8 +7211,6 @@ class model:
             topologically different) points. If `tag` is positive, set the tag
             explicitly; otherwise a new tag is selected automatically. Return the tag
             of the curve loop.
-
-            Return an integer.
 
             Types:
             - `curveTags`: vector of integers
@@ -7305,8 +7243,6 @@ class model:
             `dy`, `z`). If `tag` is positive, set the tag explicitly; otherwise a new
             tag is selected automatically. Round the corners if `roundedRadius` is
             nonzero. Return the tag of the rectangle.
-
-            Return an integer.
 
             Types:
             - `x`: double
@@ -7351,8 +7287,6 @@ class model:
             provided in addition to `zAxis`, use it to define the x-axis. Return the
             tag of the disk.
 
-            Return an integer.
-
             Types:
             - `xc`: double
             - `yc`: double
@@ -7389,8 +7323,6 @@ class model:
             defines the exterior contour; additional curve loop define holes. If `tag`
             is positive, set the tag explicitly; otherwise a new tag is selected
             automatically. Return the tag of the surface.
-
-            Return an integer.
 
             Types:
             - `wireTags`: vector of integers
@@ -7442,8 +7374,6 @@ class model:
             `maxDegree` (the highest degree which the polynomial defining the filling
             surface can have) and, `maxSegments` (the largest number of segments which
             the filling surface can have).
-
-            Return an integer.
 
             Types:
             - `wireTag`: integer
@@ -7497,8 +7427,6 @@ class model:
             If `tag` is positive, set the tag explicitly; otherwise a new tag is
             selected automatically. Return the tag of the surface.
 
-            Return an integer.
-
             Types:
             - `wireTag`: integer
             - `tag`: integer
@@ -7528,8 +7456,6 @@ class model:
             most rounded patch, and "Coons" creates a rounded patch with less depth
             than "Curved". If `tag` is positive, set the tag explicitly; otherwise a
             new tag is selected automatically. Return the tag of the surface.
-
-            Return an integer.
 
             Types:
             - `wireTag`: integer
@@ -7573,8 +7499,6 @@ class model:
             consider wire curves as 3D curves and project them on the b-spline surface;
             otherwise consider the wire curves as defined in the parametric space of
             the surface. Return the tag of the b-spline surface.
-
-            Return an integer.
 
             Types:
             - `pointTags`: vector of integers
@@ -7646,8 +7570,6 @@ class model:
             otherwise consider the wire curves as defined in the parametric space of
             the surface. Return the tag of the Bezier surface.
 
-            Return an integer.
-
             Types:
             - `pointTags`: vector of integers
             - `numPointsU`: integer
@@ -7687,8 +7609,6 @@ class model:
             the tag explicitly; otherwise a new tag is selected automatically. Return
             the tag of the trimmed surface.
 
-            Return an integer.
-
             Types:
             - `surfaceTag`: integer
             - `wireTags`: vector of integers
@@ -7718,8 +7638,6 @@ class model:
             surface loop. Setting `sewing` allows one to build a shell made of surfaces
             that share geometrically identical (but topologically different) curves.
 
-            Return an integer.
-
             Types:
             - `surfaceTags`: vector of integers
             - `tag`: integer
@@ -7744,8 +7662,6 @@ class model:
             exterior boundary; additional surface loop define holes. If `tag` is
             positive, set the tag explicitly; otherwise a new tag is selected
             automatically. Return the tag of the volume.
-
-            Return an integer.
 
             Types:
             - `shellTags`: vector of integers
@@ -7780,8 +7696,6 @@ class model:
             defines the azimuthal opening (from 0 to 2*Pi). If `tag` is positive, set
             the tag explicitly; otherwise a new tag is selected automatically. Return
             the tag of the sphere.
-
-            Return an integer.
 
             Types:
             - `xc`: double
@@ -7823,8 +7737,6 @@ class model:
             by a point (`x`, `y`, `z`) and the extents along the x-, y- and z-axes. If
             `tag` is positive, set the tag explicitly; otherwise a new tag is selected
             automatically. Return the tag of the box.
-
-            Return an integer.
 
             Types:
             - `x`: double
@@ -7868,8 +7780,6 @@ class model:
             `angle` argument defines the angular opening (from 0 to 2*Pi). If `tag` is
             positive, set the tag explicitly; otherwise a new tag is selected
             automatically. Return the tag of the cylinder.
-
-            Return an integer.
 
             Types:
             - `x`: double
@@ -7918,8 +7828,6 @@ class model:
             faces (these radii can be zero). If `tag` is positive, set the tag
             explicitly; otherwise a new tag is selected automatically. `angle` defines
             the optional angular opening (from 0 to 2*Pi). Return the tag of the cone.
-
-            Return an integer.
 
             Types:
             - `x`: double
@@ -7971,8 +7879,6 @@ class model:
             of size 3 is provided, use it to define the z-axis. Return the tag of the
             wedge.
 
-            Return an integer.
-
             Types:
             - `x`: double
             - `y`: double
@@ -8020,8 +7926,6 @@ class model:
             argument `angle` defines the angular opening (from 0 to 2*Pi). If a vector
             `zAxis` of size 3 is provided, use it to define the z-axis. Return the tag
             of the torus.
-
-            Return an integer.
 
             Types:
             - `x`: double
@@ -8474,8 +8378,6 @@ class model:
             `radius`. The modifed edges keep their tag. If `tag` is positive, set the
             tag explicitly; otherwise a new tag is selected automatically.
 
-            Return an integer.
-
             Types:
             - `edgeTag1`: integer
             - `edgeTag2`: integer
@@ -8506,8 +8408,6 @@ class model:
             distance1 `distance1` and distance2 `distance2`. The modifed edges keep
             their tag. If `tag` is positive, set the tag explicitly; otherwise a new
             tag is selected automatically.
-
-            Return an integer.
 
             Types:
             - `edgeTag1`: integer
@@ -9576,8 +9476,6 @@ class model:
 
             Get the maximum tag of entities of dimension `dim` in the OpenCASCADE CAD
             representation.
-
-            Return an integer.
 
             Types:
             - `dim`: integer
