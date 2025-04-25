@@ -818,13 +818,7 @@ class model:
 
     @staticmethod
     def removePhysicalName(name: str) -> None:
-        """gmsh.model.removePhysicalName(name)
-
-        Remove the physical name `name` from the current model.
-
-        Types:
-        - `name`: string
-        """
+        """Replace the physical name `name` with `''` in the current model."""
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelRemovePhysicalName(
                 ctypes.c_char_p(name.encode()), ctypes.byref(ierr)

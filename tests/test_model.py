@@ -152,6 +152,18 @@ class Model(unittest.TestCase):
         tmsh.model.removePhysicalGroups()
         self.assertEqual(tmsh.model.getPhysicalGroups(), [])
 
+    @tests.initialized
+    def test_physical_name(self) -> None:
+        tag = tmsh.model.geo.addPoint(0.0, 0.0, 0.0)
+        tmsh.model.geo.synchronize()
+        group = tmsh.model.addPhysicalGroup(0, (tag,))
+        self.assertEqual(tmsh.model.getPhysicalName(0, group), "")
+        name = "bbb"
+        tmsh.model.setPhysicalName(0, group, name)
+        self.assertEqual(tmsh.model.getPhysicalName(0, group), name)
+        tmsh.model.removePhysicalName(name)
+        self.assertEqual(tmsh.model.getPhysicalName(0, group), "")
+
 
 class _Tetrahedron(typing.NamedTuple):
     points: tuple[int, int, int, int]
