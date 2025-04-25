@@ -679,7 +679,7 @@ class model:
 
     @staticmethod
     def removeEntityName(name: str) -> None:
-        """Remove the entity name `name` from the current model."""
+        """Replace the entity name `name` with `''` in the current model."""
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelRemoveEntityName(
                 ctypes.c_char_p(name.encode()), ctypes.byref(ierr)
@@ -727,17 +727,7 @@ class model:
     def getEntitiesForPhysicalName(
         name: str,
     ) -> builtins.list[tuple[int, int]]:
-        """gmsh.model.getEntitiesForPhysicalName(name)
-
-        Get the model entities (as a vector (dim, tag) pairs) making up the
-        physical group with name `name`.
-
-        Return `dimTags`.
-
-        Types:
-        - `name`: string
-        - `dimTags`: vector of pairs of integers
-        """
+        """Return all (dim, tag)s for entities in the named physical group."""
         api_dimTags_, api_dimTags_n_ = (
             ctypes.POINTER(ctypes.c_int)(),
             ctypes.c_size_t(),
@@ -753,22 +743,9 @@ class model:
 
     @staticmethod
     def getPhysicalGroupsForEntity(dim: int, tag: int) -> builtins.list[int]:
-        """gmsh.model.getPhysicalGroupsForEntity(dim, tag)
-
-        Get the tags of the physical groups (if any) to which the model entity of
-        dimension `dim` and tag `tag` belongs.
-
-        Return `physicalTags`.
-
-        Types:
-        - `dim`: integer
-        - `tag`: integer
-        - `physicalTags`: vector of integers
-        """
-        api_physicalTags_, api_physicalTags_n_ = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        """Return the tags of physical groups containing entity (dim, tag)."""
+        api_physicalTags_ = ctypes.POINTER(ctypes.c_int)()
+        api_physicalTags_n_ = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetPhysicalGroupsForEntity(
                 ctypes.c_int(dim),
@@ -783,20 +760,12 @@ class model:
     def addPhysicalGroup(
         dim: int, tags: Sequence[int], *, tag: int = -1, name: str = ""
     ) -> int:
-        """gmsh.model.addPhysicalGroup(dim, tags, tag=-1, name="")
+        """Return the tag of a new physical group comprising tags of this dim.
 
-        Add a physical group of dimension `dim`, grouping the model entities with
-        tags `tags`. Return the tag of the physical group, equal to `tag` if `tag`
-        is positive, or a new tag if `tag` < 0. Set the name of the physical group
-        if `name` is not empty.
-
-        Return an integer.
-
-        Types:
-        - `dim`: integer
-        - `tags`: vector of integers
-        - `tag`: integer
-        - `name`: string
+        Add a physical group of dimension `dim`, grouping the model entities
+        with tags `tags`. Return the tag of the physical group, equal to `tag`
+        if `tag` is positive, or a new tag if `tag` < 0. Set the name of the
+        physical group if `name` is not empty.
         """
         api_tags_, api_tags_n_ = _ivectorint(tags)
         with _ErrorCode() as ierr:
@@ -811,13 +780,11 @@ class model:
 
     @staticmethod
     def removePhysicalGroups(dimTags: Sequence[tuple[int, int]] = ()) -> None:
-        """gmsh.model.removePhysicalGroups(dimTags=[])
+        """Remove all physical groups, or only those identified in `dimTags`.
 
-        Remove the physical groups `dimTags` (given as a vector of (dim, tag)
-        pairs) from the current model. If `dimTags` is empty, remove all groups.
-
-        Types:
-        - `dimTags`: vector of pairs of integers
+        If `dimTags` is empty, remove all groups. Otherwise, remove the
+        physical groups `dimTags` (given as a sequence of (dim, tag) pairs)
+        from the current model.
         """
         api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
         with _ErrorCode() as ierr:
@@ -827,15 +794,7 @@ class model:
 
     @staticmethod
     def setPhysicalName(dim: int, tag: int, name: str) -> None:
-        """gmsh.model.setPhysicalName(dim, tag, name)
-
-        Set the name of the physical group of dimension `dim` and tag `tag`.
-
-        Types:
-        - `dim`: integer
-        - `tag`: integer
-        - `name`: string
-        """
+        """Set the name of the physical group with the given (dim, tag)."""
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelSetPhysicalName(
                 ctypes.c_int(dim),
@@ -846,17 +805,7 @@ class model:
 
     @staticmethod
     def getPhysicalName(dim: int, tag: int) -> str:
-        """gmsh.model.getPhysicalName(dim, tag)
-
-        Get the name of the physical group of dimension `dim` and tag `tag`.
-
-        Return `name`.
-
-        Types:
-        - `dim`: integer
-        - `tag`: integer
-        - `name`: string
-        """
+        """Return the name of the physical group with the given (dim, tag)."""
         api_name_ = ctypes.c_char_p()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetPhysicalName(
