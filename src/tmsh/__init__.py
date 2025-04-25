@@ -1614,8 +1614,6 @@ class model:
 
         Get the visibility of the model entity of dimension `dim` and tag `tag`.
 
-        Return `value`.
-
         Types:
         - `dim`: integer
         - `tag`: integer
@@ -5230,8 +5228,6 @@ class model:
                 the field tag. Available field types are listed in the "Gmsh mesh size
                 fields" chapter of the Gmsh reference manual
                 (https://gmsh.info/doc/texinfo/gmsh.html#Gmsh-mesh-size-fields).
-
-                Return an integer.
 
                 Types:
                 - `fieldType`: string
@@ -10829,8 +10825,6 @@ class parser:
         Get the value of the number variable `name` from the Gmsh parser. Return an
         empty vector if the variable does not exist.
 
-        Return `value`.
-
         Types:
         - `name`: string
         - `value`: vector of doubles
@@ -10852,8 +10846,6 @@ class parser:
 
         Get the value of the string variable `name` from the Gmsh parser. Return an
         empty vector if the variable does not exist.
-
-        Return `value`.
 
         Types:
         - `name`: string
@@ -11021,8 +11013,6 @@ class onelab:
         Get the value of the number parameter `name` from the ONELAB database.
         Return an empty vector if the parameter does not exist.
 
-        Return `value`.
-
         Types:
         - `name`: string
         - `value`: vector of doubles
@@ -11044,8 +11034,6 @@ class onelab:
 
         Get the value of the string parameter `name` from the ONELAB database.
         Return an empty vector if the parameter does not exist.
-
-        Return `value`.
 
         Types:
         - `name`: string
@@ -11166,8 +11154,6 @@ class logger:
 
         Get logged messages.
 
-        Return `log`.
-
         Types:
         - `log`: vector of strings
         """
@@ -11195,8 +11181,6 @@ class logger:
         """gmsh.logger.getWallTime()
 
         Return wall clock time (in s).
-
-        Return a double.
         """
         gmsh.lib.gmshLoggerGetWallTime.restype = ctypes.c_double
         with _ErrorCode() as ierr:
@@ -11207,8 +11191,6 @@ class logger:
         """gmsh.logger.getCpuTime()
 
         Return CPU time (in s).
-
-        Return a double.
         """
         gmsh.lib.gmshLoggerGetCpuTime.restype = ctypes.c_double
         with _ErrorCode() as ierr:
@@ -11219,8 +11201,6 @@ class logger:
         """gmsh.logger.getMemory()
 
         Return memory usage (in Mb).
-
-        Return a double.
         """
         gmsh.lib.gmshLoggerGetMemory.restype = ctypes.c_double
         with _ErrorCode() as ierr:
@@ -11231,8 +11211,6 @@ class logger:
         """gmsh.logger.getTotalMemory()
 
         Return total available memory (in Mb).
-
-        Return a double.
         """
         gmsh.lib.gmshLoggerGetTotalMemory.restype = ctypes.c_double
         with _ErrorCode() as ierr:
