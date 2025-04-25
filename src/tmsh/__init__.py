@@ -5227,10 +5227,8 @@ class model:
                 Types:
                 - `tags`: vector of integers
                 """
-                c_tags, c_tags_n = (
-                    ctypes.POINTER(ctypes.c_int)(),
-                    ctypes.c_size_t(),
-                )
+                c_tags = ctypes.POINTER(ctypes.c_int)()
+                c_tags_n = ctypes.c_size_t()
                 with _ErrorCode() as ierr:
                     gmsh.lib.gmshModelMeshFieldList(
                         ctypes.byref(c_tags),
