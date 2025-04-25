@@ -178,6 +178,28 @@ class Model(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "does not exist"):
             self.assertEqual(tmsh.model.getType(0, tag), type_)
 
+    @tests.initialized
+    def test_get_boundary(self) -> None:
+        tet = _tetrahedron()
+        volume_boundary = tmsh.model.getBoundary(((3, tet.volume),))
+        self.assertEqual(set(volume_boundary), {(2, t) for t in tet.surfaces})
+        deep_boundary = tmsh.model.getBoundary(
+            ((3, tet.volume),), recursive=True
+        )
+        self.assertEqual(set(deep_boundary), {(0, t) for t in tet.points})
+        face_boundary = tmsh.model.getBoundary(
+            [(2, t) for t in tet.surfaces[:2]], oriented=False, combined=False
+        )
+        face_boundary_0 = tmsh.model.getBoundary(
+            ((2, tet.surfaces[0]),), oriented=False, combined=False
+        )
+        face_boundary_1 = tmsh.model.getBoundary(
+            ((2, tet.surfaces[1]),), oriented=False, combined=False
+        )
+        self.assertEqual(
+            set(face_boundary), set(face_boundary_0) | set(face_boundary_1)
+        )
+
 
 class _Tetrahedron(typing.NamedTuple):
     points: tuple[int, int, int, int]
