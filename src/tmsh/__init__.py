@@ -2148,14 +2148,10 @@ class model:
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            c_coord, c_coord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
-            c_parametricCoord, c_parametricCoord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_coord = ctypes.POINTER(ctypes.c_double)()
+            c_coord_n = ctypes.c_size_t()
+            c_parametricCoord = ctypes.POINTER(ctypes.c_double)()
+            c_parametricCoord_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetNodes(
                     ctypes.byref(c_nodeTags),
@@ -2203,14 +2199,10 @@ class model:
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            c_coord, c_coord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
-            c_parametricCoord, c_parametricCoord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_coord = ctypes.POINTER(ctypes.c_double)()
+            c_coord_n = ctypes.c_size_t()
+            c_parametricCoord = ctypes.POINTER(ctypes.c_double)()
+            c_parametricCoord_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetNodesByElementType(
                     ctypes.c_int(elementType),
@@ -2250,14 +2242,10 @@ class model:
             - `dim`: integer
             - `tag`: integer
             """
-            c_coord, c_coord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
-            c_parametricCoord, c_parametricCoord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_coord = ctypes.POINTER(ctypes.c_double)()
+            c_coord_n = ctypes.c_size_t()
+            c_parametricCoord = ctypes.POINTER(ctypes.c_double)()
+            c_parametricCoord_n = ctypes.c_size_t()
             c_dim = ctypes.c_int()
             c_tag = ctypes.c_int()
             with _ErrorCode() as ierr:
@@ -2362,10 +2350,8 @@ class model:
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            c_coord, c_coord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_coord = ctypes.POINTER(ctypes.c_double)()
+            c_coord_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetNodesForPhysicalGroup(
                     ctypes.c_int(dim),
@@ -2823,10 +2809,8 @@ class model:
             c_dim = ctypes.c_int()
             c_order = ctypes.c_int()
             c_numNodes = ctypes.c_int()
-            c_localNodeCoord, c_localNodeCoord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_localNodeCoord = ctypes.POINTER(ctypes.c_double)()
+            c_localNodeCoord_n = ctypes.c_size_t()
             c_numPrimaryNodes = ctypes.c_int()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetElementProperties(
@@ -2959,10 +2943,8 @@ class model:
             - `numTasks`: size
             """
             c_elementTags, c_elementTags_n = _ivectorsize(elementTags)
-            c_elementsQuality, c_elementsQuality_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_elementsQuality = ctypes.POINTER(ctypes.c_double)()
+            c_elementsQuality_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetElementQualities(
                     c_elementTags,
@@ -3090,14 +3072,10 @@ class model:
             - `localCoord`: vector of doubles
             - `weights`: vector of doubles
             """
-            c_localCoord, c_localCoord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
-            c_weights, c_weights_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_localCoord = ctypes.POINTER(ctypes.c_double)()
+            c_localCoord_n = ctypes.c_size_t()
+            c_weights = ctypes.POINTER(ctypes.c_double)()
+            c_weights_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetIntegrationPoints(
                     ctypes.c_int(elementType),
@@ -3154,18 +3132,12 @@ class model:
             - `numTasks`: size
             """
             c_localCoord, c_localCoord_n = _ivectordouble(localCoord)
-            c_jacobians, c_jacobians_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
-            c_determinants, c_determinants_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
-            c_coord, c_coord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_jacobians = ctypes.POINTER(ctypes.c_double)()
+            c_jacobians_n = ctypes.c_size_t()
+            c_determinants = ctypes.POINTER(ctypes.c_double)()
+            c_determinants_n = ctypes.c_size_t()
+            c_coord = ctypes.POINTER(ctypes.c_double)()
+            c_coord_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetJacobians(
                     ctypes.c_int(elementType),
@@ -3217,18 +3189,12 @@ class model:
             - `coord`: vector of doubles
             """
             c_localCoord, c_localCoord_n = _ivectordouble(localCoord)
-            c_jacobians, c_jacobians_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
-            c_determinants, c_determinants_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
-            c_coord, c_coord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_jacobians = ctypes.POINTER(ctypes.c_double)()
+            c_jacobians_n = ctypes.c_size_t()
+            c_determinants = ctypes.POINTER(ctypes.c_double)()
+            c_determinants_n = ctypes.c_size_t()
+            c_coord = ctypes.POINTER(ctypes.c_double)()
+            c_coord_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetJacobian(
                     ctypes.c_size_t(elementTag),
@@ -3293,10 +3259,8 @@ class model:
             """
             c_localCoord, c_localCoord_n = _ivectordouble(localCoord)
             c_numComponents = ctypes.c_int()
-            c_basisFunctions, c_basisFunctions_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_basisFunctions = ctypes.POINTER(ctypes.c_double)()
+            c_basisFunctions_n = ctypes.c_size_t()
             c_numOrientations = ctypes.c_int()
             c_wantedOrientations, c_wantedOrientations_n = _ivectorint(
                 wantedOrientations
@@ -3704,10 +3668,8 @@ class model:
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            c_coord, c_coord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_coord = ctypes.POINTER(ctypes.c_double)()
+            c_coord_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetKeys(
                     ctypes.c_int(elementType),
@@ -3758,10 +3720,8 @@ class model:
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            c_coord, c_coord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_coord = ctypes.POINTER(ctypes.c_double)()
+            c_coord_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetKeysForElement(
                     ctypes.c_size_t(elementTag),
@@ -3881,10 +3841,8 @@ class model:
             - `task`: size
             - `numTasks`: size
             """
-            c_barycenters, c_barycenters_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_barycenters = ctypes.POINTER(ctypes.c_double)()
+            c_barycenters_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetBarycenters(
                     ctypes.c_int(elementType),
@@ -4078,10 +4036,8 @@ class model:
             - `sizes`: vector of doubles
             """
             c_dimTags, c_dimTags_n = _ivectorpair(dimTags)
-            c_sizes, c_sizes_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_sizes = ctypes.POINTER(ctypes.c_double)()
+            c_sizes_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetSizes(
                     c_dimTags,
@@ -4768,10 +4724,8 @@ class model:
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            c_affineTransform, c_affineTransform_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_affineTransform = ctypes.POINTER(ctypes.c_double)()
+            c_affineTransform_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetPeriodicNodes(
                     ctypes.c_int(dim),
@@ -4851,14 +4805,10 @@ class model:
                 ctypes.POINTER(ctypes.c_size_t)(),
                 ctypes.c_size_t(),
             )
-            c_coord, c_coord_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
-            c_coordMaster, c_coordMaster_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_coord = ctypes.POINTER(ctypes.c_double)()
+            c_coord_n = ctypes.c_size_t()
+            c_coordMaster = ctypes.POINTER(ctypes.c_double)()
+            c_coordMaster_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelMeshGetPeriodicKeys(
                     ctypes.c_int(elementType),
@@ -9609,10 +9559,8 @@ class model:
             - `tag`: integer
             - `mat`: vector of doubles
             """
-            c_mat, c_mat_n = (
-                ctypes.POINTER(ctypes.c_double)(),
-                ctypes.c_size_t(),
-            )
+            c_mat = ctypes.POINTER(ctypes.c_double)()
+            c_mat_n = ctypes.c_size_t()
             with _ErrorCode() as ierr:
                 gmsh.lib.gmshModelOccGetMatrixOfInertia(
                     ctypes.c_int(dim),
