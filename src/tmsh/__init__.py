@@ -881,9 +881,9 @@ class model:
         """Return the 'upward' and 'downward' adjacencies to entity (dim, tag).
 
         Returns:
-            tuple (upward, downward), containing (dim, tag) pairs of selected
-            entities. The `upward` vector returns the tags of adjacent entities
-            of dimension `dim` + 1; the `downward` vector returns the tags of
+            tuple (upward, downward), containing the tags of selected entities.
+            The `upward` vector returns the tags of adjacent entities of
+            dimension `dim` + 1; the `downward` vector returns the tags of
             adjacent entities of dimension `dim` - 1.
         """
         api_upward_ = ctypes.POINTER(ctypes.c_int)()
