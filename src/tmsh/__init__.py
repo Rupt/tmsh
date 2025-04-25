@@ -6069,17 +6069,11 @@ class model:
         def addSurfaceLoop(
             surfaceTags: Sequence[int], *, tag: int = -1
         ) -> int:
-            """gmsh.model.geo.addSurfaceLoop(surfaceTags, tag=-1)
+            """Return the tag of a new surface loop from the given tags.
 
-            Add a surface loop (a closed shell) formed by `surfaceTags` in the built-in
-            CAD representation.  If `tag` is positive, set the tag explicitly;
-            otherwise a new tag is selected automatically. Return the tag of the shell.
-
-            Return an integer.
-
-            Types:
-            - `surfaceTags`: vector of integers
-            - `tag`: integer
+            Add a surface loop (a closed shell) formed by `surfaceTags` in the
+            built-in CAD representation. If `tag` is positive, set the tag
+            explicitly; otherwise a new tag is selected automatically.
             """
             api_surfaceTags_, api_surfaceTags_n_ = _ivectorint(surfaceTags)
             with _ErrorCode() as ierr:
@@ -6092,19 +6086,13 @@ class model:
 
         @staticmethod
         def addVolume(shellTags: Sequence[int], *, tag: int = -1) -> int:
-            """gmsh.model.geo.addVolume(shellTags, tag=-1)
+            """Return the tag of a new volume defined by one or more shells.
 
-            Add a volume (a region) in the built-in CAD representation, defined by one
-            or more shells `shellTags`. The first surface loop defines the exterior
-            boundary; additional surface loop define holes. If `tag` is positive, set
-            the tag explicitly; otherwise a new tag is selected automatically. Return
-            the tag of the volume.
-
-            Return an integer.
-
-            Types:
-            - `shellTags`: vector of integers
-            - `tag`: integer
+            Add a volume (a region) in the built-in CAD representation, defined
+            by one or more shells `shellTags`. The first surface loop defines
+            the exterior boundary; additional surface loop define holes. If
+            `tag` is positive, set the tag explicitly; otherwise a new tag is
+            selected automatically.
             """
             api_shellTags_, api_shellTags_n_ = _ivectorint(shellTags)
             with _ErrorCode() as ierr:
