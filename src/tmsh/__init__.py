@@ -728,10 +728,8 @@ class model:
         name: str,
     ) -> builtins.list[tuple[int, int]]:
         """Return all (dim, tag)s for entities in the named physical group."""
-        c_dimTags, c_dimTags_n = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        c_dimTags = ctypes.POINTER(ctypes.c_int)()
+        c_dimTags_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetEntitiesForPhysicalName(
                 ctypes.c_char_p(name.encode()),
@@ -935,10 +933,8 @@ class model:
         - `dimTags`: vector of pairs of integers
         - `dim`: integer
         """
-        c_dimTags, c_dimTags_n = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        c_dimTags = ctypes.POINTER(ctypes.c_int)()
+        c_dimTags_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetEntitiesInBoundingBox(
                 ctypes.c_double(xmin),
@@ -1121,10 +1117,8 @@ class model:
         - `tag`: integer
         - `partitions`: vector of integers
         """
-        c_partitions, c_partitions_n = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        c_partitions = ctypes.POINTER(ctypes.c_int)()
+        c_partitions_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetPartitions(
                 ctypes.c_int(dim),
@@ -9878,10 +9872,8 @@ class view:
             ctypes.POINTER(ctypes.POINTER(ctypes.c_char))(),
             ctypes.c_size_t(),
         )
-        c_numElements, c_numElements_n = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        c_numElements = ctypes.POINTER(ctypes.c_int)()
+        c_numElements_n = ctypes.c_size_t()
         c_data, c_data_n, c_data_nn = (
             ctypes.POINTER(ctypes.POINTER(ctypes.c_double))(),
             ctypes.POINTER(ctypes.c_size_t)(),
@@ -10593,10 +10585,8 @@ class fltk:
         - `dimTags`: vector of pairs of integers
         - `dim`: integer
         """
-        c_dimTags, c_dimTags_n = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        c_dimTags = ctypes.POINTER(ctypes.c_int)()
+        c_dimTags_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             c_result = gmsh.lib.gmshFltkSelectEntities(
                 ctypes.byref(c_dimTags),
@@ -10640,10 +10630,8 @@ class fltk:
         Types:
         - `viewTags`: vector of integers
         """
-        c_viewTags, c_viewTags_n = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        c_viewTags = ctypes.POINTER(ctypes.c_int)()
+        c_viewTags_n = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             c_result = gmsh.lib.gmshFltkSelectViews(
                 ctypes.byref(c_viewTags),
