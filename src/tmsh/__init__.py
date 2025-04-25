@@ -852,21 +852,10 @@ class model:
         Return tags multiplied by the sign of the boundary entity if `oriented` is
         true. Apply the boundary operator recursively down to dimension 0 (i.e. to
         points) if `recursive` is true.
-
-        Return `outDimTags`.
-
-        Types:
-        - `dimTags`: vector of pairs of integers
-        - `outDimTags`: vector of pairs of integers
-        - `combined`: boolean
-        - `oriented`: boolean
-        - `recursive`: boolean
         """
         api_dimTags_, api_dimTags_n_ = _ivectorpair(dimTags)
-        api_outDimTags_, api_outDimTags_n_ = (
-            ctypes.POINTER(ctypes.c_int)(),
-            ctypes.c_size_t(),
-        )
+        api_outDimTags_ = ctypes.POINTER(ctypes.c_int)()
+        api_outDimTags_n_ = ctypes.c_size_t()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetBoundary(
                 api_dimTags_,
@@ -1022,12 +1011,7 @@ class model:
 
     @staticmethod
     def getDimension() -> int:
-        """gmsh.model.getDimension()
-
-        Return the geometrical dimension of the current model.
-
-        Return an integer.
-        """
+        """Return the geometrical dimension of the current model."""
         with _ErrorCode() as ierr:
             return gmsh.lib.gmshModelGetDimension(ctypes.byref(ierr))
 
@@ -1086,17 +1070,7 @@ class model:
 
     @staticmethod
     def getType(dim: int, tag: int) -> str:
-        """gmsh.model.getType(dim, tag)
-
-        Get the type of the entity of dimension `dim` and tag `tag`.
-
-        Return `entityType`.
-
-        Types:
-        - `dim`: integer
-        - `tag`: integer
-        - `entityType`: string
-        """
+        """Return the type of the entity identified by (dim, tag)."""
         api_entityType_ = ctypes.c_char_p()
         with _ErrorCode() as ierr:
             gmsh.lib.gmshModelGetType(
@@ -1137,12 +1111,7 @@ class model:
 
     @staticmethod
     def getNumberOfPartitions() -> int:
-        """gmsh.model.getNumberOfPartitions()
-
-        Return the number of partitions in the model.
-
-        Return an integer.
-        """
+        """Return the number of partitions in the model."""
         with _ErrorCode() as ierr:
             return gmsh.lib.gmshModelGetNumberOfPartitions(ctypes.byref(ierr))
 
